@@ -59,8 +59,7 @@ namespace NegativeScreen
 		/// <param name="nIndex">GWL_EXSTYLE, GWL_STYLE, [...]</param>
 		/// <param name="dwNewLong"></param>
 		/// <returns></returns>
-		[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-		[return: MarshalAs(UnmanagedType.Bool)]
+		[DllImport("user32.dll")]
 		public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
 		/// <summary>
@@ -189,6 +188,8 @@ namespace NegativeScreen
 		#region "DWM API"
 
 		//http://msdn.microsoft.com/en-us/library/aa969540%28v=vs.85%29.aspx
+
+		///ATTENTION! : program must be compiled for x64 or the call will fail!
 
 		[DllImport("dwmapi.dll", PreserveSig = false)]
 		public static extern int DwmSetWindowAttribute(IntPtr hwnd, DWMWINDOWATTRIBUTE attr, ref DWMWINDOWATTRIBUTE attrValue, int attrSize);
