@@ -665,6 +665,7 @@ namespace NegativeScreen
 	/// </summary>
 	internal enum KeyModifiers : int
 	{
+		NONE = 0,
 		/// <summary>
 		/// Either ALT key must be held down.
 		/// </summary>

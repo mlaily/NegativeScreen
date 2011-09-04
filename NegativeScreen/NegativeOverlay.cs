@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 
 namespace NegativeScreen
@@ -10,43 +11,67 @@ namespace NegativeScreen
 	class NegativeOverlay : Form
 	{
 		private IntPtr hwndMag;
-		private const int HOTKEY_ID = 57768;//random id
+
+		private const int HALT_HOTKEY_ID = 42;//random id =°
+		private const int TOGGLE_HOTKEY_ID = 43;
+		private const int RESET_TIMER_HOTKEY_ID = 44;
+		private const int INCREASE_TIMER_HOTKEY_ID = 45;
+		private const int DECREASE_TIMER_HOTKEY_ID = 46;
+		private const int HELP_HOTKEY_ID = 47;
+
+		private const int DEFAULT_INCREASE_STEP = 10;
 
 		/// <summary>
-		/// will the loop be a bruteforce loop ? (no sleep() at all)
+		/// allow to control whether the main loop is running or not
 		/// </summary>
-		private bool DONTSTOPMENAAAO = true;
+		private bool mainLoopRunning = true;
+
 		private int refreshInterval = 0;
 
-		public NegativeOverlay(int refreshInterval = 0)	: base()
+		public NegativeOverlay(int refreshIntervalValue = 0)
+			: base()
 		{
-			if (refreshInterval <= 0)
-			{
-				DONTSTOPMENAAAO = true;
-			}
-			else
-			{
-				DONTSTOPMENAAAO = false;
-				this.refreshInterval = refreshInterval;
-			}
+			this.refreshInterval = refreshIntervalValue;
+
 			this.TopMost = true;
 			this.FormBorderStyle = FormBorderStyle.None;
 			this.WindowState = FormWindowState.Maximized;
 
-			if (!NativeMethods.RegisterHotKey(this.Handle, HOTKEY_ID, KeyModifiers.MOD_SHIFT, Keys.Escape))
+			//
+			if (!NativeMethods.RegisterHotKey(this.Handle, HALT_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.H))
 			{
-				throw new Exception("RegisterHotKey()");
+				throw new Exception("RegisterHotKey(win+alt+H)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+			if (!NativeMethods.RegisterHotKey(this.Handle, TOGGLE_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.N))
+			{
+				throw new Exception("RegisterHotKey(win+alt+N)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+			if (!NativeMethods.RegisterHotKey(this.Handle, RESET_TIMER_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.Multiply))
+			{
+				throw new Exception("RegisterHotKey(win+alt+Multiply)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+			if (!NativeMethods.RegisterHotKey(this.Handle, INCREASE_TIMER_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.Add))
+			{
+				throw new Exception("RegisterHotKey(win+alt+Add)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+			if (!NativeMethods.RegisterHotKey(this.Handle, DECREASE_TIMER_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.Subtract))
+			{
+				throw new Exception("RegisterHotKey(win+alt+Substract)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+			if (!NativeMethods.RegisterHotKey(this.Handle, HELP_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F1))
+			{
+				throw new Exception("RegisterHotKey(win+alt+F1)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 
 			if (!NativeMethods.MagInitialize())
 			{
-				throw new Exception("MagInitialize()");
+				throw new Exception("MagInitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 
 			IntPtr hInst = NativeMethods.GetModuleHandle(null);
 			if (hInst == IntPtr.Zero)
 			{
-				throw new Exception("GetModuleHandle()");
+				throw new Exception("GetModuleHandle()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 			IntPtr hwndHost = this.Handle;
 
@@ -54,13 +79,13 @@ namespace NegativeScreen
 			//and WS_EX_TRANSPARENT (mouse and keyboard events pass through the window)
 			if (NativeMethods.SetWindowLong(hwndHost, NativeMethods.GWL_EXSTYLE, (int)ExtendedWindowStyles.WS_EX_LAYERED | (int)ExtendedWindowStyles.WS_EX_TRANSPARENT) == 0)
 			{
-				throw new Exception("SetWindowLong()");
+				throw new Exception("SetWindowLong()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 
 			// Make the window opaque.
 			if (!NativeMethods.SetLayeredWindowAttributes(hwndHost, 0, 255, LayeredWindowAttributeFlags.LWA_ALPHA))
 			{
-				throw new Exception("SetLayeredWindowAttributes()");
+				throw new Exception("SetLayeredWindowAttributes()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 
 			// Create a magnifier control that fills the client area.
@@ -76,30 +101,31 @@ namespace NegativeScreen
 
 			if (hwndMag == IntPtr.Zero)
 			{
-				throw new Exception("CreateWindowEx()");
+				throw new Exception("CreateWindowEx()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 
 			bool preventFading = true;
 			if (NativeMethods.DwmSetWindowAttribute(this.Handle, DWMWINDOWATTRIBUTE.DWMWA_EXCLUDED_FROM_PEEK, ref preventFading, sizeof(int)) != 0)
 			{
-				throw new Exception("DwmSetWindowAttribute(DWMWA_EXCLUDED_FROM_PEEK)");
+				throw new Exception("DwmSetWindowAttribute(DWMWA_EXCLUDED_FROM_PEEK)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 
 			DWMFLIP3DWINDOWPOLICY threeDPolicy = DWMFLIP3DWINDOWPOLICY.DWMFLIP3D_EXCLUDEABOVE;
 			if (NativeMethods.DwmSetWindowAttribute(this.Handle, DWMWINDOWATTRIBUTE.DWMWA_FLIP3D_POLICY, ref threeDPolicy, sizeof(int)) != 0)
 			{
-				throw new Exception("DwmSetWindowAttribute(DWMWA_FLIP3D_POLICY)");
+				throw new Exception("DwmSetWindowAttribute(DWMWA_FLIP3D_POLICY)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 
 			bool disallowPeek = true;
 			if (NativeMethods.DwmSetWindowAttribute(this.Handle, DWMWINDOWATTRIBUTE.DWMWA_DISALLOW_PEEK, ref disallowPeek, sizeof(int)) != 0)
 			{
-				throw new Exception("DwmSetWindowAttribute(DWMWA_DISALLOW_PEEK)");
+				throw new Exception("DwmSetWindowAttribute(DWMWA_DISALLOW_PEEK)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 
 			this.Show();
 
-			while (true)
+			bool noError = true;
+			while (noError)
 			{
 				try
 				{
@@ -107,27 +133,55 @@ namespace NegativeScreen
 					if (!NativeMethods.SetWindowPos(this.Handle, NativeMethods.HWND_TOPMOST, 0, 0, 0, 0,
 				   (int)SetWindowPosFlags.SWP_NOACTIVATE | (int)SetWindowPosFlags.SWP_NOMOVE | (int)SetWindowPosFlags.SWP_NOSIZE))
 					{
-						throw new Exception("SetWindowPos()");
+						throw new Exception("SetWindowPos()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 					}
+					// Force redraw.
+					if (!NativeMethods.InvalidateRect(hwndMag, IntPtr.Zero, true))
+					{
+						throw new Exception("InvalidateRect()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+					}
+					//Process Window messages
+					Application.DoEvents();
 				}
 				catch (ObjectDisposedException)
 				{
 					//application is exiting
+					noError = false;
+					break;
 				}
 				catch (Exception)
 				{
 					throw;
 				}
-				// Force redraw.
-				NativeMethods.InvalidateRect(hwndMag, IntPtr.Zero, true);
-				//Process Window messages
-				Application.DoEvents();
-				if (!DONTSTOPMENAAAO)
+
+				if (this.refreshInterval > 0)
 				{
-					System.Threading.Thread.Sleep(refreshInterval);
+					System.Threading.Thread.Sleep(this.refreshInterval);
+				}
+
+				//pause
+				while (!mainLoopRunning)
+				{
+					this.Visible = false;
+					System.Threading.Thread.Sleep(100);
+					Application.DoEvents();
+					if (mainLoopRunning)
+					{
+						this.Visible = true;
+					}
 				}
 			}
 
+		}
+
+		private void UnregisterHotKeys()
+		{
+			NativeMethods.UnregisterHotKey(this.Handle, HALT_HOTKEY_ID);
+			NativeMethods.UnregisterHotKey(this.Handle, TOGGLE_HOTKEY_ID);
+			NativeMethods.UnregisterHotKey(this.Handle, RESET_TIMER_HOTKEY_ID);
+			NativeMethods.UnregisterHotKey(this.Handle, INCREASE_TIMER_HOTKEY_ID);
+			NativeMethods.UnregisterHotKey(this.Handle, DECREASE_TIMER_HOTKEY_ID);
+			NativeMethods.UnregisterHotKey(this.Handle, HELP_HOTKEY_ID);
 		}
 
 		protected override void WndProc(ref Message m)
@@ -136,10 +190,34 @@ namespace NegativeScreen
 			switch (m.Msg)
 			{
 				case (int)WindowMessage.WM_HOTKEY:
-					if ((int)m.WParam == HOTKEY_ID)
+					switch ((int)m.WParam)
 					{
-						NativeMethods.UnregisterHotKey(this.Handle, HOTKEY_ID);
-						Application.Exit();
+						case HALT_HOTKEY_ID:
+							UnregisterHotKeys();
+							NativeMethods.MagUninitialize();
+							Application.Exit();
+							break;
+						case TOGGLE_HOTKEY_ID:
+							this.mainLoopRunning = !mainLoopRunning;
+							break;
+						case RESET_TIMER_HOTKEY_ID:
+							this.refreshInterval = 0;
+							break;
+						case INCREASE_TIMER_HOTKEY_ID:
+							this.refreshInterval += DEFAULT_INCREASE_STEP;
+							break;
+						case DECREASE_TIMER_HOTKEY_ID:
+							this.refreshInterval -= DEFAULT_INCREASE_STEP;
+							if (this.refreshInterval < 0)
+							{
+								this.refreshInterval = 0;
+							}
+							break;
+						case HELP_HOTKEY_ID:
+
+							break;
+						default:
+							break;
 					}
 					break;
 			}
@@ -148,7 +226,7 @@ namespace NegativeScreen
 
 		protected override void Dispose(bool disposing)
 		{
-			NativeMethods.UnregisterHotKey(this.Handle, HOTKEY_ID);
+			UnregisterHotKeys();
 			NativeMethods.MagUninitialize();
 			base.Dispose(disposing);
 		}
