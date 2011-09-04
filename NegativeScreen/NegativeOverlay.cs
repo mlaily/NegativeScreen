@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Karna.Magnification;
 using System.Windows.Forms;
 
 
-namespace ConsoleApplication4
+namespace NegativeScreen
 {
-	class Negate : Form
+	class NegativeOverlay : Form
 	{
 		private IntPtr hwndMag;
 		private RECT magWindowRect = new RECT();
@@ -20,7 +19,7 @@ namespace ConsoleApplication4
 		private bool DONTSTOPMENAAAO = true;
 		private int refreshInterval = 0;
 
-		public Negate(int refreshInterval = 0)
+		public NegativeOverlay(int refreshInterval = 0)
 			: base()
 		{
 

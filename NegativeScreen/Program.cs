@@ -9,6 +9,7 @@ namespace NegativeScreen
 	{
 		static void Main(string[] args)
 		{
+			NegativeOverlay overlay = new NegativeOverlay();
 		}
 	}
 }

@@ -4,7 +4,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
 
-namespace Karna.Magnification
+namespace NegativeScreen
 {
 	// Magnifier Window Styles
 	internal enum MagnifierStyle : int
