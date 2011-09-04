@@ -35,6 +35,7 @@ namespace NegativeScreen
 			this.TopMost = true;
 			this.FormBorderStyle = FormBorderStyle.None;
 			this.WindowState = FormWindowState.Maximized;
+			this.ShowInTaskbar = false;
 
 			//
 			if (!NativeMethods.RegisterHotKey(this.Handle, HALT_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.H))
