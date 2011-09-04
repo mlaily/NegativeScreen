@@ -17,7 +17,6 @@ namespace NegativeScreen
 		private const int RESET_TIMER_HOTKEY_ID = 44;
 		private const int INCREASE_TIMER_HOTKEY_ID = 45;
 		private const int DECREASE_TIMER_HOTKEY_ID = 46;
-		private const int HELP_HOTKEY_ID = 47;
 
 		private const int DEFAULT_INCREASE_STEP = 10;
 
@@ -57,10 +56,6 @@ namespace NegativeScreen
 			if (!NativeMethods.RegisterHotKey(this.Handle, DECREASE_TIMER_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.Subtract))
 			{
 				throw new Exception("RegisterHotKey(win+alt+Substract)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-			}
-			if (!NativeMethods.RegisterHotKey(this.Handle, HELP_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F1))
-			{
-				throw new Exception("RegisterHotKey(win+alt+F1)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 
 			if (!NativeMethods.MagInitialize())
@@ -181,7 +176,6 @@ namespace NegativeScreen
 			NativeMethods.UnregisterHotKey(this.Handle, RESET_TIMER_HOTKEY_ID);
 			NativeMethods.UnregisterHotKey(this.Handle, INCREASE_TIMER_HOTKEY_ID);
 			NativeMethods.UnregisterHotKey(this.Handle, DECREASE_TIMER_HOTKEY_ID);
-			NativeMethods.UnregisterHotKey(this.Handle, HELP_HOTKEY_ID);
 		}
 
 		protected override void WndProc(ref Message m)
@@ -212,9 +206,6 @@ namespace NegativeScreen
 							{
 								this.refreshInterval = 0;
 							}
-							break;
-						case HELP_HOTKEY_ID:
-
 							break;
 						default:
 							break;
