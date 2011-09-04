@@ -7,6 +7,9 @@ using System.Windows.Forms;
 namespace NegativeScreen
 {
 
+	/// <summary>
+	/// based on http://delphi32.blogspot.com/2010/09/windows-magnification-api-net.html
+	/// </summary>
 	internal static class NativeMethods
 	{
 
@@ -115,12 +118,6 @@ namespace NegativeScreen
 		public static extern bool InvalidateRect(IntPtr hWnd, IntPtr rect, [MarshalAs(UnmanagedType.Bool)] bool erase);
 
 		/// <summary>
-		/// Posted when the user presses a hot key registered by the RegisterHotKey function.
-		/// The message is placed at the top of the message queue associated with the thread that registered the hot key. 
-		/// </summary>
-		public const int WM_HOTKEY = 0x0312;
-
-		/// <summary>
 		/// </summary>
 		/// <param name="hWnd">handle to window</param>
 		/// <param name="id">hot key identifier</param>
@@ -173,26 +170,11 @@ namespace NegativeScreen
 
 		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static extern bool MagSetWindowSource(IntPtr hwnd, RECT rect);
-
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		public static extern bool MagGetWindowSource(IntPtr hwnd, ref RECT pRect);
-
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
-		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool MagSetWindowTransform(IntPtr hwnd, ref Transformation pTransform);
 
 		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool MagGetWindowTransform(IntPtr hwnd, ref Transformation pTransform);
-
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		public static extern bool MagSetWindowFilterList(IntPtr hwnd, int dwFilterMode, int count, IntPtr pHWND);
-
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
-		public static extern int MagGetWindowFilterList(IntPtr hwnd, IntPtr pdwFilterMode, int count, IntPtr pHWND);
 
 		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
 		[return: MarshalAs(UnmanagedType.Bool)]

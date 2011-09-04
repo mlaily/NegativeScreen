@@ -10,7 +10,6 @@ namespace NegativeScreen
 	class NegativeOverlay : Form
 	{
 		private IntPtr hwndMag;
-		private RECT magWindowRect = new RECT();
 		private const int HOTKEY_ID = 57768;//random id
 
 		/// <summary>
@@ -81,15 +80,6 @@ namespace NegativeScreen
 			//    hwndHost, NULL, hInstance, NULL);
 
 			// Create a magnifier control that fills the client area.
-
-			//if (!NativeMethods.GetClientRect(this.Handle, ref magWindowRect))
-			//{
-			//    throw new Exception("GetClientRect()");
-			//}
-			magWindowRect.left = 0;
-			magWindowRect.top = 0;
-			magWindowRect.right = Screen.GetBounds(this).Right;
-			magWindowRect.bottom = Screen.GetBounds(this).Bottom;
 			hwndMag = NativeMethods.CreateWindowEx(0,
 				NativeMethods.WC_MAGNIFIER,
 				"MagnifierWindow",
@@ -97,7 +87,7 @@ namespace NegativeScreen
 				/*(int)MagnifierStyle.MS_SHOWMAGNIFIEDCURSOR |*/
 				(int)WindowStyles.WS_VISIBLE |
 			(int)MagnifierStyle.MS_INVERTCOLORS,
-				magWindowRect.left, magWindowRect.top, magWindowRect.right, magWindowRect.bottom,
+				0, 0, Screen.GetBounds(this).Right, Screen.GetBounds(this).Bottom,
 				hwndHost, IntPtr.Zero, hInst, IntPtr.Zero);
 
 			if (hwndMag == IntPtr.Zero)
@@ -174,7 +164,7 @@ namespace NegativeScreen
 			// Listen for operating system messages.
 			switch (m.Msg)
 			{
-				case NativeMethods.WM_HOTKEY:
+				case (int)WindowMessage.WM_HOTKEY:
 					if ((int)m.WParam == HOTKEY_ID)
 					{
 						NativeMethods.UnregisterHotKey(this.Handle, HOTKEY_ID);
