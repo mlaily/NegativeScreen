@@ -69,17 +69,16 @@ namespace NegativeScreen
 			{
 				throw new Exception("GetModuleHandle()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
-			IntPtr hwndHost = this.Handle;
 
 			//set WS_EX_LAYERED a layered window (required)
 			//and WS_EX_TRANSPARENT (mouse and keyboard events pass through the window)
-			if (NativeMethods.SetWindowLong(hwndHost, NativeMethods.GWL_EXSTYLE, (int)ExtendedWindowStyles.WS_EX_LAYERED | (int)ExtendedWindowStyles.WS_EX_TRANSPARENT) == 0)
+			if (NativeMethods.SetWindowLong(this.Handle, NativeMethods.GWL_EXSTYLE, (int)ExtendedWindowStyles.WS_EX_LAYERED | (int)ExtendedWindowStyles.WS_EX_TRANSPARENT) == 0)
 			{
 				throw new Exception("SetWindowLong()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 
 			// Make the window opaque.
-			if (!NativeMethods.SetLayeredWindowAttributes(hwndHost, 0, 255, LayeredWindowAttributeFlags.LWA_ALPHA))
+			if (!NativeMethods.SetLayeredWindowAttributes(this.Handle, 0, 255, LayeredWindowAttributeFlags.LWA_ALPHA))
 			{
 				throw new Exception("SetLayeredWindowAttributes()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
@@ -93,7 +92,7 @@ namespace NegativeScreen
 				(int)WindowStyles.WS_VISIBLE |
 			(int)MagnifierStyle.MS_INVERTCOLORS,
 				0, 0, Screen.GetBounds(this).Right, Screen.GetBounds(this).Bottom,
-				hwndHost, IntPtr.Zero, hInst, IntPtr.Zero);
+				this.Handle, IntPtr.Zero, hInst, IntPtr.Zero);
 
 			if (hwndMag == IntPtr.Zero)
 			{
