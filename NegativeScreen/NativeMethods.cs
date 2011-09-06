@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace NegativeScreen
 {
@@ -145,6 +146,17 @@ namespace NegativeScreen
 		/// <returns></returns>
 		[DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
 		public static extern IntPtr GetModuleHandle([MarshalAs(UnmanagedType.LPWStr)] string modName);
+
+		[DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool IsWow64Process(IntPtr hProcess, out bool lpSystemInfo);
+
+		public static bool IsX86InWow64Mode()
+		{
+			bool retVal;
+			IsWow64Process(Process.GetCurrentProcess().Handle, out retVal);
+			return retVal;
+		}
 
 		#endregion
 
