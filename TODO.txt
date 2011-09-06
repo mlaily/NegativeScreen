@@ -1,0 +1,3 @@
+To Do in next releases:
+-let the user configure the options in a config file
+	(shortcuts, ...)
