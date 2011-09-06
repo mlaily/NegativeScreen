@@ -10,6 +10,7 @@ namespace NegativeScreen
 			//check whenever the current process is running under WoW64 mode
 			if (NativeMethods.IsX86InWow64Mode())
 			{
+				//see http://social.msdn.microsoft.com/Forums/en-US/windowsaccessibilityandautomation/thread/6cc761ea-8a54-4403-9cca-2fa8680f4409/
 				System.Windows.Forms.MessageBox.Show(
 @"You are trying to run this program on a 64 bits processor whereas it was compiled for a 32 bits processor.
 To avoid known bugs relative to the used APIs, please instead run the 64 bits compiled version.", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation, System.Windows.Forms.MessageBoxDefaultButton.Button1);
