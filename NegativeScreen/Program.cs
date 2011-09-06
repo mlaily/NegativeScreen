@@ -7,7 +7,7 @@ namespace NegativeScreen
 	{
 		static void Main(string[] args)
 		{
-			//check whenever the current process is running under WoW64 mode
+			//check whether the current process is running under WoW64 mode
 			if (NativeMethods.IsX86InWow64Mode())
 			{
 				//see http://social.msdn.microsoft.com/Forums/en-US/windowsaccessibilityandautomation/thread/6cc761ea-8a54-4403-9cca-2fa8680f4409/
@@ -16,7 +16,7 @@ namespace NegativeScreen
 To avoid known bugs relative to the used APIs, please instead run the 64 bits compiled version.", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation, System.Windows.Forms.MessageBoxDefaultButton.Button1);
 				return;
 			}
-			//check whenever the current application is already running
+			//check whether the current application is already running
 			if (IsAnotherInstanceAlreadyRunning())
 			{
 				System.Windows.Forms.MessageBox.Show("The application is already running!", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information, System.Windows.Forms.MessageBoxDefaultButton.Button1);
