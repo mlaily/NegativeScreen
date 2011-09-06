@@ -10,7 +10,7 @@ namespace NegativeScreen
 			if (IsAnotherInstanceAlreadyRunning())
 			{
 				//show message and exit
-				System.Windows.Forms.MessageBox.Show("The application is already running !", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation, System.Windows.Forms.MessageBoxDefaultButton.Button1);
+				System.Windows.Forms.MessageBox.Show("The application is already running!", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation, System.Windows.Forms.MessageBoxDefaultButton.Button1);
 				return;
 			}
 
