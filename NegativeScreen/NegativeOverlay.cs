@@ -18,15 +18,17 @@ namespace NegativeScreen
 		private const int DECREASE_TIMER_HOTKEY_ID = 46;
 
 		private const int DEFAULT_INCREASE_STEP = 10;
+		private const int DEFAULT_SLEEP_TIME = DEFAULT_INCREASE_STEP;
+		private const int PAUSE_SLEEP_TIME = 100;
 
 		/// <summary>
-		/// allow to control whether the main loop is running or not
+		/// allow to control whether the main loop is running or not. (pause inversion)
 		/// </summary>
 		private bool mainLoopRunning = true;
 
-		private int refreshInterval = 0;
+		private int refreshInterval = DEFAULT_SLEEP_TIME;
 
-		public NegativeOverlay(int refreshIntervalValue = 0)
+		public NegativeOverlay(int refreshIntervalValue = DEFAULT_SLEEP_TIME)
 			: base()
 		{
 			this.refreshInterval = refreshIntervalValue;
@@ -157,7 +159,7 @@ namespace NegativeScreen
 				while (!mainLoopRunning)
 				{
 					this.Visible = false;
-					System.Threading.Thread.Sleep(100);
+					System.Threading.Thread.Sleep(PAUSE_SLEEP_TIME);
 					Application.DoEvents();
 					if (mainLoopRunning)
 					{
@@ -194,7 +196,7 @@ namespace NegativeScreen
 							this.mainLoopRunning = !mainLoopRunning;
 							break;
 						case RESET_TIMER_HOTKEY_ID:
-							this.refreshInterval = 0;
+							this.refreshInterval = DEFAULT_SLEEP_TIME;
 							break;
 						case INCREASE_TIMER_HOTKEY_ID:
 							this.refreshInterval += DEFAULT_INCREASE_STEP;
