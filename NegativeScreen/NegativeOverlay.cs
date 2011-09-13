@@ -234,6 +234,8 @@ namespace NegativeScreen
 					switch ((int)m.WParam)
 					{
 						case HALT_HOTKEY_ID:
+							//otherwise, if paused, a wild deadock appears! (and the application never stops)
+							mainLoopRunning = true;
 							UnregisterHotKeys();
 							NativeMethods.MagUninitialize();
 							Application.Exit();
