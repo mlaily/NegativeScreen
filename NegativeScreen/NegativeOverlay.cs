@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Drawing;
 
 
 namespace NegativeScreen
@@ -51,12 +52,18 @@ namespace NegativeScreen
 		{
 			this.refreshInterval = refreshIntervalValue;
 
+			Rectangle completeScreenRect = GetCompleteVirtualScreenRect();
+
 			this.TopMost = true;
 			this.FormBorderStyle = FormBorderStyle.None;
-			this.WindowState = FormWindowState.Maximized;
+			this.WindowState = FormWindowState.Normal;
+			this.Location = completeScreenRect.Location;
+			this.Size = completeScreenRect.Size;
 			this.ShowInTaskbar = false;
 
-			//
+			//this event is the only one I found working to detect changes in multi-screen configurations
+			this.Paint += new PaintEventHandler(NegativeOverlay_Paint);
+
 			if (!NativeMethods.RegisterHotKey(this.Handle, HALT_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.H))
 			{
 				throw new Exception("RegisterHotKey(win+alt+H)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
@@ -109,8 +116,8 @@ namespace NegativeScreen
 				(int)WindowStyles.WS_CHILD |
 				/*(int)MagnifierStyle.MS_SHOWMAGNIFIEDCURSOR |*/
 				(int)WindowStyles.WS_VISIBLE |
-			(int)MagnifierStyle.MS_INVERTCOLORS,
-				0, 0, Screen.GetBounds(this).Right, Screen.GetBounds(this).Bottom,
+				(int)MagnifierStyle.MS_INVERTCOLORS,
+				0, 0, completeScreenRect.Right, completeScreenRect.Bottom,
 				this.Handle, IntPtr.Zero, hInst, IntPtr.Zero);
 
 			if (hwndMag == IntPtr.Zero)
@@ -186,6 +193,27 @@ namespace NegativeScreen
 				}
 			}
 
+		}
+
+		void NegativeOverlay_Paint(object sender, PaintEventArgs e)
+		{
+			Rectangle completeScreenRect = GetCompleteVirtualScreenRect();
+			//reset host window size
+			this.Location = completeScreenRect.Location;
+			this.Size = completeScreenRect.Size;
+			//reset magnifier window size
+			if (!NativeMethods.SetWindowPos(hwndMag, IntPtr.Zero, 0, 0, completeScreenRect.Right, completeScreenRect.Bottom, 0))
+			{
+				throw new Exception("SetWindowPos()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+		}
+
+		private static Rectangle GetCompleteVirtualScreenRect()
+		{
+			Rectangle rect = new Rectangle(int.MaxValue, int.MaxValue, int.MinValue, int.MinValue);
+			foreach (System.Windows.Forms.Screen screen in System.Windows.Forms.Screen.AllScreens)
+			{ rect = Rectangle.Union(rect, screen.Bounds); }
+			return rect;
 		}
 
 		private void UnregisterHotKeys()
