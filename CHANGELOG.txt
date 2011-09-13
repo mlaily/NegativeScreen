@@ -1,0 +1,9 @@
+
+Version 1.1, 2011-09-13
+------------------------
+- [fixed] multi-screen support
+- [fixed] when halted while paused, the application never stopped
+
+Version 1.0, 2011-09-06
+------------------------
+- Initial release
