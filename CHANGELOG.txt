@@ -1,4 +1,8 @@
 
+Version 1.2, 2011-09-18
+------------------------
+- [fixed] multi-screen support (again) : bug with main screen on the right
+
 Version 1.1, 2011-09-13
 ------------------------
 - [fixed] multi-screen support

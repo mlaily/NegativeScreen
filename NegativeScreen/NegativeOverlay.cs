@@ -117,7 +117,7 @@ namespace NegativeScreen
 				/*(int)MagnifierStyle.MS_SHOWMAGNIFIEDCURSOR |*/
 				(int)WindowStyles.WS_VISIBLE |
 				(int)MagnifierStyle.MS_INVERTCOLORS,
-				0, 0, completeScreenRect.Right, completeScreenRect.Bottom,
+				completeScreenRect.Location.X, completeScreenRect.Location.Y, completeScreenRect.Right, completeScreenRect.Bottom,
 				this.Handle, IntPtr.Zero, hInst, IntPtr.Zero);
 
 			if (hwndMag == IntPtr.Zero)
@@ -202,7 +202,7 @@ namespace NegativeScreen
 			this.Location = completeScreenRect.Location;
 			this.Size = completeScreenRect.Size;
 			//reset magnifier window size
-			if (!NativeMethods.SetWindowPos(hwndMag, IntPtr.Zero, 0, 0, completeScreenRect.Right, completeScreenRect.Bottom, 0))
+			if (!NativeMethods.SetWindowPos(hwndMag, IntPtr.Zero, completeScreenRect.Location.X, completeScreenRect.Location.Y, completeScreenRect.Right, completeScreenRect.Bottom, 0))
 			{
 				throw new Exception("SetWindowPos()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
