@@ -41,11 +41,15 @@ namespace NegativeScreen
 		private const int PAUSE_SLEEP_TIME = 100;
 
 		/// <summary>
-		/// control whether the main loop is running or not. (pause inversion)
+		/// control whether the main loop is paused or not.
 		/// </summary>
-		private bool mainLoopRunning = true;
+		private bool mainLoopPaused = false;
 
 		private int refreshInterval = DEFAULT_SLEEP_TIME;
+
+		private List<NegativeOverlay> overlays = new List<NegativeOverlay>();
+
+		private bool resolutionHasChanged = false;
 
 		public OverlayManager()
 		{
@@ -75,7 +79,25 @@ namespace NegativeScreen
 				throw new Exception("MagInitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 
-			List<NegativeOverlay> overlays = new List<NegativeOverlay>();
+			Microsoft.Win32.SystemEvents.DisplaySettingsChanged += new EventHandler(SystemEvents_DisplaySettingsChanged);
+
+			Initialization();
+		}
+
+		void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
+		{
+			Console.WriteLine(DateTime.Now.ToString());
+			//we can't start the loop here, in the event handler, because it seems to block the next events
+			resolutionHasChanged = true;
+		}
+
+		private void Initialization()
+		{
+			foreach (var item in overlays)
+			{
+				item.Dispose();
+			}
+			overlays = new List<NegativeOverlay>();
 			foreach (var item in Screen.AllScreens)
 			{
 				overlays.Add(new NegativeOverlay(item));
@@ -88,6 +110,15 @@ namespace NegativeScreen
 			bool noError = true;
 			while (noError)
 			{
+
+				if (resolutionHasChanged)
+				{
+					resolutionHasChanged = false;
+					//if the screen configuration change, we try to reinitialize all the overlays.
+					//we break the loop. the initialization method is called...
+					break;
+				}
+
 				for (int i = 0; i < overlays.Count; i++)
 				{
 					noError = RefreshOverlay(overlays[i]);
@@ -107,7 +138,7 @@ namespace NegativeScreen
 				}
 
 				//pause
-				while (!mainLoopRunning)
+				while (mainLoopPaused)
 				{
 					for (int i = 0; i < overlays.Count; i++)
 					{
@@ -115,7 +146,7 @@ namespace NegativeScreen
 					}
 					System.Threading.Thread.Sleep(PAUSE_SLEEP_TIME);
 					Application.DoEvents();
-					if (mainLoopRunning)
+					if (!mainLoopPaused)
 					{
 						for (int i = 0; i < overlays.Count; i++)
 						{
@@ -123,6 +154,11 @@ namespace NegativeScreen
 						}
 					}
 				}
+			}
+			if (noError)
+			{
+				//the loop broke because of a screen resolution change
+				Initialization();
 			}
 		}
 
@@ -177,12 +213,12 @@ namespace NegativeScreen
 					{
 						case HALT_HOTKEY_ID:
 							//otherwise, if paused, the application never stops
-							mainLoopRunning = true;
+							mainLoopPaused = false;
 							this.Dispose();
 							Application.Exit();
 							break;
 						case TOGGLE_HOTKEY_ID:
-							this.mainLoopRunning = !mainLoopRunning;
+							this.mainLoopPaused = !mainLoopPaused;
 							break;
 						case RESET_TIMER_HOTKEY_ID:
 							this.refreshInterval = DEFAULT_SLEEP_TIME;
