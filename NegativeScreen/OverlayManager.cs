@@ -158,11 +158,6 @@ namespace NegativeScreen
 			}
 		}
 
-		//TODO
-		public void IncreaseRefreshInterval() { }
-		public void DecreaseRefreshInterval() { }
-		public void ResetRefreshInterval() { }
-
 		private void UnregisterHotKeys()
 		{
 			NativeMethods.UnregisterHotKey(this.Handle, HALT_HOTKEY_ID);
