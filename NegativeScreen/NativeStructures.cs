@@ -93,6 +93,78 @@ namespace NegativeScreen
 	}
 
 	/// <summary>
+	/// A Wrapper for a RECT struct
+	/// </summary>
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "RECT"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
+	[StructLayout(LayoutKind.Sequential)]
+	internal struct RECT
+	{
+		/// <summary>
+		/// Position of left edge
+		/// </summary>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
+		public int left;
+
+		/// <summary>
+		/// Position of top edge
+		/// </summary>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
+		public int top;
+
+		/// <summary>
+		/// Position of right edge
+		/// </summary>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
+		public int right;
+
+		/// <summary>
+		/// Position of bottom edge
+		/// </summary>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
+		public int bottom;
+
+		public RECT(int left, int top, int right, int bottom)
+		{
+			this.left = left;
+			this.right = right;
+			this.top = top;
+			this.bottom = bottom;
+		}
+
+		public RECT(int width, int height)
+		{
+			this.left = 0;
+			this.top = 0;
+			this.right = width;
+			this.bottom = height;
+		}
+
+		public override bool Equals(object obj)
+		{
+			RECT r = (RECT)obj;
+			return (r.left == left && r.right == right && r.top == top && r.bottom == bottom);
+		}
+
+		public override int GetHashCode()
+		{
+			// Attempting a minor degree of "hash-ness" here
+			return ((left ^ top) ^ right) ^ bottom;
+		}
+
+		public static bool operator ==(RECT a, RECT b)
+		{
+			return (a.left == b.left && a.right == b.right && a.top == b.top && a.bottom == b.bottom);
+		}
+
+		public static bool operator !=(RECT a, RECT b)
+		{
+			return !(a == b);
+		}
+
+	}
+
+
+	/// <summary>
 	/// Specifies the style of the window being created
 	/// </summary>
 	[FlagsAttribute]

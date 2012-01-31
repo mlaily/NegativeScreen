@@ -76,7 +76,10 @@ namespace NegativeScreen
 			}
 
 			List<NegativeOverlay> overlays = new List<NegativeOverlay>();
-			overlays.Add(new NegativeOverlay(Screen.PrimaryScreen));
+			foreach (var item in Screen.AllScreens)
+			{
+				overlays.Add(new NegativeOverlay(item));
+			}
 			RefreshLoop(overlays);
 		}
 
@@ -180,8 +183,7 @@ namespace NegativeScreen
 						case HALT_HOTKEY_ID:
 							//otherwise, if paused, the application never stops
 							mainLoopRunning = true;
-							UnregisterHotKeys();
-							NativeMethods.MagUninitialize();
+							this.Dispose();
 							Application.Exit();
 							break;
 						case TOGGLE_HOTKEY_ID:

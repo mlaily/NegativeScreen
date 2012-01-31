@@ -197,6 +197,14 @@ namespace NegativeScreen
 
 		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
 		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool MagSetWindowSource(IntPtr hwnd, RECT rect);
+
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool MagGetWindowSource(IntPtr hwnd, ref RECT pRect);
+
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
+		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool MagSetWindowTransform(IntPtr hwnd, ref Transformation pTransform);
 
 		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]

@@ -73,12 +73,17 @@ namespace NegativeScreen
 				/*(int)MagnifierStyle.MS_SHOWMAGNIFIEDCURSOR |*/
 				(int)WindowStyles.WS_VISIBLE |
 				(int)MagnifierStyle.MS_INVERTCOLORS,
-				0, 0, screen.Bounds.Right, screen.Bounds.Bottom,
+				0, 0, screen.Bounds.Width, screen.Bounds.Height,
 				this.Handle, IntPtr.Zero, hInst, IntPtr.Zero);
-			//TODO? : this.MaximizedBounds
+
 			if (hwndMag == IntPtr.Zero)
 			{
 				throw new Exception("CreateWindowEx()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+
+			if (!NativeMethods.MagSetWindowSource(this.hwndMag, new RECT(screen.Bounds.X, screen.Bounds.Y, screen.Bounds.Right, screen.Bounds.Bottom)))
+			{
+				throw new Exception("MagSetWindowSource()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 
 			bool preventFading = true;
