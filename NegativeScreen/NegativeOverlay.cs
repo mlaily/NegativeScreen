@@ -52,17 +52,10 @@ namespace NegativeScreen
 		{
 			this.refreshInterval = refreshIntervalValue;
 
-			Rectangle completeScreenRect = GetCompleteVirtualScreenRect();
-
 			this.TopMost = true;
 			this.FormBorderStyle = FormBorderStyle.None;
-			this.WindowState = FormWindowState.Normal;
-			this.Location = completeScreenRect.Location;
-			this.Size = completeScreenRect.Size;
+			this.WindowState = FormWindowState.Maximized;
 			this.ShowInTaskbar = false;
-
-			//this event is the only one I found working to detect changes in multi-screen configurations
-			this.Paint += new PaintEventHandler(NegativeOverlay_Paint);
 
 			if (!NativeMethods.RegisterHotKey(this.Handle, HALT_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.H))
 			{
@@ -117,7 +110,7 @@ namespace NegativeScreen
 				/*(int)MagnifierStyle.MS_SHOWMAGNIFIEDCURSOR |*/
 				(int)WindowStyles.WS_VISIBLE |
 				(int)MagnifierStyle.MS_INVERTCOLORS,
-				completeScreenRect.Location.X, completeScreenRect.Location.Y, completeScreenRect.Right, completeScreenRect.Bottom,
+				0, 0, Screen.GetBounds(this).Right, Screen.GetBounds(this).Bottom,
 				this.Handle, IntPtr.Zero, hInst, IntPtr.Zero);
 
 			if (hwndMag == IntPtr.Zero)
@@ -148,33 +141,9 @@ namespace NegativeScreen
 			bool noError = true;
 			while (noError)
 			{
-				try
-				{
-					// Reclaim topmost status, to prevent unmagnified menus from remaining in view. 
-					if (!NativeMethods.SetWindowPos(this.Handle, NativeMethods.HWND_TOPMOST, 0, 0, 0, 0,
-				   (int)SetWindowPosFlags.SWP_NOACTIVATE | (int)SetWindowPosFlags.SWP_NOMOVE | (int)SetWindowPosFlags.SWP_NOSIZE))
-					{
-						throw new Exception("SetWindowPos()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-					}
-					// Force redraw.
-					if (!NativeMethods.InvalidateRect(hwndMag, IntPtr.Zero, true))
-					{
-						throw new Exception("InvalidateRect()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-					}
-					//Process Window messages
-					Application.DoEvents();
-				}
-				catch (ObjectDisposedException)
-				{
-					//application is exiting
-					noError = false;
-					break;
-				}
-				catch (Exception)
-				{
-					throw;
-				}
-
+				noError = RefreshOverlay();
+				//Process Window messages
+				Application.DoEvents();
 				if (this.refreshInterval > 0)
 				{
 					System.Threading.Thread.Sleep(this.refreshInterval);
@@ -195,16 +164,36 @@ namespace NegativeScreen
 
 		}
 
-		void NegativeOverlay_Paint(object sender, PaintEventArgs e)
+		/// <summary>
+		/// return true on success, false on failure.
+		/// </summary>
+		/// <returns></returns>
+		private bool RefreshOverlay()
 		{
-			Rectangle completeScreenRect = GetCompleteVirtualScreenRect();
-			//reset host window size
-			this.Location = completeScreenRect.Location;
-			this.Size = completeScreenRect.Size;
-			//reset magnifier window size
-			if (!NativeMethods.SetWindowPos(hwndMag, IntPtr.Zero, completeScreenRect.Location.X, completeScreenRect.Location.Y, completeScreenRect.Right, completeScreenRect.Bottom, 0))
+			try
 			{
-				throw new Exception("SetWindowPos()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+				// Reclaim topmost status. 
+				if (!NativeMethods.SetWindowPos(this.Handle, NativeMethods.HWND_TOPMOST, 0, 0, 0, 0,
+			   (int)SetWindowPosFlags.SWP_NOACTIVATE | (int)SetWindowPosFlags.SWP_NOMOVE | (int)SetWindowPosFlags.SWP_NOSIZE))
+				{
+					throw new Exception("SetWindowPos()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+				}
+				// Force redraw.
+				if (!NativeMethods.InvalidateRect(hwndMag, IntPtr.Zero, true))
+				{
+					throw new Exception("InvalidateRect()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+				}
+				return true;
+			}
+			catch (ObjectDisposedException)
+			{
+				//application is exiting
+				return false;
+				//break;
+			}
+			catch (Exception)
+			{
+				throw;
 			}
 		}
 
@@ -234,7 +223,7 @@ namespace NegativeScreen
 					switch ((int)m.WParam)
 					{
 						case HALT_HOTKEY_ID:
-							//otherwise, if paused, a wild deadock appears! (and the application never stops)
+							//otherwise, if paused, a wild deadlock appears! (and the application never stops)
 							mainLoopRunning = true;
 							UnregisterHotKeys();
 							NativeMethods.MagUninitialize();
