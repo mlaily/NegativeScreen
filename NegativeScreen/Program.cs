@@ -40,7 +40,7 @@ To avoid known bugs relative to the used APIs, please instead run the 64 bits co
 				System.Windows.Forms.MessageBox.Show("The application is already running!", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information, System.Windows.Forms.MessageBoxDefaultButton.Button1);
 				return;
 			}
-			NegativeOverlay overlay = new NegativeOverlay();
+			OverlayManager manager = new OverlayManager();
 		}
 
 		private static bool IsAnotherInstanceAlreadyRunning()
