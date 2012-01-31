@@ -41,7 +41,7 @@ namespace NegativeScreen
 		private const int PAUSE_SLEEP_TIME = 100;
 
 		/// <summary>
-		/// allow to control whether the main loop is running or not. (pause inversion)
+		/// control whether the main loop is running or not. (pause inversion)
 		/// </summary>
 		private bool mainLoopRunning = true;
 
@@ -77,19 +77,22 @@ namespace NegativeScreen
 
 			List<NegativeOverlay> overlays = new List<NegativeOverlay>();
 			overlays.Add(new NegativeOverlay(Screen.PrimaryScreen));
-			Loop(overlays);
+			RefreshLoop(overlays);
 		}
 
-		private void Loop(List<NegativeOverlay> overlays)
+		private void RefreshLoop(List<NegativeOverlay> overlays)
 		{
 			bool noError = true;
 			while (noError)
 			{
-				noError = RefreshOverlay(overlays[0]);
-				if (!noError)
+				for (int i = 0; i < overlays.Count; i++)
 				{
-					//application is exiting
-					break;
+					noError = RefreshOverlay(overlays[i]);
+					if (!noError)
+					{
+						//application is exiting
+						break;
+					}
 				}
 
 				//Process Window messages
@@ -103,12 +106,18 @@ namespace NegativeScreen
 				//pause
 				while (!mainLoopRunning)
 				{
-					this.Visible = false;
+					for (int i = 0; i < overlays.Count; i++)
+					{
+						overlays[i].Visible = false;
+					}
 					System.Threading.Thread.Sleep(PAUSE_SLEEP_TIME);
 					Application.DoEvents();
 					if (mainLoopRunning)
 					{
-						this.Visible = true;
+						for (int i = 0; i < overlays.Count; i++)
+						{
+							overlays[i].Visible = true;
+						}
 					}
 				}
 			}
@@ -147,9 +156,9 @@ namespace NegativeScreen
 		}
 
 		//TODO
-		public void IncreaseRefreshInterval(){}
-		public void DecreaseRefreshInterval(){}
-		public void ResetRefreshInterval(){}
+		public void IncreaseRefreshInterval() { }
+		public void DecreaseRefreshInterval() { }
+		public void ResetRefreshInterval() { }
 
 		private void UnregisterHotKeys()
 		{
@@ -169,7 +178,7 @@ namespace NegativeScreen
 					switch ((int)m.WParam)
 					{
 						case HALT_HOTKEY_ID:
-							//otherwise, if paused, a wild deadlock appears! (and the application never stops)
+							//otherwise, if paused, the application never stops
 							mainLoopRunning = true;
 							UnregisterHotKeys();
 							NativeMethods.MagUninitialize();
