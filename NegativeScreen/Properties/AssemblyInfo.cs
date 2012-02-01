@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NegativeScreen")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Arcane Sanctum .Net")]
+[assembly: AssemblyCompany("ArcaneSanctum.Net")]
 [assembly: AssemblyProduct("NegativeScreen")]
-[assembly: AssemblyCopyright("Copyright © Melvyn Laily 2011")]
+[assembly: AssemblyCopyright("Copyright © Melvyn Laily 2011-2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,4 +32,4 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.2.*")]
+[assembly: AssemblyVersion("1.3.*")]
