@@ -1,6 +1,6 @@
 Version 1.4, 2012-02-09
 ------------------------
-- Does not crash anymore on Windows Vista
+- [fixed] does not crash anymore on Windows Vista
 
 Version 1.3, 2012-02-01
 ------------------------
