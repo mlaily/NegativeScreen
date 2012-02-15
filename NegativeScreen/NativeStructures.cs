@@ -40,6 +40,7 @@ namespace NegativeScreen
 	[StructLayout(LayoutKind.Sequential)]
 	internal struct Transformation
 	{
+		//WARNING: to test and maybe rename in the same way ColorEffect was...
 		public float m00;
 		public float m10;
 		public float m20;
@@ -66,30 +67,98 @@ namespace NegativeScreen
 	internal struct ColorEffect
 	{
 		public float transform00;
-		public float transform10;
-		public float transform20;
-		public float transform30;
-		public float transform40;
 		public float transform01;
 		public float transform02;
 		public float transform03;
 		public float transform04;
+		public float transform10;
 		public float transform11;
 		public float transform12;
 		public float transform13;
 		public float transform14;
+		public float transform20;
 		public float transform21;
 		public float transform22;
 		public float transform23;
 		public float transform24;
+		public float transform30;
 		public float transform31;
 		public float transform32;
 		public float transform33;
 		public float transform34;
+		public float transform40;
 		public float transform41;
 		public float transform42;
 		public float transform43;
 		public float transform44;
+
+		/// <summary>
+		/// 5*5 matrix
+		/// </summary>
+		/// <param name="matrix"></param>
+		public void SetMatrix(float[,] matrix)
+		{
+			this.transform00 = matrix[0, 0];
+			this.transform10 = matrix[1, 0];
+			this.transform20 = matrix[2, 0];
+			this.transform30 = matrix[3, 0];
+			this.transform40 = matrix[4, 0];
+			this.transform01 = matrix[0, 1];
+			this.transform11 = matrix[1, 1];
+			this.transform21 = matrix[2, 1];
+			this.transform31 = matrix[3, 1];
+			this.transform41 = matrix[4, 1];
+			this.transform02 = matrix[0, 2];
+			this.transform12 = matrix[1, 2];
+			this.transform22 = matrix[2, 2];
+			this.transform32 = matrix[3, 2];
+			this.transform42 = matrix[4, 2];
+			this.transform03 = matrix[0, 3];
+			this.transform13 = matrix[1, 3];
+			this.transform23 = matrix[2, 3];
+			this.transform33 = matrix[3, 3];
+			this.transform43 = matrix[4, 3];
+			this.transform04 = matrix[0, 4];
+			this.transform14 = matrix[1, 4];
+			this.transform24 = matrix[2, 4];
+			this.transform34 = matrix[3, 4];
+			this.transform44 = matrix[4, 4];
+		}
+
+		/// <summary>
+		/// 5*5 matrix
+		/// </summary>
+		/// <param name="matrix"></param>
+		public float[,] GetMatrix()
+		{
+			float[,] matrix = new float[5, 5];
+			matrix[0, 0] = this.transform00;
+			matrix[1, 0] = this.transform10;
+			matrix[2, 0] = this.transform20;
+			matrix[3, 0] = this.transform30;
+			matrix[4, 0] = this.transform40;
+			matrix[0, 1] = this.transform01;
+			matrix[1, 1] = this.transform11;
+			matrix[2, 1] = this.transform21;
+			matrix[3, 1] = this.transform31;
+			matrix[4, 1] = this.transform41;
+			matrix[0, 2] = this.transform02;
+			matrix[1, 2] = this.transform12;
+			matrix[2, 2] = this.transform22;
+			matrix[3, 2] = this.transform32;
+			matrix[4, 2] = this.transform42;
+			matrix[0, 3] = this.transform03;
+			matrix[1, 3] = this.transform13;
+			matrix[2, 3] = this.transform23;
+			matrix[3, 3] = this.transform33;
+			matrix[4, 3] = this.transform43;
+			matrix[0, 4] = this.transform04;
+			matrix[1, 4] = this.transform14;
+			matrix[2, 4] = this.transform24;
+			matrix[3, 4] = this.transform34;
+			matrix[4, 4] = this.transform44;
+			return matrix;
+		}
 	}
 
 	/// <summary>
