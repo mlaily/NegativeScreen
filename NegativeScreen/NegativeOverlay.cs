@@ -71,8 +71,8 @@ namespace NegativeScreen
 				"MagnifierWindow",
 				(int)WindowStyles.WS_CHILD |
 				/*(int)MagnifierStyle.MS_SHOWMAGNIFIEDCURSOR |*/
-				(int)WindowStyles.WS_VISIBLE |
-				(int)MagnifierStyle.MS_INVERTCOLORS,
+				(int)WindowStyles.WS_VISIBLE /*|
+				(int)MagnifierStyle.MS_INVERTCOLORS*/,
 				0, 0, screen.Bounds.Width, screen.Bounds.Height,
 				this.Handle, IntPtr.Zero, hInst, IntPtr.Zero);
 
@@ -80,6 +80,31 @@ namespace NegativeScreen
 			{
 				throw new Exception("CreateWindowEx()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
+
+			ColorEffect a = new ColorEffect();
+			ColorEffect b = new ColorEffect();
+			a.SetMatrix(new float[,]{
+			//gray scale
+			{  0.3f,  0.3f,  0.3f,  0.0f,  0.0f },
+			{  0.6f,  0.6f,  0.6f,  0.0f,  0.0f },
+			{  0.1f,  0.1f,  0.1f,  0.0f,  0.0f },
+			{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
+			{  0.0f,  0.0f,  0.0f,  0.0f,  1.0f } 
+			//inversion
+			//{ -1.0f,  0.0f,  0.0f,  0.0f,  0.0f },
+			//{  0.0f, -1.0f,  0.0f,  0.0f,  0.0f },
+			//{  0.0f,  0.0f, -1.0f,  0.0f,  0.0f },
+			//{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
+			//{  1.0f,  1.0f,  1.0f,  0.0f,  1.0f }
+			//identity
+			//{  1.0f,  0.0f,  0.0f,  0.0f,  0.0f },
+			//{  0.0f,  1.0f,  0.0f,  0.0f,  0.0f },
+			//{  0.0f,  0.0f,  1.0f,  0.0f,  0.0f },
+			//{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
+			//{  0.0f,  0.0f,  0.0f,  0.0f,  1.0f }
+		});
+			var x = NativeMethods.MagSetColorEffect(hwndMag, ref a);
+			var y = NativeMethods.MagGetColorEffect(hwndMag, ref b);
 
 			if (!NativeMethods.MagSetWindowSource(this.hwndMag, new RECT(screen.Bounds.X, screen.Bounds.Y, screen.Bounds.Right, screen.Bounds.Bottom)))
 			{
