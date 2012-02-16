@@ -80,13 +80,12 @@ namespace NegativeScreen
 				throw new Exception("CreateWindowEx()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 
-			ColorEffect a = new ColorEffect();
-			ColorEffect b = new ColorEffect();
+			ColorEffect transformation = new ColorEffect();
 			//play with that
 			float x = 0.9f;//1.0f;
 			float y = 0.9f;//1.0f;
 			float z = 0.1f;//0.0f;
-			a.SetMatrix(new float[,]{
+			transformation.SetMatrix(new float[,]{
 
 			{  x-z, -x+z, -x+z,  0.0f, 0.0f },
 			{ -x+z,  x-z, -x+z,  0.0f, 0.0f },
@@ -149,13 +148,15 @@ namespace NegativeScreen
 			//{  0.6f,  0.6f,  0.6f,  0.0f,  0.0f },
 			//{  0.1f,  0.1f,  0.1f,  0.0f,  0.0f },
 			//{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
-			//{  0.0f,  0.0f,  0.0f,  0.0f,  1.0f } 
+			//{  0.0f,  0.0f,  0.0f,  0.0f,  1.0f }
+
 			//inversion
 			//{ -1.0f,  0.0f,  0.0f,  0.0f,  0.0f },
 			//{  0.0f, -1.0f,  0.0f,  0.0f,  0.0f },
 			//{  0.0f,  0.0f, -1.0f,  0.0f,  0.0f },
 			//{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
 			//{  1.0f,  1.0f,  1.0f,  0.0f,  1.0f }
+
 			//identity
 			//{  1.0f,  0.0f,  0.0f,  0.0f,  0.0f },
 			//{  0.0f,  1.0f,  0.0f,  0.0f,  0.0f },
@@ -163,8 +164,10 @@ namespace NegativeScreen
 			//{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
 			//{  0.0f,  0.0f,  0.0f,  0.0f,  1.0f }
 		});
-			var xx = NativeMethods.MagSetColorEffect(hwndMag, ref a);
-			var yy = NativeMethods.MagGetColorEffect(hwndMag, ref b);
+			if (!NativeMethods.MagSetColorEffect(hwndMag, ref transformation))
+			{
+				throw new Exception("MagSetColorEffect()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
 
 			if (!NativeMethods.MagSetWindowSource(this.hwndMag, new RECT(screen.Bounds.X, screen.Bounds.Y, screen.Bounds.Right, screen.Bounds.Bottom)))
 			{
