@@ -82,71 +82,67 @@ namespace NegativeScreen
 
 			ColorEffect a = new ColorEffect();
 			ColorEffect b = new ColorEffect();
-			float x = 0.8f;
-			float y = 0.8f;
-			float z = -0.1f;
+			//play with that
+			float x = 0.9f;//1.0f;
+			float y = 0.9f;//1.0f;
+			float z = 0.1f;//0.0f;
 			a.SetMatrix(new float[,]{
 
-			{  x-z,-x,-x, 0.0f, 0.0f },
-			{ -x,  x-z, -x, 0.0f, 0.0f },
-			{ -x,-x, x-z, 0.0f, 0.0f },
-			{  0.0f,  0.0f,  0.0f,  0.0f, 0.0f },
-			{  y,  y,  y,  0.0f, 1.0f }
+			{  x-z, -x+z, -x+z,  0.0f, 0.0f },
+			{ -x+z,  x-z, -x+z,  0.0f, 0.0f },
+			{ -x+z, -x+z,  x-z,  0.0f, 0.0f },
+			{ 0.0f, 0.0f, 0.0f,  0.0f, 0.0f },
+			{    y,    y,    y,  0.0f, 1.0f }
 
 			//saturation 0.8
 			//{  0.75f,-0.89f,-0.89f, 0.0f, 0.0f },
-			//{ -0.78f,  0.86f, -0.78f, 0.0f, 0.0f },
+			//{ -0.78f, 0.86f,-0.78f, 0.0f, 0.0f },
 			//{ -0.97f,-0.97f, 0.67f, 0.0f, 0.0f },
 			//{  0.0f,  0.0f,  0.0f,  1.0f, 0.0f },
 			//{  1.0f,  1.0f,  1.0f,  0.0f, 1.0f }
 
-		//a bit more readable (desaturated, colors not exact)
+			//a bit more readable (saturation ~0.65, primary colors a bit desaturated)
 			//{  0.50f,-0.78f,-0.78f, 0.0f, 0.0f },
 			//{ -0.56f,  0.72f, -0.56f, 0.0f, 0.0f },
 			//{ -0.94f,-0.94f, 0.34f, 0.0f, 0.0f },
 			//{  0.0f,  0.0f,  0.0f,  1.0f, 0.0f },
 			//{  1.0f,  1.0f,  1.0f,  0.0f, 1.0f }
 
-			//OWI
+			//Graal. most simple working method. good colors, but appear too saturated
 			//{  1f,-1f,-1f, 0.0f, 0.0f },
 			//{ -1f,  1f, -1f, 0.0f, 0.0f },
 			//{ -1f,-1f, 1f, 0.0f, 0.0f },
 			//{  0.0f,  0.0f,  0.0f,  1.0f, 0.0f },
 			//{  1.0f,  1.0f,  1.0f,  0.0f, 1.0f }
 
-			//approximately what we want (neutral whites)
-			//{  0.386976182f,  -0.619064033f,  -0.619064152f,  0.0f,  0.0f },
-			//{  -1.21055317f,  -0.2224809f,  -1.22248077f,  0.0f,  0.0f },
-			//{  -0.162890315f,  -0.164495364f,  0.8355047f,  0.0f,  0.0f },
-			//{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
-			//{  1.0f,  1.0f,  1.0f,  0.0f,  1.0f }
-			//use this one. clearer:
-			//{  0.39f,-0.62f,-0.62f, 0.0f, 0.0f },
-			//{ -1.21f,-0.22f,-1.22f, 0.0f, 0.0f },
-			//{ -0.16f,-0.16f, 0.84f, 0.0f, 0.0f },
-			//{  0.0f,  0.0f,  0.0f,  1.0f, 0.0f },
-			//{  1.0f,  1.0f,  1.0f,  0.0f, 1.0f }
-
 			//approximately what we want (too saturated, yellows and blues not so good)
+			//may be more readable than the graal
 			//{  1.089508f,  -0.9326327f,  -0.932633042f,  0.0f,  0.0f },
 			//{  -1.81771779f,  0.1683074f,  -1.84169245f,  0.0f,  0.0f },
 			//{  -0.244589478f,  -0.247815639f,  1.7621845f,  0.0f,  0.0f },
 			//{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
 			//{  1.0f,  1.0f,  1.0f,  0.0f,  1.0f }
 			
-			//approximately what we want (red ambience)
-			//{ 0.410639971f,  -0.629626155f,  -0.6296263f,  0.0f,  0.0f },
-			//{  -1.1638236f, -0.2433382f,  -1.24333811f,  0.0f,  0.0f },
-			//{ -0.1566024f,  -0.167301863f, 0.832698166f,  0.0f,  0.0f },
-			//{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
-			//{  1.0f,  1.0f,  1.0f,  0.0f,  1.0f }
-
 			//approximately what we want (blue ambience)
 			//{  0.32f, -0.59f, -0.59f,  0.0f,  0.0f },
 			//{  -1.34f,  -0.16f, -1.16f,  0.0f,  0.0f },
 			//{  -0.18f,  -0.16f,  0.84f,  1.0f,  0.0f },
 			//{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
 			//{  1.0f,  1.0f,  1.0f,  0.0f,  1.0f }
+			//or
+			//{  0.39f,-0.62f,-0.62f, 0.0f, 0.0f },
+			//{ -1.21f,-0.22f,-1.22f, 0.0f, 0.0f },
+			//{ -0.16f,-0.16f, 0.84f, 0.0f, 0.0f },
+			//{  0.0f,  0.0f,  0.0f,  1.0f, 0.0f },
+			//{  0.9f,  1.0f,  1.0f,  0.0f, 1.0f }//notice 0.9 for red translation
+
+			//approximately what we want. used QColorMatrix http://www.codeguru.com/Cpp/G-M/gdi/gdi/article.php/c3667
+			//colors appear desaturated, no yellow, no cyan
+			//{  0.39f,-0.62f,-0.62f, 0.0f, 0.0f },
+			//{ -1.21f,-0.22f,-1.22f, 0.0f, 0.0f },
+			//{ -0.16f,-0.16f, 0.84f, 0.0f, 0.0f },
+			//{  0.0f,  0.0f,  0.0f,  1.0f, 0.0f },
+			//{  1.0f,  1.0f,  1.0f,  0.0f, 1.0f }
 
 			//gray scale
 			//{  0.3f,  0.3f,  0.3f,  0.0f,  0.0f },
