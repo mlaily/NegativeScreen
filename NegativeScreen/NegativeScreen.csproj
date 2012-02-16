@@ -93,6 +93,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BuiltinMatrices.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="NativeStructures.cs" />
     <Compile Include="NegativeOverlay.cs">

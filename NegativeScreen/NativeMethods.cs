@@ -213,7 +213,7 @@ namespace NegativeScreen
 
 		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static extern bool MagSetColorEffect(IntPtr hwnd, ref ColorEffect pEffect);
+		public static extern bool MagSetColorEffect(IntPtr hwnd, ColorEffect pEffect);
 
 		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
 		[return: MarshalAs(UnmanagedType.Bool)]

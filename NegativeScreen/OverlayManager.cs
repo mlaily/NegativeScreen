@@ -36,6 +36,17 @@ namespace NegativeScreen
 		public const int INCREASE_TIMER_HOTKEY_ID = 45;
 		public const int DECREASE_TIMER_HOTKEY_ID = 46;
 
+		//TODO: maybe I should think about loops and config file...
+		public const int MODE1_HOTKEY_ID = 51;
+		public const int MODE2_HOTKEY_ID = 52;
+		public const int MODE3_HOTKEY_ID = 53;
+		public const int MODE4_HOTKEY_ID = 54;
+		public const int MODE5_HOTKEY_ID = 55;
+		public const int MODE6_HOTKEY_ID = 56;
+		public const int MODE7_HOTKEY_ID = 57;
+		public const int MODE8_HOTKEY_ID = 58;
+		public const int MODE9_HOTKEY_ID = 59;
+
 		private const int DEFAULT_INCREASE_STEP = 10;
 		private const int DEFAULT_SLEEP_TIME = DEFAULT_INCREASE_STEP;
 		private const int PAUSE_SLEEP_TIME = 100;
@@ -72,6 +83,43 @@ namespace NegativeScreen
 			if (!NativeMethods.RegisterHotKey(this.Handle, DECREASE_TIMER_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.Subtract))
 			{
 				throw new Exception("RegisterHotKey(win+alt+Substract)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+
+			if (!NativeMethods.RegisterHotKey(this.Handle, MODE1_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F1))
+			{
+				throw new Exception("RegisterHotKey(win+alt+F1)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+			if (!NativeMethods.RegisterHotKey(this.Handle, MODE2_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F2))
+			{
+				throw new Exception("RegisterHotKey(win+alt+F2)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+			if (!NativeMethods.RegisterHotKey(this.Handle, MODE3_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F3))
+			{
+				throw new Exception("RegisterHotKey(win+alt+F3)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+			if (!NativeMethods.RegisterHotKey(this.Handle, MODE4_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F4))
+			{
+				throw new Exception("RegisterHotKey(win+alt+F4)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+			if (!NativeMethods.RegisterHotKey(this.Handle, MODE5_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F5))
+			{
+				throw new Exception("RegisterHotKey(win+alt+F5)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+			if (!NativeMethods.RegisterHotKey(this.Handle, MODE6_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F6))
+			{
+				throw new Exception("RegisterHotKey(win+alt+F6)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+			if (!NativeMethods.RegisterHotKey(this.Handle, MODE7_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F7))
+			{
+				throw new Exception("RegisterHotKey(win+alt+F7)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+			if (!NativeMethods.RegisterHotKey(this.Handle, MODE8_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F8))
+			{
+				throw new Exception("RegisterHotKey(win+alt+F8)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+			if (!NativeMethods.RegisterHotKey(this.Handle, MODE9_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F9))
+			{
+				throw new Exception("RegisterHotKey(win+alt+F9)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 
 			if (!NativeMethods.MagInitialize())
@@ -201,6 +249,16 @@ namespace NegativeScreen
 			NativeMethods.UnregisterHotKey(this.Handle, RESET_TIMER_HOTKEY_ID);
 			NativeMethods.UnregisterHotKey(this.Handle, INCREASE_TIMER_HOTKEY_ID);
 			NativeMethods.UnregisterHotKey(this.Handle, DECREASE_TIMER_HOTKEY_ID);
+
+			NativeMethods.UnregisterHotKey(this.Handle, MODE1_HOTKEY_ID);
+			NativeMethods.UnregisterHotKey(this.Handle, MODE2_HOTKEY_ID);
+			NativeMethods.UnregisterHotKey(this.Handle, MODE3_HOTKEY_ID);
+			NativeMethods.UnregisterHotKey(this.Handle, MODE4_HOTKEY_ID);
+			NativeMethods.UnregisterHotKey(this.Handle, MODE5_HOTKEY_ID);
+			NativeMethods.UnregisterHotKey(this.Handle, MODE6_HOTKEY_ID);
+			NativeMethods.UnregisterHotKey(this.Handle, MODE7_HOTKEY_ID);
+			NativeMethods.UnregisterHotKey(this.Handle, MODE8_HOTKEY_ID);
+			NativeMethods.UnregisterHotKey(this.Handle, MODE9_HOTKEY_ID);
 		}
 
 		protected override void WndProc(ref Message m)
@@ -232,6 +290,33 @@ namespace NegativeScreen
 							{
 								this.refreshInterval = 0;
 							}
+							break;
+						case MODE1_HOTKEY_ID:
+							BuiltinMatrices.ChangeColorEffect(overlays, BuiltinMatrices.Negative);
+							break;
+						case MODE2_HOTKEY_ID:
+							BuiltinMatrices.ChangeColorEffect(overlays, BuiltinMatrices.NegativeHueShift180);
+							break;
+						case MODE3_HOTKEY_ID:
+							BuiltinMatrices.ChangeColorEffect(overlays, BuiltinMatrices.NegativeHueShift180Variation1);
+							break;
+						case MODE4_HOTKEY_ID:
+							BuiltinMatrices.ChangeColorEffect(overlays, BuiltinMatrices.NegativeHueShift180Variation2);
+							break;
+						case MODE5_HOTKEY_ID:
+							BuiltinMatrices.ChangeColorEffect(overlays, BuiltinMatrices.NegativeHueShift180Variation3);
+							break;
+						case MODE6_HOTKEY_ID:
+							BuiltinMatrices.ChangeColorEffect(overlays, BuiltinMatrices.NegativeHueShift180Variation4);
+							break;
+						case MODE7_HOTKEY_ID:
+							BuiltinMatrices.ChangeColorEffect(overlays, BuiltinMatrices.NegativeSepia);
+							break;
+						case MODE8_HOTKEY_ID:
+							BuiltinMatrices.ChangeColorEffect(overlays, BuiltinMatrices.Sepia);
+							break;
+						case MODE9_HOTKEY_ID:
+							BuiltinMatrices.ChangeColorEffect(overlays, BuiltinMatrices.GrayScale);
 							break;
 						default:
 							break;
