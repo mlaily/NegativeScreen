@@ -1,3 +1,9 @@
+Version 1.5, 2012-02-16
+------------------------
+- [fixed] (internal) ColorMatrix implementation
+- [added] new feature: choice between 9 inversion modes
+			(smart mode, etc... see readme for details)
+
 Version 1.4, 2012-02-09
 ------------------------
 - [fixed] does not crash anymore on Windows Vista

@@ -23,6 +23,7 @@ namespace NegativeScreen
 		public static float[,] NegativeSepia { get; private set; }
 		/// <summary>
 		/// theoretical optimal transfomation (but ugly desaturated pure colors due to "overflows"...)
+		/// Many thanks to Tom MacLeod who gave me the idea for these inversion modes
 		/// </summary>
 		public static float[,] NegativeHueShift180 { get; private set; }
 		/// <summary>
@@ -38,7 +39,7 @@ namespace NegativeScreen
 		/// </summary>
 		public static float[,] NegativeHueShift180Variation3 { get; private set; }
 		/// <summary>
-		/// //a bit more readable (CMY colors a bit desaturated, still more saturated than normal)
+		/// //not so readable, good colors (CMY colors a bit desaturated, still more saturated than normal)
 		/// </summary>
 		public static float[,] NegativeHueShift180Variation4 { get; private set; }
 
