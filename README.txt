@@ -18,8 +18,8 @@ Features:
 
 Invert screen's colors :)
 
-Different inversion mode, including "smart" modes,
-allowing blacks and whites inversion, while keeping colors (about) the same.
+Different inversion modes, including "smart" modes,
+allowing blacks and whites inversion, while keeping colors (about) the sames.
 
 
 Useful controls:
@@ -31,7 +31,7 @@ Useful controls:
 	F1: standard inversion
 	F2: smart inversion1 - theoretical optimal transfomation (but ugly desaturated pure colors)
 	F3: smart inversion2 - high saturation, good pure colors
-	F4: smart inversion3 - overall desaturated, yellows and blue plain bad. actually relaxing and very usable
+	F4: smart inversion3 - overall desaturated, yellows and blues plain bad. actually relaxing and very usable
 	F5: smart inversion4 - high saturation. yellows and blues  plain bad. actually quite readable
 	F6: smart inversion5 - not so readable. good colors. (CMY colors a bit desaturated, still more saturated than normal)
 	F7: negative sepia

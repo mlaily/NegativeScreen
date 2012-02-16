@@ -2,7 +2,7 @@ Version 1.5, 2012-02-16
 ------------------------
 - [fixed] (internal) ColorMatrix implementation
 - [added] new feature: choice between 9 inversion modes
-			(smart mode, etc... see readme for details)
+		(smart mode, etc... see readme for details)
 
 Version 1.4, 2012-02-09
 ------------------------
@@ -11,10 +11,10 @@ Version 1.4, 2012-02-09
 Version 1.3, 2012-02-01
 ------------------------
 - [fixed] multi-screen should finally work!
-			after a lot of tests and coding, I re-thought completely the architecture
+		after a lot of tests and coding, I re-thought completely the architecture
 - [knownbug] in some screen configurations, if the primary screen if smaller than the other screen,
-			 the second larger screen has a black border at its bottom.
-			 It could be a bug in the Windows API...
+		 the second larger screen has a black border at its bottom.
+		 It could be a bug in the Windows API...
 
 Version 1.2, 2011-09-18
 ------------------------
