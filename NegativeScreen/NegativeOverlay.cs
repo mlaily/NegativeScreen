@@ -71,8 +71,7 @@ namespace NegativeScreen
 				"MagnifierWindow",
 				(int)WindowStyles.WS_CHILD |
 				/*(int)MagnifierStyle.MS_SHOWMAGNIFIEDCURSOR |*/
-				(int)WindowStyles.WS_VISIBLE /*|
-				(int)MagnifierStyle.MS_INVERTCOLORS*/,
+				(int)WindowStyles.WS_VISIBLE,
 				0, 0, screen.Bounds.Width, screen.Bounds.Height,
 				this.Handle, IntPtr.Zero, hInst, IntPtr.Zero);
 
@@ -83,13 +82,78 @@ namespace NegativeScreen
 
 			ColorEffect a = new ColorEffect();
 			ColorEffect b = new ColorEffect();
+			float x = 0.8f;
+			float y = 0.8f;
+			float z = -0.1f;
 			a.SetMatrix(new float[,]{
+
+			{  x-z,-x,-x, 0.0f, 0.0f },
+			{ -x,  x-z, -x, 0.0f, 0.0f },
+			{ -x,-x, x-z, 0.0f, 0.0f },
+			{  0.0f,  0.0f,  0.0f,  0.0f, 0.0f },
+			{  y,  y,  y,  0.0f, 1.0f }
+
+			//saturation 0.8
+			//{  0.75f,-0.89f,-0.89f, 0.0f, 0.0f },
+			//{ -0.78f,  0.86f, -0.78f, 0.0f, 0.0f },
+			//{ -0.97f,-0.97f, 0.67f, 0.0f, 0.0f },
+			//{  0.0f,  0.0f,  0.0f,  1.0f, 0.0f },
+			//{  1.0f,  1.0f,  1.0f,  0.0f, 1.0f }
+
+		//a bit more readable (desaturated, colors not exact)
+			//{  0.50f,-0.78f,-0.78f, 0.0f, 0.0f },
+			//{ -0.56f,  0.72f, -0.56f, 0.0f, 0.0f },
+			//{ -0.94f,-0.94f, 0.34f, 0.0f, 0.0f },
+			//{  0.0f,  0.0f,  0.0f,  1.0f, 0.0f },
+			//{  1.0f,  1.0f,  1.0f,  0.0f, 1.0f }
+
+			//OWI
+			//{  1f,-1f,-1f, 0.0f, 0.0f },
+			//{ -1f,  1f, -1f, 0.0f, 0.0f },
+			//{ -1f,-1f, 1f, 0.0f, 0.0f },
+			//{  0.0f,  0.0f,  0.0f,  1.0f, 0.0f },
+			//{  1.0f,  1.0f,  1.0f,  0.0f, 1.0f }
+
+			//approximately what we want (neutral whites)
+			//{  0.386976182f,  -0.619064033f,  -0.619064152f,  0.0f,  0.0f },
+			//{  -1.21055317f,  -0.2224809f,  -1.22248077f,  0.0f,  0.0f },
+			//{  -0.162890315f,  -0.164495364f,  0.8355047f,  0.0f,  0.0f },
+			//{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
+			//{  1.0f,  1.0f,  1.0f,  0.0f,  1.0f }
+			//use this one. clearer:
+			//{  0.39f,-0.62f,-0.62f, 0.0f, 0.0f },
+			//{ -1.21f,-0.22f,-1.22f, 0.0f, 0.0f },
+			//{ -0.16f,-0.16f, 0.84f, 0.0f, 0.0f },
+			//{  0.0f,  0.0f,  0.0f,  1.0f, 0.0f },
+			//{  1.0f,  1.0f,  1.0f,  0.0f, 1.0f }
+
+			//approximately what we want (too saturated, yellows and blues not so good)
+			//{  1.089508f,  -0.9326327f,  -0.932633042f,  0.0f,  0.0f },
+			//{  -1.81771779f,  0.1683074f,  -1.84169245f,  0.0f,  0.0f },
+			//{  -0.244589478f,  -0.247815639f,  1.7621845f,  0.0f,  0.0f },
+			//{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
+			//{  1.0f,  1.0f,  1.0f,  0.0f,  1.0f }
+			
+			//approximately what we want (red ambience)
+			//{ 0.410639971f,  -0.629626155f,  -0.6296263f,  0.0f,  0.0f },
+			//{  -1.1638236f, -0.2433382f,  -1.24333811f,  0.0f,  0.0f },
+			//{ -0.1566024f,  -0.167301863f, 0.832698166f,  0.0f,  0.0f },
+			//{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
+			//{  1.0f,  1.0f,  1.0f,  0.0f,  1.0f }
+
+			//approximately what we want (blue ambience)
+			//{  0.32f, -0.59f, -0.59f,  0.0f,  0.0f },
+			//{  -1.34f,  -0.16f, -1.16f,  0.0f,  0.0f },
+			//{  -0.18f,  -0.16f,  0.84f,  1.0f,  0.0f },
+			//{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
+			//{  1.0f,  1.0f,  1.0f,  0.0f,  1.0f }
+
 			//gray scale
-			{  0.3f,  0.3f,  0.3f,  0.0f,  0.0f },
-			{  0.6f,  0.6f,  0.6f,  0.0f,  0.0f },
-			{  0.1f,  0.1f,  0.1f,  0.0f,  0.0f },
-			{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
-			{  0.0f,  0.0f,  0.0f,  0.0f,  1.0f } 
+			//{  0.3f,  0.3f,  0.3f,  0.0f,  0.0f },
+			//{  0.6f,  0.6f,  0.6f,  0.0f,  0.0f },
+			//{  0.1f,  0.1f,  0.1f,  0.0f,  0.0f },
+			//{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
+			//{  0.0f,  0.0f,  0.0f,  0.0f,  1.0f } 
 			//inversion
 			//{ -1.0f,  0.0f,  0.0f,  0.0f,  0.0f },
 			//{  0.0f, -1.0f,  0.0f,  0.0f,  0.0f },
@@ -103,8 +167,8 @@ namespace NegativeScreen
 			//{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
 			//{  0.0f,  0.0f,  0.0f,  0.0f,  1.0f }
 		});
-			var x = NativeMethods.MagSetColorEffect(hwndMag, ref a);
-			var y = NativeMethods.MagGetColorEffect(hwndMag, ref b);
+			var xx = NativeMethods.MagSetColorEffect(hwndMag, ref a);
+			var yy = NativeMethods.MagGetColorEffect(hwndMag, ref b);
 
 			if (!NativeMethods.MagSetWindowSource(this.hwndMag, new RECT(screen.Bounds.X, screen.Bounds.Y, screen.Bounds.Right, screen.Bounds.Bottom)))
 			{
