@@ -26,7 +26,7 @@ using System.Drawing;
 
 namespace NegativeScreen
 {
-	class NegativeOverlay : Form
+	public class NegativeOverlay : Form
 	{
 		private IntPtr hwndMag;
 		/// <summary>
@@ -80,10 +80,8 @@ namespace NegativeScreen
 				throw new Exception("CreateWindowEx()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 
-			if (!NativeMethods.MagSetColorEffect(hwndMag, new ColorEffect(BuiltinMatrices.Negative)))
-			{
-				throw new Exception("MagSetColorEffect()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-			}
+			//initial color transformation: simple negative
+			BuiltinMatrices.ChangeColorEffect(hwndMag, BuiltinMatrices.Negative);
 
 			if (!NativeMethods.MagSetWindowSource(this.hwndMag, new RECT(screen.Bounds.X, screen.Bounds.Y, screen.Bounds.Right, screen.Bounds.Bottom)))
 			{
