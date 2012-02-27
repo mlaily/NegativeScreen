@@ -21,6 +21,9 @@ Invert screen's colors :)
 Different inversion modes, including "smart" modes,
 allowing blacks and whites inversion, while keeping colors (about) the sames.
 
+Windows Aero must be enabled, or the program won't start.
+This prevent some undesirable behaviours (black screens, 100% CPU usage...)
+
 
 Useful controls:
 

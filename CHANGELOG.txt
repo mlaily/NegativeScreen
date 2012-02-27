@@ -1,3 +1,9 @@
+Version 1.6, 2012-02-27
+------------------------
+- [fixed] crash on X86 on launch
+- [fixed] prevent execution if aero is disabled
+		(prevent undesirable behaviours: black screens, 100% CPU usage...)
+
 Version 1.5, 2012-02-16
 ------------------------
 - [fixed] (internal) ColorMatrix implementation
