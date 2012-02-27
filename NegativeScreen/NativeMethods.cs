@@ -213,7 +213,8 @@ namespace NegativeScreen
 
 		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static extern bool MagSetColorEffect(IntPtr hwnd, ColorEffect pEffect);
+		//ref keyword necessary for X86, not sure why... (crash on call otherwise)
+		public static extern bool MagSetColorEffect(IntPtr hwnd, ref ColorEffect pEffect);
 
 		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
 		[return: MarshalAs(UnmanagedType.Bool)]
@@ -238,6 +239,10 @@ namespace NegativeScreen
 
 		[DllImport("dwmapi.dll", PreserveSig = false)]
 		public static extern int DwmSetWindowAttribute(IntPtr hwnd, DWMWINDOWATTRIBUTE attr, ref DWMFLIP3DWINDOWPOLICY attrValue, int attrSize);
+
+
+		[DllImport("dwmapi.dll", PreserveSig = false)]
+		public static extern bool DwmIsCompositionEnabled();
 
 		#endregion
 

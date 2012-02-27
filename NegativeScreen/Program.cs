@@ -23,6 +23,7 @@ namespace NegativeScreen
 {
 	class Program
 	{
+		[STAThread]
 		static void Main(string[] args)
 		{
 			//check whether the current process is running under WoW64 mode
@@ -32,6 +33,12 @@ namespace NegativeScreen
 				System.Windows.Forms.MessageBox.Show(
 @"You are trying to run this program on a 64 bits processor whereas it was compiled for a 32 bits processor.
 To avoid known bugs relative to the used APIs, please instead run the 64 bits compiled version.", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation, System.Windows.Forms.MessageBoxDefaultButton.Button1);
+				return;
+			}
+			//check whether aero is enabled
+			if (!NativeMethods.DwmIsCompositionEnabled())
+			{
+				System.Windows.Forms.MessageBox.Show("Windows Aero must be enabled for this program to work properly!", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information, System.Windows.Forms.MessageBoxDefaultButton.Button1);
 				return;
 			}
 			//check whether the current application is already running

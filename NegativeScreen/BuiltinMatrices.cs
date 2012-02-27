@@ -128,7 +128,8 @@ namespace NegativeScreen
 
 		public static void ChangeColorEffect(IntPtr hwndMag, float[,] matrix)
 		{
-			if (!NativeMethods.MagSetColorEffect(hwndMag, new ColorEffect(matrix)))
+			ColorEffect colorEffect = new ColorEffect(matrix);
+			if (!NativeMethods.MagSetColorEffect(hwndMag, ref colorEffect))
 			{
 				throw new Exception("MagSetColorEffect()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
