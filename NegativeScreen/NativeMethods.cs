@@ -153,6 +153,13 @@ namespace NegativeScreen
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
+		/// <summary>
+		/// http://msdn.microsoft.com/en-us/library/ms633543.aspx
+		/// </summary>
+		/// <returns></returns>
+		[DllImport("user32.dll")]
+		public static extern bool SetProcessDPIAware();
+
 		#endregion
 
 		#region "Kernel32.dll"

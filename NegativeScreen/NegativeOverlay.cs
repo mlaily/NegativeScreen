@@ -88,6 +88,14 @@ namespace NegativeScreen
 				throw new Exception("MagSetWindowSource()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 
+			//reset magnification factor to 1.0
+			//(should not be needed anymore with the call to NativeMethods.SetProcessDPIAware())
+			Transformation transformation = new Transformation(1.0f);
+			if (!NativeMethods.MagSetWindowTransform(this.hwndMag, ref transformation))
+			{
+				throw new Exception("MagSetWindowTransform()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+
 			try
 			{
 				//fail on Windows Vista
