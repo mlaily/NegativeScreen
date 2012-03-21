@@ -1,3 +1,7 @@
+Version 1.7, 2012-03-21
+------------------------
+- [fixed] works as expected when using custom DPI settings
+		
 Version 1.6, 2012-02-27
 ------------------------
 - [fixed] crash on X86 on launch
