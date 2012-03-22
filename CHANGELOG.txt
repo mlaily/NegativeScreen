@@ -1,3 +1,8 @@
+Version 1.8, 2012-03-22
+------------------------
+- [fixed] execution is no longer prevented if aero is disabled (previous bug corrected)
+		however, the performances will still be horrible
+
 Version 1.7, 2012-03-21
 ------------------------
 - [fixed] works as expected when using custom DPI settings
