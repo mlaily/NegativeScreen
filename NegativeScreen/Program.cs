@@ -38,8 +38,11 @@ To avoid known bugs relative to the used APIs, please instead run the 64 bits co
 			//check whether aero is enabled
 			if (!NativeMethods.DwmIsCompositionEnabled())
 			{
-				System.Windows.Forms.MessageBox.Show("Windows Aero must be enabled for this program to work properly!", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information, System.Windows.Forms.MessageBoxDefaultButton.Button1);
-				return;
+				var result = System.Windows.Forms.MessageBox.Show("Windows Aero should be enabled for this program to work properly!\nOtherwise, you may experience bad performances.", "Warning", System.Windows.Forms.MessageBoxButtons.OKCancel, System.Windows.Forms.MessageBoxIcon.Information, System.Windows.Forms.MessageBoxDefaultButton.Button1);
+				if (result != System.Windows.Forms.DialogResult.OK)
+				{
+					return;
+				}
 			}
 			//check whether the current application is already running
 			if (IsAnotherInstanceAlreadyRunning())

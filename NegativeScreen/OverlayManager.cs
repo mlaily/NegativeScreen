@@ -266,6 +266,10 @@ namespace NegativeScreen
 			// Listen for operating system messages.
 			switch (m.Msg)
 			{
+				case (int)WindowMessage.WM_DWMCOMPOSITIONCHANGED:
+					//aero has been enabled/disabled. It causes the magnified control to stop working
+					Initialization();
+					break;
 				case (int)WindowMessage.WM_HOTKEY:
 					switch ((int)m.WParam)
 					{
