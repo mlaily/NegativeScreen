@@ -62,6 +62,9 @@ namespace NegativeScreen
 
 		private bool resolutionHasChanged = false;
 
+		private static TimeSpan checkBrightnessInterval = new TimeSpan(0, 0, 0, 0, 100);
+		private DateTime lastBrightnessCheck = DateTime.Now;
+
 		public OverlayManager()
 		{
 			if (!NativeMethods.RegisterHotKey(this.Handle, HALT_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.H))
@@ -218,29 +221,33 @@ namespace NegativeScreen
 		{
 			try
 			{
-				var b = new Bitmap(overlay.OwnerScreen.Bounds.Width, overlay.OwnerScreen.Bounds.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-				var b2 = new Bitmap(1, 1);
-				// Create a graphics object from the bitmap
-				var g = Graphics.FromImage(b);
-				var g2 = Graphics.FromImage(b2);
-				// Take the screenshot from the upper left corner to the right bottom corner
-				g.CopyFromScreen(Screen.PrimaryScreen.Bounds.X, Screen.PrimaryScreen.Bounds.Y, 0, 0, Screen.PrimaryScreen.Bounds.Size, CopyPixelOperation.SourceCopy);
-				g2.DrawImage(b, 0, 0, 1, 1);
-				//b2.Save(string.Format(@"C:\{0}_{1}.gif", DateTime.Now.ToString("HH_mm_ss_ffffff"), overlay.OwnerScreen.GetHashCode()));
+				DateTime now = DateTime.Now;
+				if (now - lastBrightnessCheck > checkBrightnessInterval)
+				{
+					lastBrightnessCheck = now;
 
-				int avg = (b2.GetPixel(0, 0).R + b2.GetPixel(0, 0).G + b2.GetPixel(0, 0).B) / 3;
-				if (overlay.NegativeEnabled) //negative
-				{
-					if (avg > 128) // white
+					//b2 and g2 used to resize the capture. does it really help the performances ??
+					var b = new Bitmap(overlay.OwnerScreen.Bounds.Width, overlay.OwnerScreen.Bounds.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+					var b2 = new Bitmap(overlay.OwnerScreen.Bounds.Height / 10, overlay.OwnerScreen.Bounds.Width / 10);
+					var g = Graphics.FromImage(b);
+					var g2 = Graphics.FromImage(b2);
+					g.CopyFromScreen(Screen.PrimaryScreen.Bounds.X, Screen.PrimaryScreen.Bounds.Y, 0, 0, Screen.PrimaryScreen.Bounds.Size, CopyPixelOperation.SourceCopy);
+					g2.DrawImage(b, 0, 0, b2.Height, b2.Width);
+
+					bool isDark = Utility.IsDark(b);
+					if (overlay.NegativeEnabled)
 					{
-						overlay.NegativeEnabled = false;
+						if (!isDark)
+						{
+							overlay.NegativeEnabled = false;
+						}
 					}
-				}
-				else //normal
-				{
-					if (avg > 128)
+					else
 					{
-						overlay.NegativeEnabled = true;
+						if (!isDark)
+						{
+							overlay.NegativeEnabled = true;
+						}
 					}
 				}
 
