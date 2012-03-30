@@ -34,10 +34,28 @@ namespace NegativeScreen
 		/// </summary>
 		public IntPtr HwndMag { get { return hwndMag; } }
 
+		public Screen OwnerScreen { get; protected set; }
+
+
+		/// <summary>
+		/// allow to control the color inversion without stoping the loop
+		/// </summary>
+		public bool NegativeEnabled {
+			get
+			{
+				return this.Visible;
+			}
+			set
+			{
+				this.Visible = value;
+			}
+		}
+
 		public NegativeOverlay(Screen screen)
 			: base()
 		{
 
+			this.OwnerScreen = screen;
 			this.StartPosition = FormStartPosition.Manual;
 			this.Location = screen.WorkingArea.Location;
 			this.Size = new Size(screen.Bounds.Width, screen.Bounds.Height);

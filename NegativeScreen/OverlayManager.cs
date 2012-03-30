@@ -218,6 +218,32 @@ namespace NegativeScreen
 		{
 			try
 			{
+				var b = new Bitmap(overlay.OwnerScreen.Bounds.Width, overlay.OwnerScreen.Bounds.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				var b2 = new Bitmap(1, 1);
+				// Create a graphics object from the bitmap
+				var g = Graphics.FromImage(b);
+				var g2 = Graphics.FromImage(b2);
+				// Take the screenshot from the upper left corner to the right bottom corner
+				g.CopyFromScreen(Screen.PrimaryScreen.Bounds.X, Screen.PrimaryScreen.Bounds.Y, 0, 0, Screen.PrimaryScreen.Bounds.Size, CopyPixelOperation.SourceCopy);
+				g2.DrawImage(b, 0, 0, 1, 1);
+				//b2.Save(string.Format(@"C:\{0}_{1}.gif", DateTime.Now.ToString("HH_mm_ss_ffffff"), overlay.OwnerScreen.GetHashCode()));
+
+				int avg = (b2.GetPixel(0, 0).R + b2.GetPixel(0, 0).G + b2.GetPixel(0, 0).B) / 3;
+				if (overlay.NegativeEnabled) //negative
+				{
+					if (avg > 128) // white
+					{
+						overlay.NegativeEnabled = false;
+					}
+				}
+				else //normal
+				{
+					if (avg > 128)
+					{
+						overlay.NegativeEnabled = true;
+					}
+				}
+
 				// Reclaim topmost status. 
 				if (!NativeMethods.SetWindowPos(overlay.Handle, NativeMethods.HWND_TOPMOST, 0, 0, 0, 0,
 			   (int)SetWindowPosFlags.SWP_NOACTIVATE | (int)SetWindowPosFlags.SWP_NOMOVE | (int)SetWindowPosFlags.SWP_NOSIZE))
