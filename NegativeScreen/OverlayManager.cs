@@ -231,7 +231,7 @@ namespace NegativeScreen
 					var b2 = new Bitmap(overlay.OwnerScreen.Bounds.Height / 10, overlay.OwnerScreen.Bounds.Width / 10);
 					var g = Graphics.FromImage(b);
 					var g2 = Graphics.FromImage(b2);
-					g.CopyFromScreen(Screen.PrimaryScreen.Bounds.X, Screen.PrimaryScreen.Bounds.Y, 0, 0, Screen.PrimaryScreen.Bounds.Size, CopyPixelOperation.SourceCopy);
+					g.CopyFromScreen(overlay.OwnerScreen.Bounds.X, overlay.OwnerScreen.Bounds.Y, 0, 0, overlay.OwnerScreen.Bounds.Size, CopyPixelOperation.SourceCopy);
 					g2.DrawImage(b, 0, 0, b2.Height, b2.Width);
 
 					bool isDark = Utility.IsDark(b);

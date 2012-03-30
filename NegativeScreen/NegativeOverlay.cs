@@ -142,7 +142,7 @@ namespace NegativeScreen
 			}
 			catch (Exception) { }
 
-			//this.Show();
+			this.Show();
 		}
 
 	}
