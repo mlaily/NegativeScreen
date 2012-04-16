@@ -39,7 +39,7 @@ namespace NegativeScreen
 		{
 
 			this.StartPosition = FormStartPosition.Manual;
-			this.Location = screen.WorkingArea.Location;
+			this.Location = screen.Bounds.Location;
 			this.Size = new Size(screen.Bounds.Width, screen.Bounds.Height);
 			this.TopMost = true;
 			this.FormBorderStyle = FormBorderStyle.None;
