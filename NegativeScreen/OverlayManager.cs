@@ -268,7 +268,16 @@ namespace NegativeScreen
 			{
 				case (int)WindowMessage.WM_DWMCOMPOSITIONCHANGED:
 					//aero has been enabled/disabled. It causes the magnified control to stop working
-					Initialization();
+					if (Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor == 0)
+					{
+						//running Vista.
+						//The creation of the magnification Window on this OS seems to change desktop composition,
+						//leading to infinite loop
+					}
+					else
+					{
+						Initialization();
+					}
 					break;
 				case (int)WindowMessage.WM_HOTKEY:
 					switch ((int)m.WParam)
