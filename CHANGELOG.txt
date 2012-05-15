@@ -1,3 +1,7 @@
+Version 1.10, 2012-05-15
+------------------------
+- [fixed] infinite flickering on Vista (introduced in 1.8)
+
 Version 1.9, 2012-04-16
 ------------------------
 - [fixed] stupid bug if the Windows taskbar is vertical
