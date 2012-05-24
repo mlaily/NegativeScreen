@@ -160,6 +160,46 @@ namespace NegativeScreen
 		[DllImport("user32.dll")]
 		public static extern bool SetProcessDPIAware();
 
+		/// <summary>
+		/// Undocumented function.
+		/// </summary>
+		/// <param name="scale"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		[DllImport("user32.dll", CallingConvention = CallingConvention.StdCall)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool SetMagnificationDesktopMagnification(double scale, int x, int y);
+
+		/// <summary>
+		/// Undocumented function.
+		/// </summary>
+		/// <param name="scale"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		[DllImport("user32.dll", CallingConvention = CallingConvention.StdCall)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool GetMagnificationDesktopMagnification(out double scale, out int x, out int y);
+
+		/// <summary>
+		/// Undocumented function.
+		/// </summary>
+		/// <param name="pEffect"></param>
+		/// <returns></returns>
+		[DllImport("user32.dll", CallingConvention = CallingConvention.StdCall)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool GetMagnificationDesktopColorEffect(out ColorEffect pEffect);
+
+		/// <summary>
+		/// Undocumented function.
+		/// </summary>
+		/// <param name="pEffect"></param>
+		/// <returns></returns>
+		[DllImport("user32.dll", CallingConvention = CallingConvention.StdCall)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool SetMagnificationDesktopColorEffect(ref ColorEffect pEffect);
+
 		#endregion
 
 		#region "Kernel32.dll"
@@ -181,6 +221,35 @@ namespace NegativeScreen
 			bool retVal;
 			IsWow64Process(Process.GetCurrentProcess().Handle, out retVal);
 			return retVal;
+		}
+
+		/// <summary>
+		/// Actually useful, combined with HRESULT_FROM_WIN32() and Marshal.GetExceptionForHR().
+		/// works with undocumented functions SetMagnificationDesktopColorEffect() etc...
+		/// where other last error functions do nothing.
+		/// </summary>
+		/// <returns></returns>
+		[DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+		public static extern int GetLastError();
+
+		/// <summary>
+		/// http://msdn.microsoft.com/en-us/library/windows/desktop/ms680746%28v=vs.85%29.aspx
+		/// </summary>
+		/// <param name="x">output of GetLastError()</param>
+		/// <returns></returns>
+		public static int HRESULT_FROM_WIN32(ulong x)
+		{
+			const int FACILITY_WIN32 = 7;
+			return (int)(x) <= 0 ? (int)(x) : (int)(((x) & 0x0000FFFF) | (FACILITY_WIN32 << 16) | 0x80000000);
+		}
+
+		/// <summary>
+		/// Utility function to ease the pain of calling Marshal.GetExceptionForHR(HRESULT_FROM_WIN32((ulong)GetLastError()))...
+		/// </summary>
+		/// <returns></returns>
+		public static Exception GetExceptionForLastError()
+		{
+			return Marshal.GetExceptionForHR(HRESULT_FROM_WIN32((ulong)GetLastError()));
 		}
 
 		#endregion
