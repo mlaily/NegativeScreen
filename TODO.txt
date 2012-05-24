@@ -2,5 +2,4 @@ To Do in next releases:
 -let the user configure the options in a config file
 	(shortcuts, ...)
 	
-correct multi screen bug (black part)
 auto-switch on light/dark | when browser on/off
