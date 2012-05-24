@@ -116,7 +116,7 @@ namespace NegativeScreen
 			{
 				throw new Exception("MagInitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
-			BuiltinMatrices.ChangeColorEffect(currentMatrix);
+			BuiltinMatrices.InterpolateColorEffect(BuiltinMatrices.Identity,currentMatrix);
 			RefreshLoop();
 		}
 
@@ -129,6 +129,7 @@ namespace NegativeScreen
 				Application.DoEvents();
 				if (mainLoopPaused)
 				{
+					BuiltinMatrices.InterpolateColorEffect(currentMatrix, BuiltinMatrices.Identity);
 					if (!NativeMethods.MagUninitialize())
 					{
 						throw new Exception("MagUninitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
@@ -177,6 +178,7 @@ namespace NegativeScreen
 					switch ((int)m.WParam)
 					{
 						case HALT_HOTKEY_ID:
+							BuiltinMatrices.InterpolateColorEffect(currentMatrix, BuiltinMatrices.Identity);
 							this.exiting = true;
 							this.Dispose();
 							Application.Exit();
@@ -219,13 +221,18 @@ namespace NegativeScreen
 			base.WndProc(ref m);
 		}
 
+		/// <summary>
+		/// check if the magnification api is in a state where a color effect can be applied, then proceed.
+		/// </summary>
+		/// <param name="matrix"></param>
 		private void SafeChangeColorEffect(float[,] matrix)
 		{
-			currentMatrix = matrix;
+
 			if (!mainLoopPaused && !exiting)
 			{
-				BuiltinMatrices.ChangeColorEffect(matrix);
+				BuiltinMatrices.InterpolateColorEffect(currentMatrix, matrix);
 			}
+			currentMatrix = matrix;
 		}
 
 		protected override void Dispose(bool disposing)

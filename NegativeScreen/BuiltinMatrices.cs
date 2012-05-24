@@ -135,6 +135,17 @@ namespace NegativeScreen
 			}
 		}
 
+		public static void InterpolateColorEffect(float[,] fromMatrix, float[,] toMatrix, int timeBetweenFrames = 15)
+		{
+			List<float[,]> transitions = Interpolate(fromMatrix, toMatrix);
+			foreach (float[,] item in transitions)
+			{
+				ChangeColorEffect(item);
+				System.Threading.Thread.Sleep(timeBetweenFrames);
+				System.Windows.Forms.Application.DoEvents();
+			}
+		}
+
 		public static float[,] MoreBlue(float[,] colorMatrix)
 		{
 			float[,] temp = (float[,])colorMatrix.Clone();
@@ -154,6 +165,39 @@ namespace NegativeScreen
 			float[,] temp = (float[,])colorMatrix.Clone();
 			temp[0, 4] += 0.1f;
 			return temp;
+		}
+
+		public static List<float[,]> Interpolate(float[,] A, float[,] B)
+		{
+			const int STEPS = 10;
+			const int SIZE = 5;
+
+			if (A.GetLength(0) != SIZE ||
+				A.GetLength(1) != SIZE ||
+				B.GetLength(0) != SIZE ||
+				B.GetLength(1) != SIZE)
+			{
+				throw new ArgumentException();
+			}
+
+			List<float[,]> result = new List<float[,]>(STEPS);
+
+			for (int i = 0; i < STEPS; i++)
+			{
+				result.Add(new float[SIZE, SIZE]);
+
+				for (int x = 0; x < SIZE; x++)
+				{
+					for (int y = 0; y < SIZE; y++)
+					{
+						// f(x)=ya+(x-xa)*(yb-ya)/(xb-xa)
+						//calculate 10 steps, from 1 to 10 (we don't need 0, as we start from there)
+						result[i][x, y] = A[x, y] + (i + 1/*-0*/) * (B[x, y] - A[x, y]) / (STEPS/*-0*/);
+					}
+				}
+			}
+
+			return result;
 		}
 	}
 }
