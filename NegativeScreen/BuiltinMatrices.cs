@@ -103,7 +103,7 @@ namespace NegativeScreen
 				{  1.0f,  1.0f,  1.0f, 0.0f, 1.0f }
 			};
 			NegativeHueShift180Variation2 = new float[,] {
-				//used QColorMatrix http://www.codeguru.com/Cpp/G-M/gdi/gdi/article.php/c3667 for generation
+				//generated with QColorMatrix http://www.codeguru.com/Cpp/G-M/gdi/gdi/article.php/c3667
 				{  0.39f, -0.62f, -0.62f, 0.0f, 0.0f },
 				{ -1.21f, -0.22f, -1.22f, 0.0f, 0.0f },
 				{ -0.16f, -0.16f,  0.84f, 0.0f, 0.0f },
@@ -126,20 +126,12 @@ namespace NegativeScreen
 			};
 		}
 
-		public static void ChangeColorEffect(IntPtr hwndMag, float[,] matrix)
+		public static void ChangeColorEffect(float[,] matrix)
 		{
 			ColorEffect colorEffect = new ColorEffect(matrix);
-			if (!NativeMethods.MagSetColorEffect(hwndMag, ref colorEffect))
+			if (!NativeMethods.SetMagnificationDesktopColorEffect(ref colorEffect))
 			{
-				throw new Exception("MagSetColorEffect()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-			}
-		}
-
-		public static void ChangeColorEffect(IEnumerable<NegativeOverlay> overlays, float[,] matrix)
-		{
-			foreach (var item in overlays)
-			{
-				ChangeColorEffect(item.HwndMag, matrix);
+				throw new Exception("SetMagnificationDesktopColorEffect()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 		}
 
