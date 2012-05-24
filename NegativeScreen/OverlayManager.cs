@@ -116,7 +116,7 @@ namespace NegativeScreen
 			{
 				throw new Exception("MagInitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
-			BuiltinMatrices.InterpolateColorEffect(BuiltinMatrices.Identity,currentMatrix);
+			BuiltinMatrices.InterpolateColorEffect(BuiltinMatrices.Identity, currentMatrix);
 			RefreshLoop();
 		}
 
@@ -178,7 +178,10 @@ namespace NegativeScreen
 					switch ((int)m.WParam)
 					{
 						case HALT_HOTKEY_ID:
-							BuiltinMatrices.InterpolateColorEffect(currentMatrix, BuiltinMatrices.Identity);
+							if (!mainLoopPaused)
+							{
+								BuiltinMatrices.InterpolateColorEffect(currentMatrix, BuiltinMatrices.Identity);
+							}
 							this.exiting = true;
 							this.Dispose();
 							Application.Exit();
