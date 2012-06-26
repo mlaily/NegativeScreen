@@ -1,3 +1,7 @@
+Version 1.11, 2012-06-26
+------------------------
+- [added] new red and negative red filters bound on F9 and F10
+
 Version 1.10, 2012-05-15
 ------------------------
 - [fixed] infinite flickering on Vista (introduced in 1.8)

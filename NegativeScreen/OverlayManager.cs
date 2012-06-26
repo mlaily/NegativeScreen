@@ -46,6 +46,7 @@ namespace NegativeScreen
 		public const int MODE7_HOTKEY_ID = 57;
 		public const int MODE8_HOTKEY_ID = 58;
 		public const int MODE9_HOTKEY_ID = 59;
+		public const int MODE10_HOTKEY_ID = 60;
 
 		private const int DEFAULT_INCREASE_STEP = 10;
 		private const int DEFAULT_SLEEP_TIME = DEFAULT_INCREASE_STEP;
@@ -120,6 +121,10 @@ namespace NegativeScreen
 			if (!NativeMethods.RegisterHotKey(this.Handle, MODE9_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F9))
 			{
 				throw new Exception("RegisterHotKey(win+alt+F9)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+			if (!NativeMethods.RegisterHotKey(this.Handle, MODE10_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F10))
+			{
+				throw new Exception("RegisterHotKey(win+alt+F10)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 
 			if (!NativeMethods.MagInitialize())
@@ -259,6 +264,7 @@ namespace NegativeScreen
 			NativeMethods.UnregisterHotKey(this.Handle, MODE7_HOTKEY_ID);
 			NativeMethods.UnregisterHotKey(this.Handle, MODE8_HOTKEY_ID);
 			NativeMethods.UnregisterHotKey(this.Handle, MODE9_HOTKEY_ID);
+			NativeMethods.UnregisterHotKey(this.Handle, MODE10_HOTKEY_ID);
 		}
 
 		protected override void WndProc(ref Message m)
@@ -326,10 +332,13 @@ namespace NegativeScreen
 							BuiltinMatrices.ChangeColorEffect(overlays, BuiltinMatrices.NegativeSepia);
 							break;
 						case MODE8_HOTKEY_ID:
-							BuiltinMatrices.ChangeColorEffect(overlays, BuiltinMatrices.Sepia);
+							BuiltinMatrices.ChangeColorEffect(overlays, BuiltinMatrices.NegativeGrayScale);
 							break;
 						case MODE9_HOTKEY_ID:
-							BuiltinMatrices.ChangeColorEffect(overlays, BuiltinMatrices.GrayScale);
+							BuiltinMatrices.ChangeColorEffect(overlays, BuiltinMatrices.NegativeRed);
+							break;
+						case MODE10_HOTKEY_ID:
+							BuiltinMatrices.ChangeColorEffect(overlays, BuiltinMatrices.Red);
 							break;
 						default:
 							break;
