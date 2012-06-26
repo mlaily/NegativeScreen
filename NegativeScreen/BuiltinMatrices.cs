@@ -15,12 +15,18 @@ namespace NegativeScreen
 		/// </summary>
 		public static float[,] Identity { get; private set; }
 		/// <summary>
-		/// simple colors inversion
+		/// simple colors transformations
 		/// </summary>
 		public static float[,] Negative { get; private set; }
 		public static float[,] GrayScale { get; private set; }
 		public static float[,] Sepia { get; private set; }
+		public static float[,] Red { get; private set; }
+		public static float[,] HueShift180 { get; private set; }
+
+		public static float[,] NegativeGrayScale { get; private set; }
 		public static float[,] NegativeSepia { get; private set; }
+		public static float[,] NegativeRed { get; private set; }
+
 		/// <summary>
 		/// theoretical optimal transfomation (but ugly desaturated pure colors due to "overflows"...)
 		/// Many thanks to Tom MacLeod who gave me the idea for these inversion modes
@@ -35,20 +41,13 @@ namespace NegativeScreen
 		/// </summary>
 		public static float[,] NegativeHueShift180Variation2 { get; private set; }
 		/// <summary>
-		/// high saturation. yellows and blues  plain bad. actually quite readable
+		/// high saturation. yellows and blues plain bad. actually quite readable
 		/// </summary>
 		public static float[,] NegativeHueShift180Variation3 { get; private set; }
 		/// <summary>
 		/// //not so readable, good colors (CMY colors a bit desaturated, still more saturated than normal)
 		/// </summary>
 		public static float[,] NegativeHueShift180Variation4 { get; private set; }
-
-		//hue 180
-		//{ -0.3333333f,  0.6666667f,  0.6666667f,  0.0f,  0.0f },
-		//{ 0.6666667f,  -0.3333333f,  0.6666667f,  0.0f,  0.0f },
-		//{ 0.6666667f,  0.6666667f,  -0.3333333f,  0.0f,  0.0f },
-		//{ 0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
-		//{ 0.0f,  0.0f,  0.0f,  0.0f,  1.0f }
 
 		static BuiltinMatrices()
 		{
@@ -66,6 +65,14 @@ namespace NegativeScreen
 				{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
 				{  1.0f,  1.0f,  1.0f,  0.0f,  1.0f }
 			};
+			Red = new float[,] {
+				{  1.0f,  0.0f,  0.0f,  0.0f,  0.0f },
+				{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f },
+				{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f },
+				{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
+				{  0.0f,  0.0f,  0.0f,  0.0f,  1.0f }
+			};
+			NegativeRed = Multiply(Negative, Red);
 			GrayScale = new float[,] {
 				{  0.3f,  0.3f,  0.3f,  0.0f,  0.0f },
 				{  0.6f,  0.6f,  0.6f,  0.0f,  0.0f },
@@ -73,6 +80,7 @@ namespace NegativeScreen
 				{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
 				{  0.0f,  0.0f,  0.0f,  0.0f,  1.0f }
 			};
+			NegativeGrayScale = Multiply(Negative, GrayScale);
 			Sepia = new float[,] {
 				{ .393f, .349f, .272f, 0.0f, 0.0f},
 				{ .769f, .686f, .534f, 0.0f, 0.0f},
@@ -80,20 +88,15 @@ namespace NegativeScreen
 				{  0.0f,  0.0f,  0.0f, 1.0f, 0.0f},
 				{  0.0f,  0.0f,  0.0f, 0.0f, 1.0f}
 			};
-			NegativeSepia = new float[,] {
-				{ -0.393f, -0.349f, -0.272f,  0.0f,  0.0f },
-				{ -0.769f, -0.686f, -0.534f,  0.0f,  0.0f },
-				{ -0.189f, -0.168f, -0.131f,  0.0f,  0.0f },
-				{    0.0f,    0.0f,    0.0f,  1.0f,  0.0f },
-				{  1.351f,  1.203f,  0.937f,  0.0f,  1.0f }
+			NegativeSepia = Multiply(Negative, Sepia);
+			HueShift180 = new float[,] {
+				{ -0.3333333f,  0.6666667f,  0.6666667f, 0.0f, 0.0f },
+				{  0.6666667f, -0.3333333f,  0.6666667f, 0.0f, 0.0f },
+				{  0.6666667f,  0.6666667f, -0.3333333f, 0.0f, 0.0f },
+				{  0.0f,              0.0f,        0.0f, 1.0f, 0.0f },
+				{  0.0f,              0.0f,        0.0f, 0.0f, 1.0f }
 			};
-			NegativeHueShift180 = new float[,] {
-				{ 0.3333333f,  -0.6666667f, -0.6666667f, 0.0f, 0.0f },
-				{ -0.6666667f,  0.3333333f, -0.6666667f, 0.0f, 0.0f },
-				{ -0.6666667f, -0.6666667f,  0.3333333f, 0.0f, 0.0f },
-				{        0.0f,        0.0f,        0.0f, 1.0f, 0.0f },
-				{        1.0f,        1.0f,        1.0f, 0.0f, 1.0f }
-			};
+			NegativeHueShift180 = Multiply(Negative, HueShift180);
 			NegativeHueShift180Variation1 = new float[,] {
 				//most simple working method for shifting hue 180deg.
 				{  1.0f, -1.0f, -1.0f, 0.0f, 0.0f },
@@ -124,6 +127,26 @@ namespace NegativeScreen
 				{   0.0f,   0.0f,   0.0f, 1.0f, 0.0f },
 				{   1.0f,   1.0f,   1.0f, 0.0f, 1.0f }
 			};
+		}
+
+		public static float[,] Multiply(float[,] a, float[,] b)
+		{
+			if (a.GetLength(1) != b.GetLength(0))
+			{
+				throw new Exception("a.GetLength(1) != b.GetLength(0)");
+			}
+			float[,] c = new float[a.GetLength(0), b.GetLength(1)];
+			for (int i = 0; i < c.GetLength(0); i++)
+			{
+				for (int j = 0; j < c.GetLength(1); j++)
+				{
+					for (int k = 0; k < a.GetLength(1); k++) // k<b.GetLength(0)
+					{
+						c[i, j] = c[i, j] + a[i, k] * b[k, j];
+					}
+				}
+			}
+			return c;
 		}
 
 		public static void ChangeColorEffect(float[,] matrix)
