@@ -65,14 +65,6 @@ namespace NegativeScreen
 				{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
 				{  1.0f,  1.0f,  1.0f,  0.0f,  1.0f }
 			};
-			Red = new float[,] {
-				{  1.0f,  0.0f,  0.0f,  0.0f,  0.0f },
-				{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f },
-				{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f },
-				{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
-				{  0.0f,  0.0f,  0.0f,  0.0f,  1.0f }
-			};
-			NegativeRed = Multiply(Negative, Red);
 			GrayScale = new float[,] {
 				{  0.3f,  0.3f,  0.3f,  0.0f,  0.0f },
 				{  0.6f,  0.6f,  0.6f,  0.0f,  0.0f },
@@ -81,6 +73,15 @@ namespace NegativeScreen
 				{  0.0f,  0.0f,  0.0f,  0.0f,  1.0f }
 			};
 			NegativeGrayScale = Multiply(Negative, GrayScale);
+			Red = new float[,] {
+				{  1.0f,  0.0f,  0.0f,  0.0f,  0.0f },
+				{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f },
+				{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f },
+				{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
+				{  0.0f,  0.0f,  0.0f,  0.0f,  1.0f }
+			};
+			Red = Multiply(GrayScale, Red);
+			NegativeRed = Multiply(NegativeGrayScale, Red);
 			Sepia = new float[,] {
 				{ .393f, .349f, .272f, 0.0f, 0.0f},
 				{ .769f, .686f, .534f, 0.0f, 0.0f},
