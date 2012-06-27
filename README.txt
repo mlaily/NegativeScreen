@@ -30,7 +30,7 @@ Useful controls:
 -Press Win+Alt+H to Halt the program immediately
 -Press Win+Alt+N to toggle color inversion (mnemonic: Night vision :))
 
--Press Win+Alt+F1-to-F9 to change inversion mode:
+-Press Win+Alt+F1-to-F10 to change inversion mode:
 	F1: standard inversion
 	F2: smart inversion1 - theoretical optimal transfomation (but ugly desaturated pure colors)
 	F3: smart inversion2 - high saturation, good pure colors
@@ -38,8 +38,9 @@ Useful controls:
 	F5: smart inversion4 - high saturation. yellows and blues  plain bad. actually quite readable
 	F6: smart inversion5 - not so readable. good colors. (CMY colors a bit desaturated, still more saturated than normal)
 	F7: negative sepia
-	F8: sepia
-	F9: gray scale
+	F8: negative gray scale
+	F9: negative red
+	F10: red
 
 -Press Win+Alt+Add to increase the refresh timer
 	(go easier on the CPU and the GPU, but if set too high, can lead to annoying stuttering)
