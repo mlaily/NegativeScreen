@@ -4,46 +4,71 @@ using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
+using SlimDX;
+using SlimDX.Direct3D9;
+using System.Windows.Forms;
 
 namespace NegativeScreen
 {
-	class Utility
+	public static class Utility
 	{
-		/// <summary>
-		/// For fast access to pixels   
-		/// </summary>
-		/// <param name="bitmap"></param>
-		/// <returns></returns>
-		public static unsafe byte[] BitmapToByteArray(Bitmap bitmap)
+		public static bool IsDark()
 		{
-			BitmapData bmd = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly,
-											 PixelFormat.Format32bppArgb);
-			byte[] bytes = new byte[bmd.Height * bmd.Stride];
-			byte* pnt = (byte*)bmd.Scan0;
-			Marshal.Copy((IntPtr)pnt, bytes, 0, bmd.Height * bmd.Stride);
-			bitmap.UnlockBits(bmd);
-			return bytes;
+			Surface surface = DxScreenCapture.CaptureScreen();
+			using (surface)
+			{
+				DataRectangle rectangle = surface.LockRectangle(LockFlags.None);
+				DataStream stream = rectangle.Data;
+
+				//Stopwatch sw = Stopwatch.StartNew();
+				bool result = IsDark(stream);
+				//sw.Stop();
+
+				//Debug.WriteLine("{0} - {1}ms", result, sw.ElapsedMilliseconds);
+
+				surface.UnlockRectangle();
+				return result;
+			}
 		}
 
-		/// <summary>
-		/// http://stackoverflow.com/questions/1587674/how-to-identify-black-or-dark-images-in-c
-		/// </summary>
-		/// <param name="bitmap"></param>
-		/// <param name="tolerance">pixel considered dark under this value (0-255)</param>
-		/// <param name="darkPercent"></param>
-		/// <returns></returns>
-		public static bool IsDark(Bitmap bitmap, byte tolerance = 128, double darkPercent = 0.5)
+		private static bool IsDark(DataStream bitmap, byte tolerance = 128, double darkPercent = 0.5)
 		{
-			byte[] bytes = BitmapToByteArray(bitmap);
-			int count = 0, all = bitmap.Width * bitmap.Height;
-			for (int i = 0; i < bytes.Length; i += 4)
+			long count = 0, all = bitmap.Length / 400;
+			byte[] buffer = new byte[4];
+			//int y = 0;
+
+			for (int i = 0; i < bitmap.Length; i += 400)
 			{
-				byte r = bytes[i + 2], g = bytes[i + 1], b = bytes[i];
-				byte brightness = (byte)Math.Round((r+g+b)/3.0/*(0.299 * r + 0.5876 * g + 0.114 * b)*/);
+				//y++;
+				bitmap.Position = i;
+				bitmap.Read(buffer, 0, 4);
+				byte r = buffer[2], g = buffer[1], b = buffer[0];
+				byte brightness = (byte)Math.Round((r + g + b) / 3.0/*(0.299 * r + 0.5876 * g + 0.114 * b)*/);
 				if (brightness <= tolerance)
 					count++;
 			}
 			return (1d * count / all) > darkPercent;
+		}
+	}
+
+	public static class DxScreenCapture
+	{
+		private static Device device;
+
+		static DxScreenCapture()
+		{
+			PresentParameters presentParams = new PresentParameters();
+			presentParams.Windowed = true;
+			presentParams.SwapEffect = SwapEffect.Discard;
+			device = new Device(new Direct3D(), 0, DeviceType.Hardware, IntPtr.Zero, CreateFlags.SoftwareVertexProcessing, presentParams);
+		}
+
+		public static Surface CaptureScreen()
+		{
+			Surface s = Surface.CreateOffscreenPlain(device, Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, Format.A8R8G8B8, Pool.Scratch);
+			device.GetFrontBufferData(0, s);
+			return s;
 		}
 	}
 }

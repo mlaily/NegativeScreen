@@ -62,8 +62,8 @@ namespace NegativeScreen
 
 		private bool resolutionHasChanged = false;
 
-		private static TimeSpan checkBrightnessInterval = new TimeSpan(0, 0, 0, 0, 100);
-		private DateTime lastBrightnessCheck = DateTime.Now;
+		//private static TimeSpan checkBrightnessInterval = new TimeSpan(0, 0, 0, 0, 5);
+		//private DateTime lastBrightnessCheck = DateTime.Now;
 
 		public OverlayManager()
 		{
@@ -221,35 +221,28 @@ namespace NegativeScreen
 		{
 			try
 			{
-				DateTime now = DateTime.Now;
-				if (now - lastBrightnessCheck > checkBrightnessInterval)
+				//DateTime now = DateTime.Now;
+				//if (now - lastBrightnessCheck > checkBrightnessInterval)
+				//{
+				//    lastBrightnessCheck = now;
+
+				bool isDark = Utility.IsDark();
+
+				if (overlay.NegativeEnabled)
 				{
-					lastBrightnessCheck = now;
-
-					//b2 and g2 used to resize the capture. does it really help the performances ??
-					var b = new Bitmap(overlay.OwnerScreen.Bounds.Width, overlay.OwnerScreen.Bounds.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-					var b2 = new Bitmap(overlay.OwnerScreen.Bounds.Height / 10, overlay.OwnerScreen.Bounds.Width / 10);
-					var g = Graphics.FromImage(b);
-					var g2 = Graphics.FromImage(b2);
-					g.CopyFromScreen(overlay.OwnerScreen.Bounds.X, overlay.OwnerScreen.Bounds.Y, 0, 0, overlay.OwnerScreen.Bounds.Size, CopyPixelOperation.SourceCopy);
-					g2.DrawImage(b, 0, 0, b2.Height, b2.Width);
-
-					bool isDark = Utility.IsDark(b);
-					if (overlay.NegativeEnabled)
+					if (!isDark)
 					{
-						if (!isDark)
-						{
-							overlay.NegativeEnabled = false;
-						}
-					}
-					else
-					{
-						if (!isDark)
-						{
-							overlay.NegativeEnabled = true;
-						}
+						overlay.NegativeEnabled = false;
 					}
 				}
+				else
+				{
+					if (!isDark)
+					{
+						overlay.NegativeEnabled = true;
+					}
+				}
+				//}
 
 				// Reclaim topmost status. 
 				if (!NativeMethods.SetWindowPos(overlay.Handle, NativeMethods.HWND_TOPMOST, 0, 0, 0, 0,
