@@ -59,6 +59,27 @@ namespace NegativeScreen
 		/// memorize the current color matrix. start with simple negative
 		/// </summary>
 		private float[,] currentMatrix = BuiltinMatrices.Negative;
+		
+		private bool _NegativeEnabled;
+		private bool NegativeEnabled
+		{
+			get
+			{
+				return _NegativeEnabled;
+			}
+			set
+			{
+				_NegativeEnabled = value;
+				if(_NegativeEnabled)
+				{
+					BuiltinMatrices.InterpolateColorEffect(BuiltinMatrices.Identity, currentMatrix);
+				}
+				else
+				{
+					BuiltinMatrices.InterpolateColorEffect(currentMatrix, BuiltinMatrices.Identity);
+				}
+			}
+		}
 
 		public OverlayManager()
 		{
@@ -122,6 +143,7 @@ namespace NegativeScreen
 				throw new Exception("MagInitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 			BuiltinMatrices.InterpolateColorEffect(BuiltinMatrices.Identity, currentMatrix);
+			_NegativeEnabled = true;
 			RefreshLoop();
 		}
 
@@ -130,7 +152,23 @@ namespace NegativeScreen
 			bool running = true;
 			while (running && !exiting)
 			{
-				System.Threading.Thread.Sleep(100);
+				bool isDark = Utility.IsDark();
+
+				if (NegativeEnabled)
+				{
+					if (!isDark)
+					{
+						NegativeEnabled = false;
+					}
+				}
+				else
+				{
+					if (!isDark)
+					{
+						NegativeEnabled = true;
+					}
+				}
+				
 				Application.DoEvents();
 				if (mainLoopPaused)
 				{
