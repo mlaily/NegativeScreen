@@ -59,7 +59,7 @@ namespace NegativeScreen
 		/// memorize the current color matrix. start with simple negative
 		/// </summary>
 		private float[,] currentMatrix = BuiltinMatrices.Negative;
-		
+
 		private bool _NegativeEnabled;
 		private bool NegativeEnabled
 		{
@@ -69,17 +69,26 @@ namespace NegativeScreen
 			}
 			set
 			{
-				_NegativeEnabled = value;
-				if(_NegativeEnabled)
+				if (_NegativeEnabled == value)
 				{
-					BuiltinMatrices.InterpolateColorEffect(BuiltinMatrices.Identity, currentMatrix);
+					return;
+				}
+				_NegativeEnabled = value;
+				if (_NegativeEnabled)
+				{
+					BuiltinMatrices.InterpolateColorEffect(BuiltinMatrices.Identity, currentMatrix, 7);
 				}
 				else
 				{
-					BuiltinMatrices.InterpolateColorEffect(currentMatrix, BuiltinMatrices.Identity);
+					BuiltinMatrices.InterpolateColorEffect(currentMatrix, BuiltinMatrices.Identity, 7);
 				}
 			}
 		}
+
+		/// <summary>
+		/// Sleep time in the main loop, in ms
+		/// </summary>
+		private int RefreshTime = 10;
 
 		public OverlayManager()
 		{
@@ -154,21 +163,23 @@ namespace NegativeScreen
 			{
 				bool isDark = Utility.IsDark();
 
-				if (NegativeEnabled)
+				if (!isDark)
 				{
-					if (!isDark)
+					if (NegativeEnabled)
 					{
 						NegativeEnabled = false;
 					}
-				}
-				else
-				{
-					if (!isDark)
+					else
 					{
 						NegativeEnabled = true;
 					}
 				}
-				
+
+				if (RefreshTime > 0)
+				{
+					System.Threading.Thread.Sleep(RefreshTime);
+				}
+
 				Application.DoEvents();
 				if (mainLoopPaused)
 				{
