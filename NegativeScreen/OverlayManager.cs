@@ -63,8 +63,24 @@ namespace NegativeScreen
 
 		private bool resolutionHasChanged = false;
 
+		private NotifyIcon notifyIcon;
+		private ContextMenuStrip contextMenu;
+
 		public OverlayManager()
 		{
+			contextMenu = new System.Windows.Forms.ContextMenuStrip();
+			foreach (var item in Screen.AllScreens)
+			{
+				contextMenu.Items.Add(new ToolStripMenuItem(item.DeviceName, null, (s, e) =>
+				{
+					Initialization();
+				}) { CheckOnClick = true, Checked = true });
+			}
+			notifyIcon = new NotifyIcon();
+			notifyIcon.ContextMenuStrip = contextMenu;
+			notifyIcon.Icon = new Icon(this.Icon, 32, 32);
+			notifyIcon.Visible = true;
+
 			if (!NativeMethods.RegisterHotKey(this.Handle, HALT_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.H))
 			{
 				throw new Exception("RegisterHotKey(win+alt+H)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
@@ -153,7 +169,13 @@ namespace NegativeScreen
 			overlays = new List<NegativeOverlay>();
 			foreach (var item in Screen.AllScreens)
 			{
-				overlays.Add(new NegativeOverlay(item));
+				foreach (ToolStripMenuItem menuItem in this.contextMenu.Items)
+				{
+					if (menuItem.Text == item.DeviceName && menuItem.Checked)
+					{
+						overlays.Add(new NegativeOverlay(item));
+					}
+				}
 			}
 			RefreshLoop(overlays);
 		}
@@ -291,6 +313,7 @@ namespace NegativeScreen
 						case HALT_HOTKEY_ID:
 							//otherwise, if paused, the application never stops
 							mainLoopPaused = false;
+							notifyIcon.Dispose();
 							this.Dispose();
 							Application.Exit();
 							break;
