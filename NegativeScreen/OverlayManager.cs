@@ -26,24 +26,10 @@ using System.Drawing;
 namespace NegativeScreen
 {
 	/// <summary>
-	/// inherits from Form so that hot keys can be bound to this "window"...
+	/// inherits from Form so that hot keys can be bound to its message loop
 	/// </summary>
-	class OverlayManager : Form
+	partial class OverlayManager : Form
 	{
-		public const int HALT_HOTKEY_ID = 42;//random id =°
-		public const int TOGGLE_HOTKEY_ID = 43;
-
-		//TODO: maybe I should think about loops and config file...
-		public const int MODE1_HOTKEY_ID = 51;
-		public const int MODE2_HOTKEY_ID = 52;
-		public const int MODE3_HOTKEY_ID = 53;
-		public const int MODE4_HOTKEY_ID = 54;
-		public const int MODE5_HOTKEY_ID = 55;
-		public const int MODE6_HOTKEY_ID = 56;
-		public const int MODE7_HOTKEY_ID = 57;
-		public const int MODE8_HOTKEY_ID = 58;
-		public const int MODE9_HOTKEY_ID = 59;
-		public const int MODE10_HOTKEY_ID = 60;
 
 		/// <summary>
 		/// control whether the main loop is paused or not.
@@ -60,69 +46,64 @@ namespace NegativeScreen
 		/// </summary>
 		private float[,] currentMatrix = BuiltinMatrices.Negative;
 
-		public OverlayManager()
+		private static OverlayManager _Instance;
+		public static OverlayManager Instance
 		{
-			if (!NativeMethods.RegisterHotKey(this.Handle, HALT_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.H))
+			get
 			{
-				throw new Exception("RegisterHotKey(win+alt+H)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+				Initialize();
+				return _Instance;
 			}
-			if (!NativeMethods.RegisterHotKey(this.Handle, TOGGLE_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.N))
-			{
-				throw new Exception("RegisterHotKey(win+alt+N)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-			}
-
-			if (!NativeMethods.RegisterHotKey(this.Handle, MODE1_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F1))
-			{
-				throw new Exception("RegisterHotKey(win+alt+F1)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-			}
-			if (!NativeMethods.RegisterHotKey(this.Handle, MODE2_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F2))
-			{
-				throw new Exception("RegisterHotKey(win+alt+F2)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-			}
-			if (!NativeMethods.RegisterHotKey(this.Handle, MODE3_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F3))
-			{
-				throw new Exception("RegisterHotKey(win+alt+F3)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-			}
-			if (!NativeMethods.RegisterHotKey(this.Handle, MODE4_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F4))
-			{
-				throw new Exception("RegisterHotKey(win+alt+F4)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-			}
-			if (!NativeMethods.RegisterHotKey(this.Handle, MODE5_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F5))
-			{
-				throw new Exception("RegisterHotKey(win+alt+F5)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-			}
-			if (!NativeMethods.RegisterHotKey(this.Handle, MODE6_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F6))
-			{
-				throw new Exception("RegisterHotKey(win+alt+F6)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-			}
-			if (!NativeMethods.RegisterHotKey(this.Handle, MODE7_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F7))
-			{
-				throw new Exception("RegisterHotKey(win+alt+F7)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-			}
-			if (!NativeMethods.RegisterHotKey(this.Handle, MODE8_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F8))
-			{
-				throw new Exception("RegisterHotKey(win+alt+F8)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-			}
-			if (!NativeMethods.RegisterHotKey(this.Handle, MODE9_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F9))
-			{
-				throw new Exception("RegisterHotKey(win+alt+F9)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-			}
-			if (!NativeMethods.RegisterHotKey(this.Handle, MODE10_HOTKEY_ID, KeyModifiers.MOD_WIN | KeyModifiers.MOD_ALT, Keys.F10))
-			{
-				throw new Exception("RegisterHotKey(win+alt+F10)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-			}
-
-			Initialization();
 		}
 
-		private void Initialization()
+		public static void Initialize()
+		{
+			if (_Instance == null)
+			{
+				_Instance = new OverlayManager();
+			}
+		}
+
+		private OverlayManager()
+		{
+			RegisterHotKey(Configuration.Current.ToggleKey);
+			RegisterHotKey(Configuration.Current.ExitKey);
+			foreach (var item in Configuration.Current.ColorEffects)
+			{
+				RegisterHotKey(item.Key);
+			}
+
+			InitializeComponent();
+			InitializeContextMenu();
+			InitializeRefreshLoop();
+		}
+
+		private void InitializeContextMenu()
+		{
+			foreach (var item in Configuration.Current.ColorEffects)
+			{
+				var menuItem = new ToolStripMenuItem(item.Value.Description);
+				menuItem.Tag = item.Value;
+				menuItem.Click += (s, e) =>
+				{
+					var effect = (ScreenColorEffect)((ToolStripMenuItem)s).Tag;
+					SafeChangeColorEffect(effect.Matrix);
+				};
+				this.changeModeToolStripMenuItem.DropDownItems.Add(menuItem);
+			}
+		}
+
+		private void InitializeRefreshLoop()
 		{
 			if (!NativeMethods.MagInitialize())
 			{
 				throw new Exception("MagInitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 			BuiltinMatrices.InterpolateColorEffect(BuiltinMatrices.Identity, currentMatrix);
-			RefreshLoop();
+
+			System.Threading.Thread t = new System.Threading.Thread(RefreshLoop);
+			t.SetApartmentState((System.Threading.ApartmentState.STA));
+			t.Start();
 		}
 
 		private void RefreshLoop()
@@ -131,7 +112,6 @@ namespace NegativeScreen
 			while (running && !exiting)
 			{
 				System.Threading.Thread.Sleep(100);
-				Application.DoEvents();
 				if (mainLoopPaused)
 				{
 					BuiltinMatrices.InterpolateColorEffect(currentMatrix, BuiltinMatrices.Identity);
@@ -142,7 +122,6 @@ namespace NegativeScreen
 					while (mainLoopPaused && !exiting)
 					{
 						System.Threading.Thread.Sleep(100);
-						Application.DoEvents();
 					}
 					//we need to reinitialize
 					running = false;
@@ -150,7 +129,35 @@ namespace NegativeScreen
 			}
 			if (!exiting)
 			{
-				Initialization();
+				InitializeRefreshLoop();
+			}
+		}
+
+		public void RegisterHotKey(HotKey hotkey)
+		{
+			if (!NativeMethods.RegisterHotKey(this.Handle, hotkey.Id, hotkey.Modifiers, hotkey.Key))
+			{
+				StringBuilder message = new StringBuilder();
+				message.Append("Unable to register the hot key \"");
+				if (hotkey.Modifiers.HasFlag(KeyModifiers.MOD_ALT))
+				{
+					message.Append("Alt+");
+				}
+				if (hotkey.Modifiers.HasFlag(KeyModifiers.MOD_CONTROL))
+				{
+					message.Append("Ctrl+");
+				}
+				if (hotkey.Modifiers.HasFlag(KeyModifiers.MOD_SHIFT))
+				{
+					message.Append("Shift+");
+				}
+				if (hotkey.Modifiers.HasFlag(KeyModifiers.MOD_WIN))
+				{
+					message.Append("Win+");
+				}
+				message.Append(Enum.GetName(typeof(Keys), hotkey.Key));
+				message.Append("\"");
+				throw new Exception(message.ToString(), Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 		}
 
@@ -158,19 +165,9 @@ namespace NegativeScreen
 		{
 			try
 			{
-				NativeMethods.UnregisterHotKey(this.Handle, HALT_HOTKEY_ID);
-				NativeMethods.UnregisterHotKey(this.Handle, TOGGLE_HOTKEY_ID);
+				NativeMethods.UnregisterHotKey(this.Handle, Configuration.Current.ToggleKey.Id);
+				NativeMethods.UnregisterHotKey(this.Handle, Configuration.Current.ExitKey.Id);
 
-				NativeMethods.UnregisterHotKey(this.Handle, MODE1_HOTKEY_ID);
-				NativeMethods.UnregisterHotKey(this.Handle, MODE2_HOTKEY_ID);
-				NativeMethods.UnregisterHotKey(this.Handle, MODE3_HOTKEY_ID);
-				NativeMethods.UnregisterHotKey(this.Handle, MODE4_HOTKEY_ID);
-				NativeMethods.UnregisterHotKey(this.Handle, MODE5_HOTKEY_ID);
-				NativeMethods.UnregisterHotKey(this.Handle, MODE6_HOTKEY_ID);
-				NativeMethods.UnregisterHotKey(this.Handle, MODE7_HOTKEY_ID);
-				NativeMethods.UnregisterHotKey(this.Handle, MODE8_HOTKEY_ID);
-				NativeMethods.UnregisterHotKey(this.Handle, MODE9_HOTKEY_ID);
-				NativeMethods.UnregisterHotKey(this.Handle, MODE10_HOTKEY_ID);
 			}
 			catch (Exception) { }
 		}
@@ -181,56 +178,44 @@ namespace NegativeScreen
 			switch (m.Msg)
 			{
 				case (int)WindowMessage.WM_HOTKEY:
-					switch ((int)m.WParam)
+					int HotKeyId = (int)m.WParam;
+					switch (HotKeyId)
 					{
-						case HALT_HOTKEY_ID:
-							if (!mainLoopPaused)
-							{
-								BuiltinMatrices.InterpolateColorEffect(currentMatrix, BuiltinMatrices.Identity);
-							}
-							this.exiting = true;
-							this.Dispose();
-							Application.Exit();
+						case HotKey.ExitKeyId:
+							Exit();
 							break;
-						case TOGGLE_HOTKEY_ID:
-							this.mainLoopPaused = !mainLoopPaused;
-							break;
-						case MODE1_HOTKEY_ID:
-							SafeChangeColorEffect(BuiltinMatrices.Negative);
-							break;
-						case MODE2_HOTKEY_ID:
-							SafeChangeColorEffect(BuiltinMatrices.NegativeHueShift180);
-							break;
-						case MODE3_HOTKEY_ID:
-							SafeChangeColorEffect(BuiltinMatrices.NegativeHueShift180Variation1);
-							break;
-						case MODE4_HOTKEY_ID:
-							SafeChangeColorEffect(BuiltinMatrices.NegativeHueShift180Variation2);
-							break;
-						case MODE5_HOTKEY_ID:
-							SafeChangeColorEffect(BuiltinMatrices.NegativeHueShift180Variation3);
-							break;
-						case MODE6_HOTKEY_ID:
-							SafeChangeColorEffect(BuiltinMatrices.NegativeHueShift180Variation4);
-							break;
-						case MODE7_HOTKEY_ID:
-							SafeChangeColorEffect(BuiltinMatrices.NegativeSepia);
-							break;
-						case MODE8_HOTKEY_ID:
-							SafeChangeColorEffect(BuiltinMatrices.NegativeGrayScale);
-							break;
-						case MODE9_HOTKEY_ID:
-							SafeChangeColorEffect(BuiltinMatrices.NegativeRed);
-							break;
-						case MODE10_HOTKEY_ID:
-							SafeChangeColorEffect(BuiltinMatrices.Red);
+						case HotKey.ToggleKeyId:
+							Toggle();
 							break;
 						default:
+							foreach (var item in Configuration.Current.ColorEffects)
+							{
+								if (item.Key.Id == HotKeyId)
+								{
+									SafeChangeColorEffect(item.Value.Matrix);
+								}
+							}
 							break;
 					}
 					break;
 			}
 			base.WndProc(ref m);
+		}
+
+		private void Exit()
+		{
+			if (!mainLoopPaused)
+			{
+				BuiltinMatrices.InterpolateColorEffect(currentMatrix, BuiltinMatrices.Identity);
+			}
+			this.exiting = true;
+			this.Dispose();
+			Application.Exit();
+		}
+
+		private void Toggle()
+		{
+			this.mainLoopPaused = !mainLoopPaused;
 		}
 
 		/// <summary>
@@ -249,9 +234,18 @@ namespace NegativeScreen
 
 		protected override void Dispose(bool disposing)
 		{
-			UnregisterHotKeys();
-			NativeMethods.MagUninitialize();
+			if (disposing && (components != null))
+			{
+				components.Dispose();
+				UnregisterHotKeys();
+				NativeMethods.MagUninitialize();
+			}
 			base.Dispose(disposing);
+		}
+
+		private void OverlayManager_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			Exit();
 		}
 
 	}

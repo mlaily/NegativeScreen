@@ -18,6 +18,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace NegativeScreen
 {
@@ -54,7 +55,13 @@ To avoid known bugs relative to the used APIs, please instead run the 64 bits co
 			//the magnified window is either partially out of the screen,
 			//or blurry, if the transformation scale is forced to 1.
 			NativeMethods.SetProcessDPIAware();
-			OverlayManager manager = new OverlayManager();
+
+			Configuration.Initialize();
+
+			Application.EnableVisualStyles();
+			OverlayManager.Initialize();
+
+			Application.Run(OverlayManager.Instance);
 		}
 
 		private static bool IsAnotherInstanceAlreadyRunning()
