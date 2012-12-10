@@ -243,10 +243,24 @@ namespace NegativeScreen
 			base.Dispose(disposing);
 		}
 
+		#region Event Handlers
+
 		private void OverlayManager_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			Exit();
 		}
+
+		private void toggleInversionToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Toggle();
+		}
+
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Exit();
+		}
+
+		#endregion
 
 	}
 }

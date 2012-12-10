@@ -61,7 +61,7 @@ To avoid known bugs relative to the used APIs, please instead run the 64 bits co
 			Application.EnableVisualStyles();
 			OverlayManager.Initialize();
 
-			Application.Run(OverlayManager.Instance);
+			Application.Run();
 		}
 
 		private static bool IsAnotherInstanceAlreadyRunning()

@@ -31,7 +31,7 @@
 			// trayIcon
 			// 
 			this.trayIcon.ContextMenuStrip = this.trayIconContextMenuStrip;
-			this.trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("mainIcon")));
 			this.trayIcon.Text = "NegativeScreen";
 			this.trayIcon.Visible = true;
 			// 
@@ -45,48 +45,51 @@
             this.toolStripSeparator2,
             this.exitToolStripMenuItem});
 			this.trayIconContextMenuStrip.Name = "trayIconContextMenuStrip";
-			this.trayIconContextMenuStrip.Size = new System.Drawing.Size(170, 126);
+			this.trayIconContextMenuStrip.Size = new System.Drawing.Size(172, 126);
 			// 
 			// toggleInversionToolStripMenuItem
 			// 
 			this.toggleInversionToolStripMenuItem.Name = "toggleInversionToolStripMenuItem";
-			this.toggleInversionToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.toggleInversionToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
 			this.toggleInversionToolStripMenuItem.Text = "Toggle Inversion";
+			this.toggleInversionToolStripMenuItem.Click += new System.EventHandler(this.toggleInversionToolStripMenuItem_Click);
 			// 
 			// changeModeToolStripMenuItem
 			// 
 			this.changeModeToolStripMenuItem.Name = "changeModeToolStripMenuItem";
-			this.changeModeToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.changeModeToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
 			this.changeModeToolStripMenuItem.Text = "Change Mode";
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(166, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(168, 6);
 			// 
 			// editConfigurationToolStripMenuItem
 			// 
+			this.editConfigurationToolStripMenuItem.Enabled = false;
 			this.editConfigurationToolStripMenuItem.Name = "editConfigurationToolStripMenuItem";
-			this.editConfigurationToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.editConfigurationToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
 			this.editConfigurationToolStripMenuItem.Text = "Edit Configuration";
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(166, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(168, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
 			this.exitToolStripMenuItem.Text = "&Exit";
+			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
 			// OverlayManager
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(284, 262);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("mainIcon")));
 			this.Name = "OverlayManager";
 			this.Text = "NegativeScreen";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OverlayManager_FormClosed);
