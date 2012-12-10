@@ -130,6 +130,43 @@ namespace NegativeScreen
 			};
 		}
 
+		private static string MatrixToString(float[,] matrix)
+		{
+			int maxDecimal = 0;
+			foreach (var item in matrix)
+			{
+				string toString = item.ToString("0.#######", System.Globalization.NumberFormatInfo.InvariantInfo);
+				int indexOfDot = toString.IndexOf('.');
+				int currentMax = indexOfDot >= 0 ? toString.Length - indexOfDot - 1 : 0;
+				if (currentMax > maxDecimal)
+				{
+					maxDecimal = currentMax;
+				}
+			}
+			string format = "0." + new string('0', maxDecimal);
+
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < matrix.GetLength(0); i++)
+			{
+				sb.Append("{ ");
+				for (int j = 0; j < matrix.GetLength(1); j++)
+				{
+					if (matrix[i, j] >= 0)
+					{
+						//align negative signs
+						sb.Append(" ");
+					}
+					sb.Append(matrix[i, j].ToString(format, System.Globalization.NumberFormatInfo.InvariantInfo));
+					if (j < matrix.GetLength(1) - 1)
+					{
+						sb.Append(", ");
+					}
+				}
+				sb.Append(" }\n");
+			}
+			return sb.ToString();
+		}
+
 		public static float[,] Multiply(float[,] a, float[,] b)
 		{
 			if (a.GetLength(1) != b.GetLength(0))
