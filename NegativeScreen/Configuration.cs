@@ -25,6 +25,7 @@ namespace NegativeScreen
 
 toggle=win+alt+N
 exit=win+alt+H
+enableSmoothTransitions=true
 
 #Matrices definition
 # The left hand is used as a description, while the right hand is broken down in two parts:
@@ -160,6 +161,8 @@ Grayscale=win+alt+F11
 
 		public HotKey ExitKey { get; protected set; }
 
+		public bool EnableSmoothTransitions { get; protected set; }
+
 		public Dictionary<HotKey, ScreenColorEffect> ColorEffects { get; protected set; }
 
 		private static class Parser
@@ -177,6 +180,9 @@ Grayscale=win+alt+F11
 							break;
 						case "exit":
 							configuration.ExitKey = ParseHotKey(item.Value, HotKey.ExitKeyId);
+							break;
+						case "enablesmoothtransitions":
+							configuration.EnableSmoothTransitions = ParseBool(item.Value, true);
 							break;
 						default:
 							//first part is the hotkey, second part is the matrix
@@ -351,6 +357,20 @@ Grayscale=win+alt+F11
 					}
 				}
 				return matrix;
+			}
+
+			private static bool ParseBool(string rawValue, bool @default)
+			{
+				string trimmed = rawValue.Trim();
+				switch (trimmed.ToLowerInvariant())
+				{
+					case "true":
+						return true;
+					case "false":
+						return false;
+					default:
+						return @default;
+				}
 			}
 
 		}

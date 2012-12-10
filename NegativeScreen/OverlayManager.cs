@@ -224,7 +224,6 @@ namespace NegativeScreen
 		/// <param name="matrix"></param>
 		private void SafeChangeColorEffect(float[,] matrix)
 		{
-
 			if (!mainLoopPaused && !exiting)
 			{
 				BuiltinMatrices.InterpolateColorEffect(currentMatrix, matrix);
