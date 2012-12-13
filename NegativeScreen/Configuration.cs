@@ -157,7 +157,7 @@ Grayscale=win+alt+F11
 			{
 				configFileContent = DefaultConfiguration;
 			}
-			Parser.AssignConfiguration(configFileContent, this, new HotKeyParser());
+			Parser.AssignConfiguration(configFileContent, this, new HotKeyParser(), new MatrixParser());
 		}
 
 		[CorrespondTo("Toggle", CustomParameter = HotKey.ToggleKeyId)]
@@ -172,40 +172,10 @@ Grayscale=win+alt+F11
 		[CorrespondTo("SmoothToggles")]
 		public bool SmoothToggles { get; protected set; }
 
-		public Dictionary<HotKey, ScreenColorEffect> ColorEffects { get; protected set; }
+		[CorrespondTo("InitialColorEffect")]
+		public float[,] InitialColorEffect { get; protected set; }
 
-		public static float[,] ParseMatrix(string rawValue)
-		{
-			float[,] matrix = new float[5, 5];
-			var rows = System.Text.RegularExpressions.Regex.Matches(rawValue, @"{(?<row>.*?)}",
-				System.Text.RegularExpressions.RegexOptions.ExplicitCapture);
-			if (rows.Count != 5)
-			{
-				throw new Exception("The matrices must have 5 rows.");
-			}
-			for (int x = 0; x < rows.Count; x++)
-			{
-				var row = rows[x];
-				var columnSplit = row.Groups["row"].Value.Split(',');
-				if (columnSplit.Length != 5)
-				{
-					throw new Exception("The matrices must have 5 columns.");
-				}
-				for (int y = 0; y < matrix.GetLength(1); y++)
-				{
-					float value;
-					if (!float.TryParse(columnSplit[y],
-						System.Globalization.NumberStyles.Float,
-						System.Globalization.NumberFormatInfo.InvariantInfo,
-						out value))
-					{
-						throw new Exception(string.Format("Unable to parse \"{0}\" to a float.", columnSplit[y]));
-					}
-					matrix[x, y] = value;
-				}
-			}
-			return matrix;
-		}
+		public Dictionary<HotKey, ScreenColorEffect> ColorEffects { get; protected set; }
 
 		public void HandleDynamicKey(string key, string value)
 		{
@@ -218,7 +188,7 @@ Grayscale=win+alt+F11
 					key));
 			}
 			this.ColorEffects.Add(HotKeyParser.StaticParse(splitted[0]),
-				new ScreenColorEffect(ParseMatrix(splitted[1]), key));
+				new ScreenColorEffect(MatrixParser.StaticParseMatrix(splitted[1]), key));
 		}
 	}
 
@@ -282,6 +252,53 @@ Grayscale=win+alt+F11
 
 			}
 			return new HotKey(modifiers, key, defaultId);
+		}
+	}
+
+	class MatrixParser : ICustomParser
+	{
+
+		public Type ReturnType
+		{
+			get { return typeof(float[,]); }
+		}
+
+		public object Parse(string rawValue, object customParameter)
+		{
+			return StaticParseMatrix(rawValue);
+		}
+
+		public static float[,] StaticParseMatrix(string rawValue)
+		{
+			float[,] matrix = new float[5, 5];
+			var rows = System.Text.RegularExpressions.Regex.Matches(rawValue, @"{(?<row>.*?)}",
+				System.Text.RegularExpressions.RegexOptions.ExplicitCapture);
+			if (rows.Count != 5)
+			{
+				throw new Exception("The matrices must have 5 rows.");
+			}
+			for (int x = 0; x < rows.Count; x++)
+			{
+				var row = rows[x];
+				var columnSplit = row.Groups["row"].Value.Split(',');
+				if (columnSplit.Length != 5)
+				{
+					throw new Exception("The matrices must have 5 columns.");
+				}
+				for (int y = 0; y < matrix.GetLength(1); y++)
+				{
+					float value;
+					if (!float.TryParse(columnSplit[y],
+						System.Globalization.NumberStyles.Float,
+						System.Globalization.NumberFormatInfo.InvariantInfo,
+						out value))
+					{
+						throw new Exception(string.Format("Unable to parse \"{0}\" to a float.", columnSplit[y]));
+					}
+					matrix[x, y] = value;
+				}
+			}
+			return matrix;
 		}
 	}
 

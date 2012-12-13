@@ -42,9 +42,9 @@ namespace NegativeScreen
 		private bool exiting = false;
 
 		/// <summary>
-		/// memorize the current color matrix. start with simple negative
+		/// memorize the current color matrix.
 		/// </summary>
-		private float[,] currentMatrix = BuiltinMatrices.Negative;
+		private float[,] currentMatrix = null;
 
 		private static OverlayManager _Instance;
 		public static OverlayManager Instance
@@ -66,6 +66,7 @@ namespace NegativeScreen
 
 		private OverlayManager()
 		{
+			currentMatrix = Configuration.Current.InitialColorEffect;
 			RegisterHotKey(Configuration.Current.ToggleKey);
 			RegisterHotKey(Configuration.Current.ExitKey);
 			foreach (var item in Configuration.Current.ColorEffects)
