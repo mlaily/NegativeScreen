@@ -294,5 +294,14 @@ namespace NegativeScreen
 
 		#endregion
 
+		private void editConfigurationToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (!System.IO.File.Exists(Configuration.DefaultConfigurationFileName))
+			{
+				System.IO.File.WriteAllText(Configuration.DefaultConfigurationFileName, Configuration.DefaultConfiguration);
+			}
+			System.Diagnostics.Process.Start("notepad", Configuration.DefaultConfigurationFileName);
+		}
+
 	}
 }

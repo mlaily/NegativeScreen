@@ -67,10 +67,10 @@
 			// 
 			// editConfigurationToolStripMenuItem
 			// 
-			this.editConfigurationToolStripMenuItem.Enabled = false;
 			this.editConfigurationToolStripMenuItem.Name = "editConfigurationToolStripMenuItem";
 			this.editConfigurationToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
 			this.editConfigurationToolStripMenuItem.Text = "Edit Configuration";
+			this.editConfigurationToolStripMenuItem.Click += new System.EventHandler(this.editConfigurationToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 

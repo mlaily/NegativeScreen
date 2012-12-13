@@ -28,9 +28,9 @@ namespace NegativeScreen
 	{
 		#region Default configuration
 
-		const string DefaultConfigurationFileName = "negativescreen.conf";
-		const string DefaultConfiguration = @"
-# comments: if the character '#' is found, the rest of the line is ignored.
+		public const string DefaultConfigurationFileName = "negativescreen.conf";
+		public const string DefaultConfiguration = 
+@"# comments: if the character '#' is found, the rest of the line is ignored.
 # quotes: allow to place a '#' inside a value. they do not appear in the final result.
 # i.e. blah=""hello #1!"" will create a parameter blah with a value of: hello #1!
 # To place a quotation mark inside quotes, double it.
@@ -270,7 +270,7 @@ Grayscale=win+alt+F11
 						break;
 					default:
 						//key
-						if (!Enum.TryParse(item, out key))
+						if (!Enum.TryParse(item, true, out key))
 						{
 							//try to parse numeric value
 							int numericValue;
