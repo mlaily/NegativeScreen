@@ -1,4 +1,22 @@
-﻿using System;
+﻿//Copyright 2011-2012 Melvyn Laily
+//http://arcanesanctum.net
+
+//This file is part of NegativeScreen.
+
+//This program is free software: you can redistribute it and/or modify
+//it under the terms of the GNU General Public License as published by
+//the Free Software Foundation, either version 3 of the License, or
+//(at your option) any later version.
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+
+//You should have received a copy of the GNU General Public License
+//along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
@@ -65,14 +83,6 @@ namespace NegativeScreen
 				{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
 				{  1.0f,  1.0f,  1.0f,  0.0f,  1.0f }
 			};
-			Red = new float[,] {
-				{  1.0f,  0.0f,  0.0f,  0.0f,  0.0f },
-				{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f },
-				{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f },
-				{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
-				{  0.0f,  0.0f,  0.0f,  0.0f,  1.0f }
-			};
-			NegativeRed = Multiply(Negative, Red);
 			GrayScale = new float[,] {
 				{  0.3f,  0.3f,  0.3f,  0.0f,  0.0f },
 				{  0.6f,  0.6f,  0.6f,  0.0f,  0.0f },
@@ -81,6 +91,15 @@ namespace NegativeScreen
 				{  0.0f,  0.0f,  0.0f,  0.0f,  1.0f }
 			};
 			NegativeGrayScale = Multiply(Negative, GrayScale);
+			Red = new float[,] {
+				{  1.0f,  0.0f,  0.0f,  0.0f,  0.0f },
+				{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f },
+				{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f },
+				{  0.0f,  0.0f,  0.0f,  1.0f,  0.0f },
+				{  0.0f,  0.0f,  0.0f,  0.0f,  1.0f }
+			};
+			Red = Multiply(GrayScale, Red);
+			NegativeRed = Multiply(NegativeGrayScale, Red);
 			Sepia = new float[,] {
 				{ .393f, .349f, .272f, 0.0f, 0.0f},
 				{ .769f, .686f, .534f, 0.0f, 0.0f},
@@ -129,6 +148,43 @@ namespace NegativeScreen
 			};
 		}
 
+		private static string MatrixToString(float[,] matrix)
+		{
+			int maxDecimal = 0;
+			foreach (var item in matrix)
+			{
+				string toString = item.ToString("0.#######", System.Globalization.NumberFormatInfo.InvariantInfo);
+				int indexOfDot = toString.IndexOf('.');
+				int currentMax = indexOfDot >= 0 ? toString.Length - indexOfDot - 1 : 0;
+				if (currentMax > maxDecimal)
+				{
+					maxDecimal = currentMax;
+				}
+			}
+			string format = "0." + new string('0', maxDecimal);
+
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < matrix.GetLength(0); i++)
+			{
+				sb.Append("{ ");
+				for (int j = 0; j < matrix.GetLength(1); j++)
+				{
+					if (matrix[i, j] >= 0)
+					{
+						//align negative signs
+						sb.Append(" ");
+					}
+					sb.Append(matrix[i, j].ToString(format, System.Globalization.NumberFormatInfo.InvariantInfo));
+					if (j < matrix.GetLength(1) - 1)
+					{
+						sb.Append(", ");
+					}
+				}
+				sb.Append(" }\n");
+			}
+			return sb.ToString();
+		}
+
 		public static float[,] Multiply(float[,] a, float[,] b)
 		{
 			if (a.GetLength(1) != b.GetLength(0))
@@ -149,20 +205,23 @@ namespace NegativeScreen
 			return c;
 		}
 
-		public static void ChangeColorEffect(IntPtr hwndMag, float[,] matrix)
+		public static void ChangeColorEffect(float[,] matrix)
 		{
 			ColorEffect colorEffect = new ColorEffect(matrix);
-			if (!NativeMethods.MagSetColorEffect(hwndMag, ref colorEffect))
+			if (!NativeMethods.SetMagnificationDesktopColorEffect(ref colorEffect))
 			{
-				throw new Exception("MagSetColorEffect()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+				throw new Exception("SetMagnificationDesktopColorEffect()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 		}
 
-		public static void ChangeColorEffect(IEnumerable<NegativeOverlay> overlays, float[,] matrix)
+		public static void InterpolateColorEffect(float[,] fromMatrix, float[,] toMatrix, int timeBetweenFrames = 15)
 		{
-			foreach (var item in overlays)
+			List<float[,]> transitions = Interpolate(fromMatrix, toMatrix);
+			foreach (float[,] item in transitions)
 			{
-				ChangeColorEffect(item.HwndMag, matrix);
+				ChangeColorEffect(item);
+				System.Threading.Thread.Sleep(timeBetweenFrames);
+				System.Windows.Forms.Application.DoEvents();
 			}
 		}
 
@@ -185,6 +244,39 @@ namespace NegativeScreen
 			float[,] temp = (float[,])colorMatrix.Clone();
 			temp[0, 4] += 0.1f;
 			return temp;
+		}
+
+		public static List<float[,]> Interpolate(float[,] A, float[,] B)
+		{
+			const int STEPS = 10;
+			const int SIZE = 5;
+
+			if (A.GetLength(0) != SIZE ||
+				A.GetLength(1) != SIZE ||
+				B.GetLength(0) != SIZE ||
+				B.GetLength(1) != SIZE)
+			{
+				throw new ArgumentException();
+			}
+
+			List<float[,]> result = new List<float[,]>(STEPS);
+
+			for (int i = 0; i < STEPS; i++)
+			{
+				result.Add(new float[SIZE, SIZE]);
+
+				for (int x = 0; x < SIZE; x++)
+				{
+					for (int y = 0; y < SIZE; y++)
+					{
+						// f(x)=ya+(x-xa)*(yb-ya)/(xb-xa)
+						//calculate 10 steps, from 1 to 10 (we don't need 0, as we start from there)
+						result[i][x, y] = A[x, y] + (i + 1/*-0*/) * (B[x, y] - A[x, y]) / (STEPS/*-0*/);
+					}
+				}
+			}
+
+			return result;
 		}
 	}
 }
