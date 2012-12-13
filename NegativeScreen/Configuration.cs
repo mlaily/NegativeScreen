@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace NegativeScreen
 {
-	class Configuration
+	class Configuration : IConfigurable
 	{
 		#region Default configuration
 
@@ -154,227 +155,129 @@ Grayscale=win+alt+F11
 			{
 				configFileContent = DefaultConfiguration;
 			}
-			Parser.AssignConfiguration(configFileContent, this);
+			Parser.AssignConfiguration(configFileContent, this, new HotKeyParser());
 		}
 
+		[CorrespondTo("toggle", CustomParameter = HotKey.ToggleKeyId)]
 		public HotKey ToggleKey { get; protected set; }
 
+		[CorrespondTo("exit", CustomParameter = HotKey.ExitKeyId)]
 		public HotKey ExitKey { get; protected set; }
 
+		[CorrespondTo("enableSmoothTransitions")]
 		public bool EnableSmoothTransitions { get; protected set; }
 
 		public Dictionary<HotKey, ScreenColorEffect> ColorEffects { get; protected set; }
 
-		private static class Parser
+		public static float[,] ParseMatrix(string rawValue)
 		{
-
-			public static void AssignConfiguration(string content, Configuration configuration)
+			float[,] matrix = new float[5, 5];
+			var rows = System.Text.RegularExpressions.Regex.Matches(rawValue, @"{(?<row>.*?)}",
+				System.Text.RegularExpressions.RegexOptions.ExplicitCapture);
+			if (rows.Count != 5)
 			{
-				Dictionary<string, string> rawConfiguration = ParseConfiguration(content);
-				foreach (var item in rawConfiguration)
+				throw new Exception("The matrices must have 5 rows.");
+			}
+			for (int x = 0; x < rows.Count; x++)
+			{
+				var row = rows[x];
+				var columnSplit = row.Groups["row"].Value.Split(',');
+				if (columnSplit.Length != 5)
 				{
-					switch (item.Key.ToLowerInvariant())
+					throw new Exception("The matrices must have 5 columns.");
+				}
+				for (int y = 0; y < matrix.GetLength(1); y++)
+				{
+					float value;
+					if (!float.TryParse(columnSplit[y],
+						System.Globalization.NumberStyles.Float,
+						System.Globalization.NumberFormatInfo.InvariantInfo,
+						out value))
 					{
-						case "toggle":
-							configuration.ToggleKey = ParseHotKey(item.Value, HotKey.ToggleKeyId);
-							break;
-						case "exit":
-							configuration.ExitKey = ParseHotKey(item.Value, HotKey.ExitKeyId);
-							break;
-						case "enablesmoothtransitions":
-							configuration.EnableSmoothTransitions = ParseBool(item.Value, true);
-							break;
-						default:
-							//first part is the hotkey, second part is the matrix
-							var splitted = item.Value.Split(new char[] { '\n' }, 2);
-							if (splitted.Length < 2)
-							{
-								throw new Exception(string.Format(
-									"The value assigned to \"{0}\" is unexpected. The hotkey must be separated from the matrix by a new line.",
-									item.Key));
-							}
-							configuration.ColorEffects.Add(ParseHotKey(splitted[0]),
-								new ScreenColorEffect(ParseMatrix(splitted[1]), item.Key));
-							break;
+						throw new Exception(string.Format("Unable to parse \"{0}\" to a float.", columnSplit[y]));
 					}
+					matrix[x, y] = value;
 				}
 			}
-
-			/// <remarks>
-			/// comments: if the character '#' is found, the rest of the line is ignored
-			/// quotes: allow to place a '#' inside a value. they do not appear in the final result
-			/// i.e. blah="hello #1!" will create a parameter blah with a value of: hello #1!
-			/// to place a quotation mark inside quotes, double it
-			/// i.e. blah="hello""" will create a parameter blah with a value of: hello "
-			/// </remarks>
-			private static Dictionary<string, string> ParseConfiguration(string content)
-			{
-				var cleanedContent = content.Replace("\r\n", "\n").Replace('\r', '\n');
-				int i = 0;
-				Dictionary<string, string> parsed = new Dictionary<string, string>();
-				StringBuilder left = new StringBuilder();
-				StringBuilder right = new StringBuilder();
-				bool insideQuotes = false;
-				while (i < cleanedContent.Length)
-				{
-					char read = cleanedContent[i];
-					switch (read)
-					{
-						case '"':
-							if (insideQuotes)
-							{
-								//handle double quotes inside quotation marks
-								if (i + 1 < cleanedContent.Length && cleanedContent[i + 1] == '"')
-								{
-									right.Append('"');
-									i++;
-									break;
-								}
-							}
-							insideQuotes = !insideQuotes;
-							break;
-						case '#':
-							if (insideQuotes)
-							{
-								goto default;
-							}
-							//ignore line
-							do
-							{
-								i++;
-							} while (i < cleanedContent.Length && cleanedContent[i] != '\n');
-							//include the new line
-							i--;
-							break;
-						case '=':
-							if (insideQuotes)
-							{
-								goto default;
-							}
-							int indexOfLastLine = right.Length - 1;
-							while (indexOfLastLine > 0 && right[indexOfLastLine] != '\n')
-							{
-								indexOfLastLine--;
-							}
-							if (left.Length > 0)
-							{
-								string key = left.ToString();
-								//the last declaration overwrite any existing one
-								if (parsed.ContainsKey(key))
-								{
-									parsed[key] = right.ToString(0, indexOfLastLine).Trim();
-								}
-								else
-								{
-									parsed.Add(key, right.ToString(0, indexOfLastLine).Trim());
-								}
-							}
-							left = right.Remove(0, indexOfLastLine > 0 ? indexOfLastLine + 1 : 0);
-							right = new StringBuilder();
-							break;
-						default:
-							right.Append(read);
-							break;
-					}
-					i++;
-				}
-				parsed.Add(left.ToString(), right.ToString().Trim());
-				return parsed;
-			}
-
-			private static HotKey ParseHotKey(string rawValue, int id = -1)
-			{
-				KeyModifiers modifiers = KeyModifiers.NONE;
-				Keys key = Keys.None;
-				string trimmed = rawValue.Trim();
-				var splitted = trimmed.Split('+');
-				foreach (var item in splitted)
-				{
-					//modifier
-					switch (item.ToLowerInvariant())
-					{
-						case "alt":
-							modifiers |= KeyModifiers.MOD_ALT;
-							break;
-						case "ctrl":
-							modifiers |= KeyModifiers.MOD_CONTROL;
-							break;
-						case "shift":
-							modifiers |= KeyModifiers.MOD_SHIFT;
-							break;
-						case "win":
-							modifiers |= KeyModifiers.MOD_WIN;
-							break;
-						default:
-							//key
-							if (!Enum.TryParse(item, out key))
-							{
-								//try to parse numeric value
-								int numericValue;
-								if (int.TryParse(item, out numericValue))
-								{
-									if (Enum.IsDefined(typeof(Keys), numericValue))
-									{
-										key = (Keys)numericValue;
-									}
-								}
-							}
-							break;
-					}
-
-				}
-				return new HotKey(modifiers, key, id);
-			}
-
-			private static float[,] ParseMatrix(string rawValue)
-			{
-				float[,] matrix = new float[5, 5];
-				var rows = System.Text.RegularExpressions.Regex.Matches(rawValue, @"{(?<row>.*?)}",
-					System.Text.RegularExpressions.RegexOptions.ExplicitCapture);
-				if (rows.Count != 5)
-				{
-					throw new Exception("The matrices must have 5 rows.");
-				}
-				for (int x = 0; x < rows.Count; x++)
-				{
-					var row = rows[x];
-					var columnSplit = row.Groups["row"].Value.Split(',');
-					if (columnSplit.Length != 5)
-					{
-						throw new Exception("The matrices must have 5 columns.");
-					}
-					for (int y = 0; y < matrix.GetLength(1); y++)
-					{
-						float value;
-						if (!float.TryParse(columnSplit[y],
-							System.Globalization.NumberStyles.Float,
-							System.Globalization.NumberFormatInfo.InvariantInfo,
-							out value))
-						{
-							throw new Exception(string.Format("Unable to parse \"{0}\" to a float.", columnSplit[y]));
-						}
-						matrix[x, y] = value;
-					}
-				}
-				return matrix;
-			}
-
-			private static bool ParseBool(string rawValue, bool @default)
-			{
-				string trimmed = rawValue.Trim();
-				switch (trimmed.ToLowerInvariant())
-				{
-					case "true":
-						return true;
-					case "false":
-						return false;
-					default:
-						return @default;
-				}
-			}
-
+			return matrix;
 		}
 
+		public void HandleDynamicKey(string key, string value)
+		{
+			//first part is the hotkey, second part is the matrix
+			var splitted = value.Split(new char[] { '\n' }, 2);
+			if (splitted.Length < 2)
+			{
+				throw new Exception(string.Format(
+					"The value assigned to \"{0}\" is unexpected. The hotkey must be separated from the matrix by a new line.",
+					key));
+			}
+			this.ColorEffects.Add(HotKeyParser.StaticParse(splitted[0]),
+				new ScreenColorEffect(ParseMatrix(splitted[1]), key));
+		}
+	}
+
+	class HotKeyParser : ICustomParser
+	{
+
+		public Type ReturnType
+		{
+			get { return typeof(HotKey); }
+		}
+
+		public object Parse(string rawValue, object customParameter)
+		{
+			int defaultId = -1;
+			if (customParameter is int)
+			{
+				defaultId = (int)customParameter;
+			}
+			return StaticParse(rawValue, defaultId);
+		}
+
+		public static HotKey StaticParse(string rawValue, int defaultId = -1)
+		{
+			KeyModifiers modifiers = KeyModifiers.NONE;
+			Keys key = Keys.None;
+			string trimmed = rawValue.Trim();
+			var splitted = trimmed.Split('+');
+			foreach (var item in splitted)
+			{
+				//modifier
+				switch (item.ToLowerInvariant())
+				{
+					case "alt":
+						modifiers |= KeyModifiers.MOD_ALT;
+						break;
+					case "ctrl":
+						modifiers |= KeyModifiers.MOD_CONTROL;
+						break;
+					case "shift":
+						modifiers |= KeyModifiers.MOD_SHIFT;
+						break;
+					case "win":
+						modifiers |= KeyModifiers.MOD_WIN;
+						break;
+					default:
+						//key
+						if (!Enum.TryParse(item, out key))
+						{
+							//try to parse numeric value
+							int numericValue;
+							if (int.TryParse(item, out numericValue))
+							{
+								if (Enum.IsDefined(typeof(Keys), numericValue))
+								{
+									key = (Keys)numericValue;
+								}
+							}
+						}
+						break;
+				}
+
+			}
+			return new HotKey(modifiers, key, defaultId);
+		}
 	}
 
 	struct HotKey
