@@ -30,6 +30,8 @@ Exit=win+alt+H
 SmoothTransitions=true
 SmoothToggles=true
 
+InitialColorEffect=""Smart Inversion""
+
 #Matrices definition
 # The left hand is used as a description, while the right hand is broken down in two parts:
 # - the hot key combination, followed by a new line,
@@ -158,6 +160,19 @@ Grayscale=win+alt+F11
 				configFileContent = DefaultConfiguration;
 			}
 			Parser.AssignConfiguration(configFileContent, this, new HotKeyParser(), new MatrixParser());
+			if (!string.IsNullOrWhiteSpace(InitialColorEffectName))
+			{
+				try
+				{
+					this.InitialColorEffect = this.ColorEffects.Values.Single(x =>
+						x.Description.ToLowerInvariant() == InitialColorEffectName.ToLowerInvariant()).Matrix;
+				}
+				catch (Exception)
+				{
+					this.InitialColorEffect = BuiltinMatrices.Negative;
+				}
+
+			}
 		}
 
 		[CorrespondTo("Toggle", CustomParameter = HotKey.ToggleKeyId)]
@@ -173,6 +188,8 @@ Grayscale=win+alt+F11
 		public bool SmoothToggles { get; protected set; }
 
 		[CorrespondTo("InitialColorEffect")]
+		public string InitialColorEffectName { get; protected set; }
+
 		public float[,] InitialColorEffect { get; protected set; }
 
 		public Dictionary<HotKey, ScreenColorEffect> ColorEffects { get; protected set; }
