@@ -24,9 +24,11 @@ namespace NegativeScreen
 # You can either use its textual representation, or its numerical value.
 # WARNING: if the key is not valid, the program will probably crash...
 
-toggle=win+alt+N
-exit=win+alt+H
-enableSmoothTransitions=true
+Toggle=win+alt+N
+Exit=win+alt+H
+
+SmoothTransitions=true
+SmoothToggles=true
 
 #Matrices definition
 # The left hand is used as a description, while the right hand is broken down in two parts:
@@ -158,14 +160,17 @@ Grayscale=win+alt+F11
 			Parser.AssignConfiguration(configFileContent, this, new HotKeyParser());
 		}
 
-		[CorrespondTo("toggle", CustomParameter = HotKey.ToggleKeyId)]
+		[CorrespondTo("Toggle", CustomParameter = HotKey.ToggleKeyId)]
 		public HotKey ToggleKey { get; protected set; }
 
-		[CorrespondTo("exit", CustomParameter = HotKey.ExitKeyId)]
+		[CorrespondTo("Exit", CustomParameter = HotKey.ExitKeyId)]
 		public HotKey ExitKey { get; protected set; }
 
-		[CorrespondTo("enableSmoothTransitions")]
-		public bool EnableSmoothTransitions { get; protected set; }
+		[CorrespondTo("SmoothTransitions")]
+		public bool SmoothTransitions { get; protected set; }
+
+		[CorrespondTo("SmoothToggles")]
+		public bool SmoothToggles { get; protected set; }
 
 		public Dictionary<HotKey, ScreenColorEffect> ColorEffects { get; protected set; }
 

@@ -198,19 +198,12 @@ namespace NegativeScreen
 
 		public static void InterpolateColorEffect(float[,] fromMatrix, float[,] toMatrix, int timeBetweenFrames = 15)
 		{
-			if (Configuration.Current.EnableSmoothTransitions)
+			List<float[,]> transitions = Interpolate(fromMatrix, toMatrix);
+			foreach (float[,] item in transitions)
 			{
-				List<float[,]> transitions = Interpolate(fromMatrix, toMatrix);
-				foreach (float[,] item in transitions)
-				{
-					ChangeColorEffect(item);
-					System.Threading.Thread.Sleep(timeBetweenFrames);
-					System.Windows.Forms.Application.DoEvents();
-				}
-			}
-			else
-			{
-				ChangeColorEffect(toMatrix);
+				ChangeColorEffect(item);
+				System.Threading.Thread.Sleep(timeBetweenFrames);
+				System.Windows.Forms.Application.DoEvents();
 			}
 		}
 

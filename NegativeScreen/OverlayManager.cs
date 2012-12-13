@@ -99,8 +99,7 @@ namespace NegativeScreen
 			{
 				throw new Exception("MagInitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
-			BuiltinMatrices.InterpolateColorEffect(BuiltinMatrices.Identity, currentMatrix);
-
+			ToggleColorEffect(true);
 			System.Threading.Thread t = new System.Threading.Thread(RefreshLoop);
 			t.SetApartmentState((System.Threading.ApartmentState.STA));
 			t.Start();
@@ -114,7 +113,7 @@ namespace NegativeScreen
 				System.Threading.Thread.Sleep(100);
 				if (mainLoopPaused)
 				{
-					BuiltinMatrices.InterpolateColorEffect(currentMatrix, BuiltinMatrices.Identity);
+					ToggleColorEffect(false);
 					if (!NativeMethods.MagUninitialize())
 					{
 						throw new Exception("MagUninitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
@@ -206,7 +205,7 @@ namespace NegativeScreen
 		{
 			if (!mainLoopPaused)
 			{
-				BuiltinMatrices.InterpolateColorEffect(currentMatrix, BuiltinMatrices.Identity);
+				ToggleColorEffect(false);
 			}
 			this.exiting = true;
 			this.Dispose();
@@ -218,6 +217,32 @@ namespace NegativeScreen
 			this.mainLoopPaused = !mainLoopPaused;
 		}
 
+		private void ToggleColorEffect(bool fromNormal)
+		{
+			if (fromNormal)
+			{
+				if (Configuration.Current.SmoothToggles)
+				{
+					BuiltinMatrices.InterpolateColorEffect(BuiltinMatrices.Identity, currentMatrix);
+				}
+				else
+				{
+					BuiltinMatrices.ChangeColorEffect(currentMatrix);
+				}
+			}
+			else
+			{
+				if (Configuration.Current.SmoothToggles)
+				{
+					BuiltinMatrices.InterpolateColorEffect(currentMatrix, BuiltinMatrices.Identity);
+				}
+				else
+				{
+					BuiltinMatrices.ChangeColorEffect(BuiltinMatrices.Identity);
+				}
+			}
+		}
+
 		/// <summary>
 		/// check if the magnification api is in a state where a color effect can be applied, then proceed.
 		/// </summary>
@@ -226,7 +251,14 @@ namespace NegativeScreen
 		{
 			if (!mainLoopPaused && !exiting)
 			{
-				BuiltinMatrices.InterpolateColorEffect(currentMatrix, matrix);
+				if (Configuration.Current.SmoothTransitions)
+				{
+					BuiltinMatrices.InterpolateColorEffect(currentMatrix, matrix);
+				}
+				else
+				{
+					BuiltinMatrices.ChangeColorEffect(matrix);
+				}
 			}
 			currentMatrix = matrix;
 		}
