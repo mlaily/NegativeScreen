@@ -162,6 +162,7 @@ namespace NegativeScreen
 
 		/// <summary>
 		/// Undocumented function.
+		/// http://msdn.microsoft.com/en-us/library/windows/desktop/hh162714%28v=vs.85%29.aspx
 		/// </summary>
 		/// <param name="scale"></param>
 		/// <param name="x"></param>
@@ -173,6 +174,7 @@ namespace NegativeScreen
 
 		/// <summary>
 		/// Undocumented function.
+		/// http://msdn.microsoft.com/en-us/library/windows/desktop/hh162710%28v=vs.85%29.aspx
 		/// </summary>
 		/// <param name="scale"></param>
 		/// <param name="x"></param>
@@ -184,6 +186,7 @@ namespace NegativeScreen
 
 		/// <summary>
 		/// Undocumented function.
+		/// http://msdn.microsoft.com/en-us/library/windows/desktop/hh162709%28v=vs.85%29.aspx
 		/// </summary>
 		/// <param name="pEffect"></param>
 		/// <returns></returns>
@@ -193,12 +196,23 @@ namespace NegativeScreen
 
 		/// <summary>
 		/// Undocumented function.
+		/// http://msdn.microsoft.com/en-us/library/windows/desktop/hh162713%28v=vs.85%29.aspx
 		/// </summary>
 		/// <param name="pEffect"></param>
 		/// <returns></returns>
 		[DllImport("user32.dll", CallingConvention = CallingConvention.StdCall)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool SetMagnificationDesktopColorEffect(ref ColorEffect pEffect);
+
+		/// <summary>
+		/// Undocumented function.
+		/// http://msdn.microsoft.com/en-us/library/windows/desktop/hh162716%28v=vs.85%29.aspx
+		/// </summary>
+		/// <param name="pEffect"></param>
+		/// <returns></returns>
+		[DllImport("user32.dll", CallingConvention = CallingConvention.StdCall)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool ShowSystemCursor(bool fShowCursor);
 
 		#endregion
 
