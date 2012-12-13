@@ -27,6 +27,7 @@ namespace NegativeScreen
 		[STAThread]
 		static void Main(string[] args)
 		{
+			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 			//check whether the current process is running under WoW64 mode
 			if (NativeMethods.IsX86InWow64Mode())
 			{
@@ -62,6 +63,11 @@ To avoid known bugs relative to the used APIs, please instead run the 64 bits co
 			OverlayManager.Initialize();
 
 			Application.Run();
+		}
+
+		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+		{
+			MessageBox.Show(e.ExceptionObject.ToString(), "Sorry, I'm bailing out!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
 		private static bool IsAnotherInstanceAlreadyRunning()
