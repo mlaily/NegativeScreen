@@ -309,5 +309,13 @@ namespace NegativeScreen
 			System.Diagnostics.Process.Start("notepad", Configuration.DefaultConfigurationFileName);
 		}
 
+		void trayIcon_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+		{
+			if (e.Button == System.Windows.Forms.MouseButtons.Left)
+			{
+				Toggle();
+			}
+		}
+
 	}
 }
