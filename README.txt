@@ -12,7 +12,8 @@ This task is joyfully achieved by inverting the colors of your screen.
 Unlike the Windows Magnifier, which is also capable of such color inversion,
 NegativeScreen was specifically designed to be easy and convenient to use.
 
-It comes without any graphic interface (except a system tray icon in the last version), but don't worry, this only makes it easier to use!
+It comes with a minimal graphic interface in the form of a system tray icon with a context menu,
+but don't worry, this only makes it easier to use!
 
 
 ## Features
@@ -31,7 +32,9 @@ You can also configure the hot keys for every actions, using the same configurat
 
 NegativeScreen < 2.0 needs at least Windows Vista to run.
 
-Versions 2.0+ need at least Windows 7, and can run on Windows 8.
+Versions 2.0+ need at least Windows 7.
+
+Both run on Windows 8.
 
 Graphic acceleration (Aero) must be enabled.
 
@@ -53,6 +56,18 @@ Graphic acceleration (Aero) must be enabled.
 	* F9: negative red
 	* F10: red
 	* F11: grayscale
+
+
+## Configuration file
+
+A default configuration file comes with the binary release.
+
+Should something go wrong (bad hot key...), you can simply delete the configuration file,
+the internal default configuration will be used.
+
+If the configuration file is missing, you can use the "Edit Configuration" menu to regenerate the default one.
+
+Syntax: see in the configuration file...
 
 
 ***
