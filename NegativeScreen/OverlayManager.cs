@@ -71,7 +71,10 @@ namespace NegativeScreen
 			RegisterHotKey(Configuration.Current.ExitKey);
 			foreach (var item in Configuration.Current.ColorEffects)
 			{
-				RegisterHotKey(item.Key);
+				if (item.Key != HotKey.Empty)
+				{
+					RegisterHotKey(item.Key);
+				}
 			}
 
 			InitializeComponent();

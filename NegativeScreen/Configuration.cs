@@ -29,7 +29,7 @@ namespace NegativeScreen
 		#region Default configuration
 
 		public const string DefaultConfigurationFileName = "negativescreen.conf";
-		public const string DefaultConfiguration = 
+		public const string DefaultConfiguration =
 @"# comments: if the character '#' is found, the rest of the line is ignored.
 # quotes: allow to place a '#' inside a value. they do not appear in the final result.
 # i.e. blah=""hello #1!"" will create a parameter blah with a value of: hello #1!
@@ -52,7 +52,7 @@ InitialColorEffect=""Smart Inversion""
 
 #Matrices definition
 # The left hand is used as a description, while the right hand is broken down in two parts:
-# - the hot key combination, followed by a new line,
+# - the hot key combination, followed by a new line, (this part is optional)
 # - the matrix definition, with or without new lines between rows.
 # The matrices must have 5 rows and 5 columns,
 # each line between curved brackets,
@@ -214,16 +214,26 @@ Grayscale=win+alt+F11
 
 		public void HandleDynamicKey(string key, string value)
 		{
-			//first part is the hotkey, second part is the matrix
-			var splitted = value.Split(new char[] { '\n' }, 2);
-			if (splitted.Length < 2)
+			//value is already trimmed
+			if (value.StartsWith("{"))
 			{
-				throw new Exception(string.Format(
-					"The value assigned to \"{0}\" is unexpected. The hotkey must be separated from the matrix by a new line.",
-					key));
+				//no hotkey
+				this.ColorEffects.Add(HotKey.Empty,
+					new ScreenColorEffect(MatrixParser.StaticParseMatrix(value), key));
 			}
-			this.ColorEffects.Add(HotKeyParser.StaticParse(splitted[0]),
-				new ScreenColorEffect(MatrixParser.StaticParseMatrix(splitted[1]), key));
+			else
+			{
+				//first part is the hotkey, second part is the matrix
+				var splitted = value.Split(new char[] { '\n' }, 2);
+				if (splitted.Length < 2)
+				{
+					throw new Exception(string.Format(
+						"The value assigned to \"{0}\" is unexpected. The hotkey must be separated from the matrix by a new line.",
+						key));
+				}
+				this.ColorEffects.Add(HotKeyParser.StaticParse(splitted[0]),
+					new ScreenColorEffect(MatrixParser.StaticParseMatrix(splitted[1]), key));
+			}
 		}
 	}
 
@@ -344,9 +354,21 @@ Grayscale=win+alt+F11
 
 		private static int CurrentId = 100;
 
+		public static readonly HotKey Empty;
+
 		public KeyModifiers Modifiers { get; private set; }
 		public Keys Key { get; private set; }
 		public int Id { get; private set; }
+
+		static HotKey()
+		{
+			Empty = new HotKey()
+			{
+				Id = 0,
+				Key = Keys.None,
+				Modifiers = KeyModifiers.NONE
+			};
+		}
 
 		public HotKey(KeyModifiers modifiers, Keys key, int id = -1)
 			: this()
@@ -366,7 +388,33 @@ Grayscale=win+alt+F11
 
 		public override int GetHashCode()
 		{
-			return Modifiers.GetHashCode() ^ Key.GetHashCode();
+			return (int)Key & (int)Keys.KeyCode | (int)Modifiers << 16 | Id << 20;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj == null)
+			{
+				return false;
+			}
+			if (obj is HotKey)
+			{
+				return obj.GetHashCode() == this.GetHashCode();
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		public static bool operator ==(HotKey a, HotKey b)
+		{
+			return a.GetHashCode() == b.GetHashCode();
+		}
+
+		public static bool operator !=(HotKey a, HotKey b)
+		{
+			return a.GetHashCode() != b.GetHashCode();
 		}
 	}
 
