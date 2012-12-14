@@ -374,7 +374,8 @@ Grayscale=win+alt+F11
 			: this()
 		{
 			this.Modifiers = modifiers;
-			this.Key = key;
+			//65535
+			this.Key = key & Keys.KeyCode;
 			if (id == -1)
 			{
 				this.Id = CurrentId;
@@ -388,7 +389,7 @@ Grayscale=win+alt+F11
 
 		public override int GetHashCode()
 		{
-			return (int)Key & (int)Keys.KeyCode | (int)Modifiers << 16 | Id << 20;
+			return (int)Key | (int)Modifiers << 16 | Id << 20;
 		}
 
 		public override bool Equals(object obj)
@@ -415,6 +416,29 @@ Grayscale=win+alt+F11
 		public static bool operator !=(HotKey a, HotKey b)
 		{
 			return a.GetHashCode() != b.GetHashCode();
+		}
+
+		public override string ToString()
+		{
+			StringBuilder sb = new StringBuilder();
+			if (Modifiers.HasFlag(KeyModifiers.MOD_ALT))
+			{
+				sb.Append("Alt+");
+			}
+			if (Modifiers.HasFlag(KeyModifiers.MOD_CONTROL))
+			{
+				sb.Append("Ctrl+");
+			}
+			if (Modifiers.HasFlag(KeyModifiers.MOD_SHIFT))
+			{
+				sb.Append("Shift+");
+			}
+			if (Modifiers.HasFlag(KeyModifiers.MOD_WIN))
+			{
+				sb.Append("Win+");
+			}
+			sb.Append(Enum.GetName(typeof(Keys), Key) ?? ((int)Key).ToString());
+			return sb.ToString();
 		}
 	}
 

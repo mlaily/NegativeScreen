@@ -78,6 +78,8 @@ namespace NegativeScreen
 			}
 
 			InitializeComponent();
+			toggleInversionToolStripMenuItem.ShortcutKeyDisplayString = Configuration.Current.ToggleKey.ToString();
+			exitToolStripMenuItem.ShortcutKeyDisplayString = Configuration.Current.ExitKey.ToString();
 			InitializeContextMenu();
 			InitializeRefreshLoop();
 		}
@@ -88,6 +90,7 @@ namespace NegativeScreen
 			{
 				var menuItem = new ToolStripMenuItem(item.Value.Description);
 				menuItem.Tag = item.Value;
+				menuItem.ShortcutKeyDisplayString = item.Key.ToString();
 				menuItem.Click += (s, e) =>
 				{
 					var effect = (ScreenColorEffect)((ToolStripMenuItem)s).Tag;
