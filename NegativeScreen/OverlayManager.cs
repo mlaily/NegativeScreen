@@ -160,14 +160,14 @@ namespace NegativeScreen
 				{
 					throw new Exception("MagInitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 				}
-				ToggleColorEffect(true);
+				ToggleColorEffect(fromNormal: true);
 				while (!exiting)
 				{
 					System.Threading.Thread.Sleep(Configuration.Current.MainLoopRefreshTime);
 					DoMagnifierApiInvokes();
 					if (mainLoopPaused)
 					{
-						ToggleColorEffect(false);
+						ToggleColorEffect(fromNormal: false);
 						if (!NativeMethods.MagUninitialize())
 						{
 							throw new Exception("MagUninitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
