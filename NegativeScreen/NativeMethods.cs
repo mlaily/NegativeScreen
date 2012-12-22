@@ -54,7 +54,7 @@ namespace NegativeScreen
 		/// <param name="cy"></param>
 		/// <param name="flags"></param>
 		/// <returns></returns>
-		[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+		[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, int flags);
 
@@ -76,7 +76,7 @@ namespace NegativeScreen
 		/// <param name="nIndex">GWL_EXSTYLE, GWL_STYLE, [...]</param>
 		/// <param name="dwNewLong"></param>
 		/// <returns></returns>
-		[DllImport("user32.dll")]
+		[DllImport("user32.dll", SetLastError = true)]
 		public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
 		/// <summary>
@@ -95,7 +95,7 @@ namespace NegativeScreen
 		/// <param name="hInstance"></param>
 		/// <param name="lParam"></param>
 		/// <returns></returns>
-		[DllImport("user32.dll", EntryPoint = "CreateWindowExW", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
+		[DllImport("user32.dll", EntryPoint = "CreateWindowExW", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
 		public extern static IntPtr CreateWindowEx(
 			int dwExStyle,
 			string lpClassName,
@@ -129,7 +129,7 @@ namespace NegativeScreen
 		/// <param name="rect"></param>
 		/// <param name="erase"></param>
 		/// <returns></returns>
-		[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+		[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool InvalidateRect(IntPtr hWnd, IntPtr rect, [MarshalAs(UnmanagedType.Bool)] bool erase);
 
@@ -157,7 +157,7 @@ namespace NegativeScreen
 		/// http://msdn.microsoft.com/en-us/library/ms633543.aspx
 		/// </summary>
 		/// <returns></returns>
-		[DllImport("user32.dll")]
+		[DllImport("user32.dll", SetLastError = true)]
 		public static extern bool SetProcessDPIAware();
 
 		/// <summary>
@@ -168,7 +168,7 @@ namespace NegativeScreen
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		[DllImport("user32.dll", CallingConvention = CallingConvention.StdCall)]
+		[DllImport("user32.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool SetMagnificationDesktopMagnification(double scale, int x, int y);
 
@@ -180,7 +180,7 @@ namespace NegativeScreen
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		[DllImport("user32.dll", CallingConvention = CallingConvention.StdCall)]
+		[DllImport("user32.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool GetMagnificationDesktopMagnification(out double scale, out int x, out int y);
 
@@ -190,7 +190,7 @@ namespace NegativeScreen
 		/// </summary>
 		/// <param name="pEffect"></param>
 		/// <returns></returns>
-		[DllImport("user32.dll", CallingConvention = CallingConvention.StdCall)]
+		[DllImport("user32.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool GetMagnificationDesktopColorEffect(out ColorEffect pEffect);
 
@@ -200,7 +200,7 @@ namespace NegativeScreen
 		/// </summary>
 		/// <param name="pEffect"></param>
 		/// <returns></returns>
-		[DllImport("user32.dll", CallingConvention = CallingConvention.StdCall)]
+		[DllImport("user32.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool SetMagnificationDesktopColorEffect(ref ColorEffect pEffect);
 
@@ -210,7 +210,7 @@ namespace NegativeScreen
 		/// </summary>
 		/// <param name="pEffect"></param>
 		/// <returns></returns>
-		[DllImport("user32.dll", CallingConvention = CallingConvention.StdCall)]
+		[DllImport("user32.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool ShowSystemCursor(bool fShowCursor);
 
@@ -223,7 +223,7 @@ namespace NegativeScreen
 		/// </summary>
 		/// <param name="modName"></param>
 		/// <returns></returns>
-		[DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
 		public static extern IntPtr GetModuleHandle([MarshalAs(UnmanagedType.LPWStr)] string modName);
 
 		[DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
@@ -243,7 +243,7 @@ namespace NegativeScreen
 		/// where other last error functions do nothing.
 		/// </summary>
 		/// <returns></returns>
-		[DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
 		public static extern int GetLastError();
 
 		/// <summary>
@@ -277,36 +277,36 @@ namespace NegativeScreen
 		/// </summary>
 		public const string WC_MAGNIFIER = "Magnifier";
 
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool MagInitialize();
 
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool MagUninitialize();
 
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool MagSetWindowSource(IntPtr hwnd, RECT rect);
 
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool MagGetWindowSource(IntPtr hwnd, ref RECT pRect);
 
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool MagSetWindowTransform(IntPtr hwnd, ref Transformation pTransform);
 
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool MagGetWindowTransform(IntPtr hwnd, ref Transformation pTransform);
 
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		//ref keyword necessary for X86, not sure why... (crash on call otherwise)
 		public static extern bool MagSetColorEffect(IntPtr hwnd, ref ColorEffect pEffect);
 
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall)]
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool MagGetColorEffect(IntPtr hwnd, ref ColorEffect pEffect);
 
@@ -318,20 +318,20 @@ namespace NegativeScreen
 
 		///ATTENTION! : program must be compiled for x64 or the call will fail!
 
-		[DllImport("dwmapi.dll", PreserveSig = false)]
+		[DllImport("dwmapi.dll", PreserveSig = false, SetLastError = true)]
 		public static extern int DwmSetWindowAttribute(IntPtr hwnd, DWMWINDOWATTRIBUTE attr, ref DWMWINDOWATTRIBUTE attrValue, int attrSize);
 
-		[DllImport("dwmapi.dll", PreserveSig = false)]
+		[DllImport("dwmapi.dll", PreserveSig = false, SetLastError = true)]
 		public static extern int DwmSetWindowAttribute(IntPtr hwnd, DWMWINDOWATTRIBUTE attr, ref DWMNCRENDERINGPOLICY attrValue, int attrSize);
 
-		[DllImport("dwmapi.dll", PreserveSig = false)]
+		[DllImport("dwmapi.dll", PreserveSig = false, SetLastError = true)]
 		public static extern int DwmSetWindowAttribute(IntPtr hwnd, DWMWINDOWATTRIBUTE attr, ref bool attrValue, int attrSize);
 
-		[DllImport("dwmapi.dll", PreserveSig = false)]
+		[DllImport("dwmapi.dll", PreserveSig = false, SetLastError = true)]
 		public static extern int DwmSetWindowAttribute(IntPtr hwnd, DWMWINDOWATTRIBUTE attr, ref DWMFLIP3DWINDOWPOLICY attrValue, int attrSize);
 
 
-		[DllImport("dwmapi.dll", PreserveSig = false)]
+		[DllImport("dwmapi.dll", PreserveSig = false, SetLastError = true)]
 		public static extern bool DwmIsCompositionEnabled();
 
 		#endregion
