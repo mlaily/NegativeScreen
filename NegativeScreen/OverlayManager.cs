@@ -22,6 +22,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Drawing;
+using System.Collections.Concurrent;
 
 namespace NegativeScreen
 {
@@ -45,6 +46,47 @@ namespace NegativeScreen
 		/// memorize the current color matrix.
 		/// </summary>
 		private float[,] currentMatrix = null;
+
+		// /!\ The full screen magnifier seems not to be thread-safe on Windows 8 at least,
+		// so every call after initialization must be done on the same thread.
+		#region Inter-thread color effect calls
+
+		/// <summary>
+		/// allow to execute magnifer api calls on the right thread.
+		/// </summary>
+		private ScreenColorEffect invokeColorEffect;
+		private bool shouldInvokeColorEffect;
+		private object invokeColorEffectLock = new object();
+
+		/// <summary>
+		/// Ask for a color effect change to be executed on the right thread.
+		/// </summary>
+		/// <param name="colorEffect"></param>
+		private void InvokeColorEffect(ScreenColorEffect colorEffect)
+		{
+			lock (invokeColorEffectLock)
+			{
+				invokeColorEffect = colorEffect;
+				shouldInvokeColorEffect = true;
+			}
+		}
+
+		/// <summary>
+		/// Execute every specified actions in the concurrent queue, on the right thread.
+		/// </summary>
+		private void DoMagnifierApiInvokes()
+		{
+			lock (invokeColorEffectLock)
+			{
+				if (shouldInvokeColorEffect)
+				{
+					SafeChangeColorEffect(invokeColorEffect.Matrix);
+				}
+				shouldInvokeColorEffect = false;
+			}
+		}
+
+		#endregion
 
 		private static OverlayManager _Instance;
 		public static OverlayManager Instance
@@ -81,7 +123,7 @@ namespace NegativeScreen
 			toggleInversionToolStripMenuItem.ShortcutKeyDisplayString = Configuration.Current.ToggleKey.ToString();
 			exitToolStripMenuItem.ShortcutKeyDisplayString = Configuration.Current.ExitKey.ToString();
 			InitializeContextMenu();
-			InitializeRefreshLoop();
+			InitializeControlLoop();
 		}
 
 		private void InitializeContextMenu()
@@ -94,49 +136,57 @@ namespace NegativeScreen
 				menuItem.Click += (s, e) =>
 				{
 					var effect = (ScreenColorEffect)((ToolStripMenuItem)s).Tag;
-					SafeChangeColorEffect(effect.Matrix);
+					InvokeColorEffect(effect);
 				};
 				this.changeModeToolStripMenuItem.DropDownItems.Add(menuItem);
 			}
 		}
 
-		private void InitializeRefreshLoop()
+		private void InitializeControlLoop()
 		{
-			if (!NativeMethods.MagInitialize())
-			{
-				throw new Exception("MagInitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-			}
-			ToggleColorEffect(true);
-			System.Threading.Thread t = new System.Threading.Thread(RefreshLoop);
+			System.Threading.Thread t = new System.Threading.Thread(ControlLoop);
 			t.SetApartmentState((System.Threading.ApartmentState.STA));
 			t.Start();
 		}
 
-		private void RefreshLoop()
+		/// <summary>
+		/// Main loop, in charge of controling the magnification api.
+		/// </summary>
+		private void ControlLoop()
 		{
-			bool running = true;
-			while (running && !exiting)
+			while (!exiting)
 			{
-				System.Threading.Thread.Sleep(100);
-				if (mainLoopPaused)
+				if (!NativeMethods.MagInitialize())
 				{
-					ToggleColorEffect(false);
-					if (!NativeMethods.MagUninitialize())
+					throw new Exception("MagInitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+				}
+				ToggleColorEffect(true);
+				while (!exiting)
+				{
+					System.Threading.Thread.Sleep(100);
+					DoMagnifierApiInvokes();
+					if (mainLoopPaused)
 					{
-						throw new Exception("MagUninitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+						ToggleColorEffect(false);
+						if (!NativeMethods.MagUninitialize())
+						{
+							throw new Exception("MagUninitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+						}
+						while (mainLoopPaused && !exiting)
+						{
+							System.Threading.Thread.Sleep(100);
+							DoMagnifierApiInvokes();
+						}
+						//we need to reinitialize
+						break;
 					}
-					while (mainLoopPaused && !exiting)
-					{
-						System.Threading.Thread.Sleep(100);
-					}
-					//we need to reinitialize
-					running = false;
 				}
 			}
-			if (!exiting)
-			{
-				InitializeRefreshLoop();
-			}
+			this.Invoke((Action)(() =>
+				{
+					this.Dispose();
+					Application.Exit();
+				}));
 		}
 
 		public void RegisterHotKey(HotKey hotkey)
@@ -198,7 +248,7 @@ namespace NegativeScreen
 							{
 								if (item.Key.Id == HotKeyId)
 								{
-									SafeChangeColorEffect(item.Value.Matrix);
+									InvokeColorEffect(item.Value);
 								}
 							}
 							break;
@@ -208,17 +258,21 @@ namespace NegativeScreen
 			base.WndProc(ref m);
 		}
 
+		/// <summary>
+		/// Can be called from any thread.
+		/// </summary>
 		private void Exit()
 		{
 			if (!mainLoopPaused)
 			{
-				ToggleColorEffect(false);
+				mainLoopPaused = true;
 			}
 			this.exiting = true;
-			this.Dispose();
-			Application.Exit();
 		}
 
+		/// <summary>
+		/// Can be called from any thread.
+		/// </summary>
 		private void Toggle()
 		{
 			this.mainLoopPaused = !mainLoopPaused;
@@ -251,7 +305,7 @@ namespace NegativeScreen
 		}
 
 		/// <summary>
-		/// check if the magnification api is in a state where a color effect can be applied, then proceed.
+		/// Check if the magnification api is in a state where a color effect can be applied, then proceed.
 		/// </summary>
 		/// <param name="matrix"></param>
 		private void SafeChangeColorEffect(float[,] matrix)
@@ -298,8 +352,6 @@ namespace NegativeScreen
 			Exit();
 		}
 
-		#endregion
-
 		private void editConfigurationToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (!System.IO.File.Exists(Configuration.DefaultConfigurationFileName))
@@ -309,13 +361,15 @@ namespace NegativeScreen
 			System.Diagnostics.Process.Start("notepad", Configuration.DefaultConfigurationFileName);
 		}
 
-		void trayIcon_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+		private void trayIcon_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
 			if (e.Button == System.Windows.Forms.MouseButtons.Left)
 			{
 				Toggle();
 			}
 		}
+
+		#endregion
 
 	}
 }
