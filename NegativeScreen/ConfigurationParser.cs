@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 namespace NegativeScreen
 {
@@ -105,7 +106,7 @@ namespace NegativeScreen
 			{
 				string key = item.Key.ToLowerInvariant();
 				var correspondingProps = configurableProperties.Where(x => x.Attribute.Key == key);
-				System.Reflection.PropertyInfo correspondingProp = null;
+				PropertyInfo correspondingProp = null;
 				CorrespondToAttribute correspondingAttribute = null;
 				if (correspondingProps.Any())
 				{
@@ -115,6 +116,7 @@ namespace NegativeScreen
 						var single = correspondingProps.Single();
 						correspondingProp = single.Property;
 						correspondingAttribute = single.Attribute;
+						configurableProperties.Remove(single);
 					}
 					catch (Exception ex)
 					{
@@ -130,11 +132,30 @@ namespace NegativeScreen
 					//default parsers
 					else if (correspondingProp.PropertyType == typeof(string))
 					{
+						//todo: handle default values for strings
 						correspondingProp.SetValue(configuration, item.Value, null);
 					}
 					else if (correspondingProp.PropertyType == typeof(bool))
 					{
-						correspondingProp.SetValue(configuration, ParseBool(item.Value), null);
+						if (correspondingAttribute.CustomParameter is bool)
+						{
+							correspondingProp.SetValue(configuration, ParseBool(item.Value, (bool)correspondingAttribute.CustomParameter), null);
+						}
+						else
+						{
+							correspondingProp.SetValue(configuration, ParseBool(item.Value), null);
+						}
+					}
+					else if (correspondingProp.PropertyType == typeof(int))
+					{
+						if (correspondingAttribute.CustomParameter is int)
+						{
+							correspondingProp.SetValue(configuration, ParseInt(item.Value, (int)correspondingAttribute.CustomParameter), null);
+						}
+						else
+						{
+							correspondingProp.SetValue(configuration, ParseInt(item.Value), null);
+						}
 					}
 					//TODO: default parser for other simple types (int, float...)
 					else
@@ -146,6 +167,16 @@ namespace NegativeScreen
 				{
 					//no corresponding assignable property
 					configuration.HandleDynamicKey(item.Key, item.Value);
+				}
+			}
+			//assign default value if present for remaining properties not found in configuration
+			foreach (var remainingPropery in configurableProperties)
+			{
+				//todo : throw exception if no default parameter to avoid impredictable errors?
+				//>> need to differentiate default null from provided null
+				if (remainingPropery.Attribute.CustomParameter != null)
+				{
+					remainingPropery.Property.SetValue(configuration, remainingPropery.Attribute.CustomParameter, null);
 				}
 			}
 		}
@@ -234,7 +265,7 @@ namespace NegativeScreen
 			return parsed;
 		}
 
-		private static bool ParseBool(string rawValue)
+		private static bool ParseBool(string rawValue, bool? @default = null)
 		{
 			string trimmed = rawValue.Trim();
 			switch (trimmed.ToLowerInvariant())
@@ -244,7 +275,35 @@ namespace NegativeScreen
 				case "false":
 					return false;
 				default:
-					throw new Exception("Could not parse a boolean value!");
+					if (@default.HasValue)
+					{
+						return @default.Value;
+					}
+					else
+					{
+						throw new Exception("Could not parse a boolean value!");
+					}
+			}
+		}
+
+		private static int ParseInt(string rawValue, int? @default = null)
+		{
+			string trimmed = rawValue.Trim();
+			int value;
+			if (int.TryParse(trimmed, out value))
+			{
+				return value;
+			}
+			else
+			{
+				if (@default.HasValue)
+				{
+					return @default.Value;
+				}
+				else
+				{
+					throw new Exception("Could not parse an integer value!");
+				}
 			}
 		}
 
