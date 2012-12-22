@@ -163,7 +163,7 @@ namespace NegativeScreen
 				ToggleColorEffect(true);
 				while (!exiting)
 				{
-					System.Threading.Thread.Sleep(100);
+					System.Threading.Thread.Sleep(Configuration.Current.MainLoopRefreshTime);
 					DoMagnifierApiInvokes();
 					if (mainLoopPaused)
 					{
@@ -174,7 +174,7 @@ namespace NegativeScreen
 						}
 						while (mainLoopPaused && !exiting)
 						{
-							System.Threading.Thread.Sleep(100);
+							System.Threading.Thread.Sleep(Configuration.Current.MainLoopRefreshTime);
 							DoMagnifierApiInvokes();
 						}
 						//we need to reinitialize

@@ -48,6 +48,9 @@ Exit=win+alt+H
 SmoothTransitions=true
 SmoothToggles=true
 
+# in miliseconds
+MainLoopRefreshTime=100
+
 InitialColorEffect=""Smart Inversion""
 
 #Matrices definition
@@ -204,6 +207,9 @@ Grayscale=win+alt+F11
 
 		[CorrespondTo("SmoothToggles")]
 		public bool SmoothToggles { get; protected set; }
+
+		[CorrespondTo("MainLoopRefreshTime", CustomParameter = 100)]
+		public int MainLoopRefreshTime { get; protected set; }
 
 		[CorrespondTo("InitialColorEffect")]
 		public string InitialColorEffectName { get; protected set; }
