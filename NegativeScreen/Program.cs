@@ -37,6 +37,16 @@ namespace NegativeScreen
 To avoid known bugs relative to the used APIs, please instead run the 64 bits compiled version.", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation, System.Windows.Forms.MessageBoxDefaultButton.Button1);
 				return;
 			}
+			//check Windows version
+			//TODO: check whether the undocumented functions exist under Windows server 2008 (probably not) and R2 (probably yes)
+			if (Environment.OSVersion.Version < new Version(6, 1))
+			{
+				System.Windows.Forms.MessageBox.Show(
+@"Sorry, this version only works on Windows 7 and above. :/
+There is a Vista version though. You can download it on
+http://x2a.yt?negativescreen", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation, System.Windows.Forms.MessageBoxDefaultButton.Button1);
+				return;
+			}
 			//check whether aero is enabled
 			if (!NativeMethods.DwmIsCompositionEnabled())
 			{
