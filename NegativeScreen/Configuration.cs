@@ -53,6 +53,8 @@ MainLoopRefreshTime=100
 
 InitialColorEffect=""Smart Inversion""
 
+ActiveOnStartup=true
+
 #Matrices definition
 # The left hand is used as a description, while the right hand is broken down in two parts:
 # - the hot key combination, followed by a new line, (this part is optional)
@@ -210,6 +212,9 @@ Grayscale=win+alt+F11
 
 		[CorrespondTo("MainLoopRefreshTime", CustomParameter = 100)]
 		public int MainLoopRefreshTime { get; protected set; }
+
+		[CorrespondTo("ActiveOnStartup", CustomParameter = true)]
+		public bool ActiveOnStartup { get; protected set; }
 
 		[CorrespondTo("InitialColorEffect")]
 		public string InitialColorEffectName { get; protected set; }

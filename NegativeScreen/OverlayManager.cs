@@ -154,6 +154,11 @@ namespace NegativeScreen
 		/// </summary>
 		private void ControlLoop()
 		{
+			if (!Configuration.Current.ActiveOnStartup)
+			{
+				mainLoopPaused = true;
+				PauseLoop();
+			}
 			while (!exiting)
 			{
 				if (!NativeMethods.MagInitialize())
@@ -172,11 +177,7 @@ namespace NegativeScreen
 						{
 							throw new Exception("MagUninitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 						}
-						while (mainLoopPaused && !exiting)
-						{
-							System.Threading.Thread.Sleep(Configuration.Current.MainLoopRefreshTime);
-							DoMagnifierApiInvokes();
-						}
+						PauseLoop();
 						//we need to reinitialize
 						break;
 					}
@@ -187,6 +188,15 @@ namespace NegativeScreen
 					this.Dispose();
 					Application.Exit();
 				}));
+		}
+
+		private void PauseLoop()
+		{
+			while (mainLoopPaused && !exiting)
+			{
+				System.Threading.Thread.Sleep(Configuration.Current.MainLoopRefreshTime);
+				DoMagnifierApiInvokes();
+			}
 		}
 
 		public void RegisterHotKey(HotKey hotkey)
