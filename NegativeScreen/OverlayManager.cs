@@ -108,22 +108,48 @@ namespace NegativeScreen
 
 		private OverlayManager()
 		{
+			InitializeComponent();
+
 			currentMatrix = Configuration.Current.InitialColorEffect;
-			RegisterHotKey(Configuration.Current.ToggleKey);
-			RegisterHotKey(Configuration.Current.ExitKey);
+			TryRegisterHotKeys(this.trayIcon);
+
+			toggleInversionToolStripMenuItem.ShortcutKeyDisplayString = Configuration.Current.ToggleKey.ToString();
+			exitToolStripMenuItem.ShortcutKeyDisplayString = Configuration.Current.ExitKey.ToString();
+			InitializeContextMenu();
+
+			InitializeControlLoop();
+		}
+
+		private void TryRegisterHotKeys(NotifyIcon trayIcon)
+		{
+			AlreadyRegisteredHotKeyException ex;
+			StringBuilder sb = new StringBuilder("Unable to register one or more hot keys:\n");
+			bool error = false;
+			if (!TryRegisterHotKey(Configuration.Current.ToggleKey, out ex))
+			{
+				sb.AppendFormat(" - \"{0}\" : {1}", ex.HotKey, (ex.InnerException == null ? "" : ex.InnerException.Message));
+				error = true;
+			}
+			if (!TryRegisterHotKey(Configuration.Current.ExitKey, out ex))
+			{
+				sb.AppendFormat(" - \"{0}\" : {1}", ex.HotKey, (ex.InnerException == null ? "" : ex.InnerException.Message));
+				error = true;
+			}
 			foreach (var item in Configuration.Current.ColorEffects)
 			{
 				if (item.Key != HotKey.Empty)
 				{
-					RegisterHotKey(item.Key);
+					if (!TryRegisterHotKey(item.Key, out ex))
+					{
+						sb.AppendFormat(" - \"{0}\" : {1}", ex.HotKey, (ex.InnerException == null ? "" : ex.InnerException.Message));
+						error = true;
+					}
 				}
 			}
-
-			InitializeComponent();
-			toggleInversionToolStripMenuItem.ShortcutKeyDisplayString = Configuration.Current.ToggleKey.ToString();
-			exitToolStripMenuItem.ShortcutKeyDisplayString = Configuration.Current.ExitKey.ToString();
-			InitializeContextMenu();
-			InitializeControlLoop();
+			if (error)
+			{
+				trayIcon.ShowBalloonTip(4000, "Warning", sb.ToString(), ToolTipIcon.Warning);
+			}
 		}
 
 		private void InitializeContextMenu()
@@ -199,31 +225,18 @@ namespace NegativeScreen
 			}
 		}
 
-		public void RegisterHotKey(HotKey hotkey)
+		public bool TryRegisterHotKey(HotKey hotkey, out AlreadyRegisteredHotKeyException exception)
 		{
-			if (!NativeMethods.RegisterHotKey(this.Handle, hotkey.Id, hotkey.Modifiers, hotkey.Key))
+			bool ok = NativeMethods.RegisterHotKey(this.Handle, hotkey.Id, hotkey.Modifiers, hotkey.Key);
+			if (!ok)
 			{
-				StringBuilder message = new StringBuilder();
-				message.Append("Unable to register the hot key \"");
-				if (hotkey.Modifiers.HasFlag(KeyModifiers.MOD_ALT))
-				{
-					message.Append("Alt+");
-				}
-				if (hotkey.Modifiers.HasFlag(KeyModifiers.MOD_CONTROL))
-				{
-					message.Append("Ctrl+");
-				}
-				if (hotkey.Modifiers.HasFlag(KeyModifiers.MOD_SHIFT))
-				{
-					message.Append("Shift+");
-				}
-				if (hotkey.Modifiers.HasFlag(KeyModifiers.MOD_WIN))
-				{
-					message.Append("Win+");
-				}
-				message.Append(Enum.GetName(typeof(Keys), hotkey.Key));
-				message.Append("\"");
-				throw new Exception(message.ToString(), Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+				exception = new AlreadyRegisteredHotKeyException(hotkey, Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+				return false;
+			}
+			else
+			{
+				exception = null;
+				return true;
 			}
 		}
 
