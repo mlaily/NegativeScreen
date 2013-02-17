@@ -122,34 +122,33 @@ namespace NegativeScreen
 
 		private void TryRegisterHotKeys(NotifyIcon trayIcon)
 		{
-			AlreadyRegisteredHotKeyException ex;
+
 			StringBuilder sb = new StringBuilder("Unable to register one or more hot keys:\n");
-			bool error = false;
-			if (!TryRegisterHotKey(Configuration.Current.ToggleKey, out ex))
-			{
-				sb.AppendFormat(" - \"{0}\" : {1}", ex.HotKey, (ex.InnerException == null ? "" : ex.InnerException.Message));
-				error = true;
-			}
-			if (!TryRegisterHotKey(Configuration.Current.ExitKey, out ex))
-			{
-				sb.AppendFormat(" - \"{0}\" : {1}", ex.HotKey, (ex.InnerException == null ? "" : ex.InnerException.Message));
-				error = true;
-			}
+			bool success = true;
+			success &= TryRegisterHotKeyAppendError(Configuration.Current.ToggleKey, sb);
+			success &= TryRegisterHotKeyAppendError(Configuration.Current.ExitKey, sb);
 			foreach (var item in Configuration.Current.ColorEffects)
 			{
 				if (item.Key != HotKey.Empty)
 				{
-					if (!TryRegisterHotKey(item.Key, out ex))
-					{
-						sb.AppendFormat(" - \"{0}\" : {1}", ex.HotKey, (ex.InnerException == null ? "" : ex.InnerException.Message));
-						error = true;
-					}
+					success &= TryRegisterHotKeyAppendError(item.Key, sb);
 				}
 			}
-			if (error)
+			if (!success)
 			{
 				trayIcon.ShowBalloonTip(4000, "Warning", sb.ToString(), ToolTipIcon.Warning);
 			}
+		}
+
+		private bool TryRegisterHotKeyAppendError(HotKey hotkey, StringBuilder appendErrorTo)
+		{
+			AlreadyRegisteredHotKeyException ex;
+			if (!TryRegisterHotKey(hotkey, out ex))
+			{
+				appendErrorTo.AppendFormat(" - \"{0}\" : {1}", ex.HotKey, (ex.InnerException == null ? "" : ex.InnerException.Message));
+				return false;
+			}
+			return true;
 		}
 
 		private void InitializeContextMenu()
