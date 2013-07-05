@@ -80,6 +80,10 @@ namespace NegativeScreen
 
 			Microsoft.Win32.SystemEvents.DisplaySettingsChanged += new EventHandler(SystemEvents_DisplaySettingsChanged);
 
+			if (!Configuration.Current.ActiveOnStartup)
+			{
+				mainLoopPaused = true;
+			}
 			Initialization();
 		}
 

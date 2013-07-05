@@ -43,13 +43,7 @@ namespace NegativeScreen
 # WARNING: if the key is not valid, the program will probably crash...
 
 Toggle=win+alt+N
-Exit=win+alt+H
-
-SmoothTransitions=true
-SmoothToggles=true
-
-# in miliseconds
-MainLoopRefreshTime=100
+Exit=win+alt+
 
 InitialColorEffect=""Smart Inversion""
 
@@ -205,15 +199,6 @@ Grayscale=win+alt+F11
 
 		[CorrespondTo("Exit", CustomParameter = HotKey.ExitKeyId)]
 		public HotKey ExitKey { get; protected set; }
-
-		[CorrespondTo("SmoothTransitions")]
-		public bool SmoothTransitions { get; protected set; }
-
-		[CorrespondTo("SmoothToggles")]
-		public bool SmoothToggles { get; protected set; }
-
-		[CorrespondTo("MainLoopRefreshTime", CustomParameter = 100)]
-		public int MainLoopRefreshTime { get; protected set; }
 
 		[CorrespondTo("ActiveOnStartup", CustomParameter = true)]
 		public bool ActiveOnStartup { get; protected set; }
