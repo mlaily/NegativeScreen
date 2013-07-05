@@ -21,6 +21,11 @@ Major update:
 		- custom hotkeys
 		- custom color effects
 
+Version 1.13, 2013-07-04
+------------------------
+- [added] implemented the configuration file for the version 1.*
+- [added] configuration option to disable the message warning about aero being disabled
+
 Version 1.12, 2012-12-14
 ------------------------
 - [fixed] crash on Windows 8
