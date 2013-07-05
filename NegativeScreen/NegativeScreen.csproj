@@ -10,9 +10,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NegativeScreen</RootNamespace>
     <AssemblyName>NegativeScreen</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
@@ -94,6 +93,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuiltinMatrices.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="ConfigurationParser.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="NativeStructures.cs" />
     <Compile Include="NegativeOverlay.cs">
@@ -129,6 +130,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
