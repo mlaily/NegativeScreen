@@ -48,7 +48,7 @@ http://x2a.yt?negativescreen", "Warning", System.Windows.Forms.MessageBoxButtons
 				return;
 			}
 			//check whether aero is enabled
-			if (!NativeMethods.DwmIsCompositionEnabled())
+			if (Configuration.Current.ShowAeroWarning && !NativeMethods.DwmIsCompositionEnabled())
 			{
 				var result = System.Windows.Forms.MessageBox.Show("Windows Aero should be enabled for this program to work properly!\nOtherwise, you may experience bad performances.", "Warning", System.Windows.Forms.MessageBoxButtons.OKCancel, System.Windows.Forms.MessageBoxIcon.Information, System.Windows.Forms.MessageBoxDefaultButton.Button1);
 				if (result != System.Windows.Forms.DialogResult.OK)
