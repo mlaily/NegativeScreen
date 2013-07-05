@@ -92,6 +92,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlreadyRegisteredHotKeyException.cs" />
     <Compile Include="BuiltinMatrices.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="ConfigurationParser.cs" />

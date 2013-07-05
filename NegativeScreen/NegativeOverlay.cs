@@ -34,9 +34,19 @@ namespace NegativeScreen
 		/// </summary>
 		public IntPtr HwndMag { get { return hwndMag; } }
 
-		public NegativeOverlay(Screen screen)
+		/// <summary>
+		/// memorize the current color matrix.
+		/// </summary>
+		private float[,] currentMatrix = null;
+
+		public NegativeOverlay(Screen screen, float[,] currentMatrix)
 			: base()
 		{
+
+			if (currentMatrix == null)
+			{
+				currentMatrix = BuiltinMatrices.Negative;
+			}
 
 			this.StartPosition = FormStartPosition.Manual;
 			this.Location = screen.Bounds.Location;
@@ -80,8 +90,8 @@ namespace NegativeScreen
 				throw new Exception("CreateWindowEx()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 			}
 
-			//initial color transformation: simple negative
-			BuiltinMatrices.ChangeColorEffect(hwndMag, BuiltinMatrices.Negative);
+			//initial color transformation
+			this.ChangeColorEffect(currentMatrix);
 
 			if (!NativeMethods.MagSetWindowSource(this.hwndMag, new RECT(screen.Bounds.X, screen.Bounds.Y, screen.Bounds.Right, screen.Bounds.Bottom)))
 			{
@@ -107,16 +117,16 @@ namespace NegativeScreen
 			}
 			catch (Exception) { }
 
-            try
-            {
-                //fails on Windows 8
-                DWMFLIP3DWINDOWPOLICY threeDPolicy = DWMFLIP3DWINDOWPOLICY.DWMFLIP3D_EXCLUDEABOVE;
-                if (NativeMethods.DwmSetWindowAttribute(this.Handle, DWMWINDOWATTRIBUTE.DWMWA_FLIP3D_POLICY, ref threeDPolicy, sizeof(int)) != 0)
-                {
-                    throw new Exception("DwmSetWindowAttribute(DWMWA_FLIP3D_POLICY)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-                }
-            }
-            catch (Exception) { }
+			try
+			{
+				//fails on Windows 8
+				DWMFLIP3DWINDOWPOLICY threeDPolicy = DWMFLIP3DWINDOWPOLICY.DWMFLIP3D_EXCLUDEABOVE;
+				if (NativeMethods.DwmSetWindowAttribute(this.Handle, DWMWINDOWATTRIBUTE.DWMWA_FLIP3D_POLICY, ref threeDPolicy, sizeof(int)) != 0)
+				{
+					throw new Exception("DwmSetWindowAttribute(DWMWA_FLIP3D_POLICY)", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+				}
+			}
+			catch (Exception) { }
 
 			try
 			{
@@ -130,6 +140,16 @@ namespace NegativeScreen
 			catch (Exception) { }
 
 			this.Show();
+		}
+
+		public void ChangeColorEffect(float[,] matrix)
+		{
+			ColorEffect colorEffect = new ColorEffect(matrix);
+			if (!NativeMethods.MagSetColorEffect(hwndMag, ref colorEffect))
+			{
+				throw new Exception("MagSetColorEffect()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+			}
+			currentMatrix = matrix;
 		}
 
 	}
