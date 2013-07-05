@@ -55,6 +55,8 @@ InitialColorEffect=""Smart Inversion""
 
 ActiveOnStartup=true
 
+ShowAeroWarning=true
+
 #Matrices definition
 # The left hand is used as a description, while the right hand is broken down in two parts:
 # - the hot key combination, followed by a new line, (this part is optional)
@@ -215,6 +217,9 @@ Grayscale=win+alt+F11
 
 		[CorrespondTo("ActiveOnStartup", CustomParameter = true)]
 		public bool ActiveOnStartup { get; protected set; }
+
+		[CorrespondTo("ShowAeroWarning", CustomParameter = true)]
+		public bool ShowAeroWarning { get; protected set; }
 
 		[CorrespondTo("InitialColorEffect")]
 		public string InitialColorEffectName { get; protected set; }
