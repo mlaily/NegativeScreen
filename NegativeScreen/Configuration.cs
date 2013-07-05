@@ -43,7 +43,7 @@ namespace NegativeScreen
 # WARNING: if the key is not valid, the program will probably crash...
 
 Toggle=win+alt+N
-Exit=win+alt+
+Exit=win+alt+H
 
 InitialColorEffect=""Smart Inversion""
 
