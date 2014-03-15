@@ -52,14 +52,14 @@ namespace NegativeScreen
 		#region Inter-thread color effect calls
 
 		/// <summary>
-		/// allow to execute magnifer api calls on the right thread.
+		/// allow to execute magnifer api calls on the correct thread.
 		/// </summary>
 		private ScreenColorEffect invokeColorEffect;
 		private bool shouldInvokeColorEffect;
 		private object invokeColorEffectLock = new object();
 
 		/// <summary>
-		/// Ask for a color effect change to be executed on the right thread.
+		/// Ask for a color effect change to be executed on the correct thread.
 		/// </summary>
 		/// <param name="colorEffect"></param>
 		private void InvokeColorEffect(ScreenColorEffect colorEffect)
@@ -67,6 +67,7 @@ namespace NegativeScreen
 			lock (invokeColorEffectLock)
 			{
 				invokeColorEffect = colorEffect;
+				CheckMenuItemEffect(colorEffect);
 				shouldInvokeColorEffect = true;
 			}
 		}
@@ -110,12 +111,14 @@ namespace NegativeScreen
 		{
 			InitializeComponent();
 
-			currentMatrix = Configuration.Current.InitialColorEffect;
 			TryRegisterHotKeys(this.trayIcon);
 
 			toggleInversionToolStripMenuItem.ShortcutKeyDisplayString = Configuration.Current.ToggleKey.ToString();
 			exitToolStripMenuItem.ShortcutKeyDisplayString = Configuration.Current.ExitKey.ToString();
 			InitializeContextMenu();
+
+			currentMatrix = Configuration.Current.InitialColorEffect.Matrix;
+			CheckMenuItemEffect(Configuration.Current.InitialColorEffect); //requires the context menu to be initialized
 
 			InitializeControlLoop();
 		}
@@ -355,6 +358,21 @@ namespace NegativeScreen
 				NativeMethods.MagUninitialize();
 			}
 			base.Dispose(disposing);
+		}
+
+		private void CheckMenuItemEffect(ScreenColorEffect effect)
+		{
+			ToolStripMenuItem currentItem = null;
+			foreach (ToolStripMenuItem effectItem in this.changeModeToolStripMenuItem.DropDownItems)
+			{
+				effectItem.Checked = false; //reset all the check boxes
+				var castItem = (ScreenColorEffect)effectItem.Tag;
+				if (castItem.Matrix == effect.Matrix) currentItem = effectItem; //TODO: should implement equality comparison...
+			}
+			if (currentItem != null)
+			{
+				currentItem.Checked = true;
+			}
 		}
 
 		#region Event Handlers

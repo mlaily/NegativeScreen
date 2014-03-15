@@ -188,11 +188,12 @@ Grayscale=win+alt+F11
 				try
 				{
 					this.InitialColorEffect = this.ColorEffects.Values.Single(x =>
-						x.Description.ToLowerInvariant() == InitialColorEffectName.ToLowerInvariant()).Matrix;
+						x.Description.ToLowerInvariant() == InitialColorEffectName.ToLowerInvariant());
 				}
 				catch (Exception)
 				{
-					this.InitialColorEffect = BuiltinMatrices.Negative;
+					//probably not ideal
+					this.InitialColorEffect = new ScreenColorEffect(BuiltinMatrices.Negative, "Negative");
 				}
 
 			}
@@ -219,7 +220,7 @@ Grayscale=win+alt+F11
 		[CorrespondTo("InitialColorEffect")]
 		public string InitialColorEffectName { get; protected set; }
 
-		public float[,] InitialColorEffect { get; protected set; }
+		public ScreenColorEffect InitialColorEffect { get; protected set; }
 
 		public Dictionary<HotKey, ScreenColorEffect> ColorEffects { get; protected set; }
 
