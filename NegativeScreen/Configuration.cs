@@ -171,7 +171,7 @@ Grayscale=win+alt+F11
 
 		private Configuration()
 		{
-			ColorEffects = new Dictionary<HotKey, ScreenColorEffect>();
+			ColorEffects = new List<KeyValuePair<HotKey, ScreenColorEffect>>();
 
 			string configFileContent;
 			try
@@ -187,8 +187,8 @@ Grayscale=win+alt+F11
 			{
 				try
 				{
-					this.InitialColorEffect = this.ColorEffects.Values.Single(x =>
-						x.Description.ToLowerInvariant() == InitialColorEffectName.ToLowerInvariant());
+					this.InitialColorEffect = this.ColorEffects.Single(x =>
+						x.Value.Description.ToLowerInvariant() == InitialColorEffectName.ToLowerInvariant()).Value;
 				}
 				catch (Exception)
 				{
@@ -222,7 +222,7 @@ Grayscale=win+alt+F11
 
 		public ScreenColorEffect InitialColorEffect { get; protected set; }
 
-		public Dictionary<HotKey, ScreenColorEffect> ColorEffects { get; protected set; }
+		public List<KeyValuePair<HotKey, ScreenColorEffect>> ColorEffects { get; protected set; }
 
 		public void HandleDynamicKey(string key, string value)
 		{
@@ -230,8 +230,9 @@ Grayscale=win+alt+F11
 			if (value.StartsWith("{"))
 			{
 				//no hotkey
-				this.ColorEffects.Add(HotKey.Empty,
-					new ScreenColorEffect(MatrixParser.StaticParseMatrix(value), key));
+				this.ColorEffects.Add(new KeyValuePair<HotKey, ScreenColorEffect>(
+					HotKey.Empty,
+					new ScreenColorEffect(MatrixParser.StaticParseMatrix(value), key)));
 			}
 			else
 			{
@@ -243,8 +244,9 @@ Grayscale=win+alt+F11
 						"The value assigned to \"{0}\" is unexpected. The hotkey must be separated from the matrix by a new line.",
 						key));
 				}
-				this.ColorEffects.Add(HotKeyParser.StaticParse(splitted[0]),
-					new ScreenColorEffect(MatrixParser.StaticParseMatrix(splitted[1]), key));
+				this.ColorEffects.Add(new KeyValuePair<HotKey, ScreenColorEffect>(
+					HotKeyParser.StaticParse(splitted[0]),
+					new ScreenColorEffect(MatrixParser.StaticParseMatrix(splitted[1]), key)));
 			}
 		}
 	}
