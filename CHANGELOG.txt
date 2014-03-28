@@ -1,3 +1,9 @@
+Version 2.3, 2014-03-28
+------------------------
+- [fixed] crash if more than one custom color effect is added without an associated hot key
+- [added] (re)added the ShowAeroWarning configuration option from the version 1.*
+- [added] check box next to the current color effect in the right click menu
+
 Version 2.2, 2013-02-17
 ------------------------
 - [fixed] avoid crash if a hot key cannot be registered
