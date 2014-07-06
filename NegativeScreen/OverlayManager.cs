@@ -43,7 +43,7 @@ namespace NegativeScreen
 		private bool exiting = false;
 
 		/// <summary>
-		/// memorize the current color matrix.
+		/// store the current color matrix.
 		/// </summary>
 		private float[,] currentMatrix = null;
 
@@ -67,7 +67,7 @@ namespace NegativeScreen
 			lock (invokeColorEffectLock)
 			{
 				invokeColorEffect = colorEffect;
-				CheckMenuItemEffect(colorEffect);
+				SynchronizeMenuItemCheckboxesWithEffect(colorEffect);
 				shouldInvokeColorEffect = true;
 			}
 		}
@@ -118,7 +118,7 @@ namespace NegativeScreen
 			InitializeContextMenu();
 
 			currentMatrix = Configuration.Current.InitialColorEffect.Matrix;
-			CheckMenuItemEffect(Configuration.Current.InitialColorEffect); //requires the context menu to be initialized
+			SynchronizeMenuItemCheckboxesWithEffect(Configuration.Current.InitialColorEffect); //requires the context menu to be initialized
 
 			InitializeControlLoop();
 		}
@@ -178,7 +178,7 @@ namespace NegativeScreen
 		}
 
 		/// <summary>
-		/// Main loop, in charge of controling the magnification api.
+		/// Main loop, in charge of controlling the magnification api.
 		/// </summary>
 		private void ControlLoop()
 		{
@@ -360,7 +360,7 @@ namespace NegativeScreen
 			base.Dispose(disposing);
 		}
 
-		private void CheckMenuItemEffect(ScreenColorEffect effect)
+		private void SynchronizeMenuItemCheckboxesWithEffect(ScreenColorEffect effect)
 		{
 			ToolStripMenuItem currentItem = null;
 			foreach (ToolStripMenuItem effectItem in this.changeModeToolStripMenuItem.DropDownItems)

@@ -353,7 +353,7 @@ namespace NegativeScreen
 
 		//http://msdn.microsoft.com/en-us/library/aa969540%28v=vs.85%29.aspx
 
-		///ATTENTION! : program must be compiled for x64 or the call will fail!
+		///WARNING! : program must be compiled for x64 or the call will fail!
 
 		[DllImport("dwmapi.dll", PreserveSig = false, SetLastError = true)]
 		public static extern int DwmSetWindowAttribute(IntPtr hwnd, DWMWINDOWATTRIBUTE attr, ref DWMWINDOWATTRIBUTE attrValue, int attrSize);
