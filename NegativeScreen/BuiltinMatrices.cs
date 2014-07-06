@@ -210,7 +210,8 @@ namespace NegativeScreen
 			ColorEffect colorEffect = new ColorEffect(matrix);
 			if (!NativeMethods.SetMagnificationDesktopColorEffect(ref colorEffect))
 			{
-				throw new Exception("SetMagnificationDesktopColorEffect()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+				var inner = new Exception("SetMagnificationDesktopColorEffect()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+				throw new Exception("An error occured while applying a color effect. Another application using the same API might be interfering...", inner);
 			}
 		}
 
