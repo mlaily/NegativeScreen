@@ -73,9 +73,9 @@ namespace NegativeScreen
 		}
 
 		/// <summary>
-		/// Execute every specified actions in the concurrent queue, on the right thread.
+		/// Execute the specified color effect change, on the right thread.
 		/// </summary>
-		private void DoMagnifierApiInvokes()
+		private void DoMagnifierApiInvoke()
 		{
 			lock (invokeColorEffectLock)
 			{
@@ -197,7 +197,7 @@ namespace NegativeScreen
 				while (!exiting)
 				{
 					System.Threading.Thread.Sleep(Configuration.Current.MainLoopRefreshTime);
-					DoMagnifierApiInvokes();
+					DoMagnifierApiInvoke();
 					if (mainLoopPaused)
 					{
 						ToggleColorEffect(fromNormal: false);
@@ -223,7 +223,7 @@ namespace NegativeScreen
 			while (mainLoopPaused && !exiting)
 			{
 				System.Threading.Thread.Sleep(Configuration.Current.MainLoopRefreshTime);
-				DoMagnifierApiInvokes();
+				DoMagnifierApiInvoke();
 			}
 		}
 
