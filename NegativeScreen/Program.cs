@@ -36,6 +36,10 @@ To avoid known bugs relative to the used APIs, please instead run the 64 bits co
 				return;
 			}
 
+			//forces the working directory to be the one of the executable
+			Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+			Configuration.Initialize();
+
 			//check whether aero is enabled
 			if (Configuration.Current.ShowAeroWarning && !NativeMethods.DwmIsCompositionEnabled())
 			{

@@ -1,3 +1,7 @@
+Version 1.14, 2014-11-30
+------------------------
+- [fixed] force the working directory to be the one of the executable (so the .conf file is found when starting from the cli)
+
 Version 1.13, 2013-07-04
 ------------------------
 - [added] implemented the configuration file for the version 1.*
