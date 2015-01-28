@@ -46,7 +46,7 @@ Graphic acceleration (Aero) must be enabled.
 
 -Press Win+Alt+F1-to-F10 to switch between inversion modes:
 	* F1: standard inversion
-	* F2: smart inversion1 - theoretical optimal transfomation (but ugly desaturated pure colors)
+	* F2: smart inversion1 - theoretical optimal transformation (but ugly desaturated pure colors)
 	* F3: smart inversion2 - high saturation, good pure colors
 	* F4: smart inversion3 - overall desaturated, yellows and blues plain bad. actually relaxing and very usable
 	* F5: smart inversion4 - high saturation. yellows and blues  plain bad. actually quite readable
