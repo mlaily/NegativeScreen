@@ -1,20 +1,20 @@
-﻿//Copyright 2011-2014 Melvyn Laily
-//http://arcanesanctum.net
+﻿// Copyright 2011-2014 Melvyn Laily
+// http://arcanesanctum.net
 
-//This file is part of NegativeScreen.
+// This file is part of NegativeScreen.
 
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
-//You should have received a copy of the GNU General Public License
-//along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Diagnostics;
@@ -30,18 +30,18 @@ namespace NegativeScreen
 		{
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-			//check whether the current process is running under WoW64 mode
+			// check whether the current process is running under WoW64 mode
 			if (NativeMethods.IsX86InWow64Mode())
 			{
-				//see http://social.msdn.microsoft.com/Forums/en-US/windowsaccessibilityandautomation/thread/6cc761ea-8a54-4403-9cca-2fa8680f4409/
+				// see http://social.msdn.microsoft.com/Forums/en-US/windowsaccessibilityandautomation/thread/6cc761ea-8a54-4403-9cca-2fa8680f4409/
 				MessageBox.Show(
 @"You are trying to run this program on a 64 bits processor whereas it was compiled for a 32 bits processor.
 To avoid known bugs relative to the used APIs, please instead run the 64 bits compiled version.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
 				return;
 			}
 
-			//check Windows version
-			//TODO: check whether the undocumented functions exist under Windows server 2008 (probably not) and R2 (probably yes)
+			// check Windows version
+			// TODO: check whether the undocumented functions exist under Windows server 2008 (probably not) and R2 (probably yes)
 			if (Environment.OSVersion.Version < new Version(6, 1))
 			{
 				System.Windows.Forms.MessageBox.Show(
@@ -51,11 +51,11 @@ http://x2a.yt?negativescreen", "Warning", MessageBoxButtons.OK, MessageBoxIcon.E
 				return;
 			}
 
-			//forces the working directory to be the one of the executable
+			// forces the working directory to be the one of the executable
 			Environment.CurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
 			Configuration.Initialize();
 
-			//check whether aero is enabled
+			// check whether aero is enabled
 			if (Configuration.Current.ShowAeroWarning && !NativeMethods.DwmIsCompositionEnabled())
 			{
 				var result = MessageBox.Show("Windows Aero must be enabled for this program to work properly!", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
@@ -64,7 +64,7 @@ http://x2a.yt?negativescreen", "Warning", MessageBoxButtons.OK, MessageBoxIcon.E
 					return;
 				}
 			}
-			//check whether the current application is already running
+			// check whether the current application is already running
 			Process aleadyRunningInstance;
 			if (IsAnotherInstanceAlreadyRunning(out aleadyRunningInstance))
 			{
@@ -77,9 +77,9 @@ http://x2a.yt?negativescreen", "Warning", MessageBoxButtons.OK, MessageBoxIcon.E
 				}
 				return;
 			}
-			//without this call, and with custom DPI settings,
-			//the magnified window is either partially out of the screen,
-			//or blurry, if the transformation scale is forced to 1.
+			// without this call, and with custom DPI settings,
+			// the magnified window is either partially out of the screen,
+			// or blurry, if the transformation scale is forced to 1.
 			NativeMethods.SetProcessDPIAware();
 
 			Application.EnableVisualStyles();

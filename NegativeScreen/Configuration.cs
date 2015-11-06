@@ -1,20 +1,20 @@
-﻿//Copyright 2011-2014 Melvyn Laily
-//http://arcanesanctum.net
+﻿// Copyright 2011-2014 Melvyn Laily
+// http://arcanesanctum.net
 
-//This file is part of NegativeScreen.
+// This file is part of NegativeScreen.
 
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
-//You should have received a copy of the GNU General Public License
-//along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
@@ -194,7 +194,7 @@ Grayscale=win+alt+F11
 				}
 				catch (Exception)
 				{
-					//probably not ideal
+					// probably not ideal
 					this.InitialColorEffect = new ScreenColorEffect(BuiltinMatrices.Negative, "Negative");
 				}
 
@@ -231,17 +231,17 @@ Grayscale=win+alt+F11
 
 		public void HandleDynamicKey(string key, string value)
 		{
-			//value is already trimmed
+			// value is already trimmed
 			if (value.StartsWith("{"))
 			{
-				//no hotkey
+				// no hotkey
 				this.ColorEffects.Add(new KeyValuePair<HotKey, ScreenColorEffect>(
 					HotKey.Empty,
 					new ScreenColorEffect(MatrixParser.StaticParseMatrix(value), key)));
 			}
 			else
 			{
-				//first part is the hotkey, second part is the matrix
+				// first part is the hotkey, second part is the matrix
 				var splitted = value.Split(new char[] { '\n' }, 2);
 				if (splitted.Length < 2)
 				{
@@ -279,7 +279,7 @@ Grayscale=win+alt+F11
 			var splitted = trimmed.Split('+');
 			foreach (var item in splitted)
 			{
-				//modifier
+				// modifier
 				switch (item.ToLowerInvariant())
 				{
 					case "alt":
@@ -295,10 +295,10 @@ Grayscale=win+alt+F11
 						modifiers |= KeyModifiers.MOD_WIN;
 						break;
 					default:
-						//key
+						// key
 						if (!Enum.TryParse(item, true, out key))
 						{
-							//try to parse numeric value
+							// try to parse numeric value
 							int numericValue;
 							if (int.TryParse(item, out numericValue))
 							{
@@ -385,7 +385,7 @@ Grayscale=win+alt+F11
 			: this()
 		{
 			Modifiers = modifiers;
-			//65535
+			// 65535
 			Key = key & Keys.KeyCode;
 			if (id == -1)
 			{

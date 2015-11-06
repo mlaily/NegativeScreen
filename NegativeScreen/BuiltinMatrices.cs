@@ -1,20 +1,20 @@
-﻿//Copyright 2011-2014 Melvyn Laily
-//http://arcanesanctum.net
+﻿// Copyright 2011-2014 Melvyn Laily
+// http://arcanesanctum.net
 
-//This file is part of NegativeScreen.
+// This file is part of NegativeScreen.
 
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
-//You should have received a copy of the GNU General Public License
-//along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
@@ -63,7 +63,7 @@ namespace NegativeScreen
 		/// </summary>
 		public static float[,] NegativeHueShift180Variation3 { get; }
 		/// <summary>
-		/// //not so readable, good colors (CMY colors a bit desaturated, still more saturated than normal)
+		/// not so readable, good colors (CMY colors a bit desaturated, still more saturated than normal)
 		/// </summary>
 		public static float[,] NegativeHueShift180Variation4 { get; }
 
@@ -117,7 +117,7 @@ namespace NegativeScreen
 			};
 			NegativeHueShift180 = Multiply(Negative, HueShift180);
 			NegativeHueShift180Variation1 = new float[,] {
-				//most simple working method for shifting hue 180deg.
+				// most simple working method for shifting hue 180deg.
 				{  1.0f, -1.0f, -1.0f, 0.0f, 0.0f },
 				{ -1.0f,  1.0f, -1.0f, 0.0f, 0.0f },
 				{ -1.0f, -1.0f,  1.0f, 0.0f, 0.0f },
@@ -125,7 +125,7 @@ namespace NegativeScreen
 				{  1.0f,  1.0f,  1.0f, 0.0f, 1.0f }
 			};
 			NegativeHueShift180Variation2 = new float[,] {
-				//generated with QColorMatrix http://www.codeguru.com/Cpp/G-M/gdi/gdi/article.php/c3667
+				// generated with QColorMatrix http://www.codeguru.com/Cpp/G-M/gdi/gdi/article.php/c3667
 				{  0.39f, -0.62f, -0.62f, 0.0f, 0.0f },
 				{ -1.21f, -0.22f, -1.22f, 0.0f, 0.0f },
 				{ -0.16f, -0.16f,  0.84f, 0.0f, 0.0f },
@@ -171,7 +171,7 @@ namespace NegativeScreen
 				{
 					if (matrix[i, j] >= 0)
 					{
-						//align negative signs
+						// align negative signs
 						sb.Append(" ");
 					}
 					sb.Append(matrix[i, j].ToString(format, System.Globalization.NumberFormatInfo.InvariantInfo));
@@ -271,7 +271,7 @@ namespace NegativeScreen
 					for (int y = 0; y < SIZE; y++)
 					{
 						// f(x)=ya+(x-xa)*(yb-ya)/(xb-xa)
-						//calculate 10 steps, from 1 to 10 (we don't need 0, as we start from there)
+						// calculate 10 steps, from 1 to 10 (we don't need 0, as we start from there)
 						result[i][x, y] = A[x, y] + (i + 1/*-0*/) * (B[x, y] - A[x, y]) / (STEPS/*-0*/);
 					}
 				}

@@ -1,20 +1,20 @@
-﻿//Copyright 2011-2014 Melvyn Laily
-//http://arcanesanctum.net
+﻿// Copyright 2011-2014 Melvyn Laily
+// http://arcanesanctum.net
 
-//This file is part of NegativeScreen.
+// This file is part of NegativeScreen.
 
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
-//You should have received a copy of the GNU General Public License
-//along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
@@ -112,7 +112,7 @@ namespace NegativeScreen
 				{
 					try
 					{
-						//try to find a matching property for this key
+						// try to find a matching property for this key
 						var single = correspondingProps.Single();
 						correspondingProp = single.Property;
 						correspondingAttribute = single.Attribute;
@@ -122,17 +122,17 @@ namespace NegativeScreen
 					{
 						throw new Exception(string.Format("The key \"{0}\" was found multiple times!", key), ex);
 					}
-					//parse value
+					// parse value
 					var appropriateParser = customParsers.FirstOrDefault(x => x.ReturnType == correspondingProp.PropertyType);
 					if (appropriateParser != null)
 					{
 						object parsed = appropriateParser.Parse(item.Value, correspondingAttribute.CustomParameter);
 						correspondingProp.SetValue(configuration, parsed, null);
 					}
-					//default parsers
+					// default parsers
 					else if (correspondingProp.PropertyType == typeof(string))
 					{
-						//todo: handle default values for strings
+						// todo: handle default values for strings
 						correspondingProp.SetValue(configuration, item.Value, null);
 					}
 					else if (correspondingProp.PropertyType == typeof(bool))
@@ -157,7 +157,7 @@ namespace NegativeScreen
 							correspondingProp.SetValue(configuration, ParseInt(item.Value), null);
 						}
 					}
-					//TODO: default parser for other simple types (int, float...)
+					// TODO: default parser for other simple types (int, float...)
 					else
 					{
 						throw new Exception(string.Format("Could not find a parser for type \"{0}\"!", correspondingProp.PropertyType));
@@ -165,15 +165,15 @@ namespace NegativeScreen
 				}
 				else
 				{
-					//no corresponding assignable property
+					// no corresponding assignable property
 					configuration.HandleDynamicKey(item.Key, item.Value);
 				}
 			}
-			//assign default value if present for remaining properties not found in configuration
+			// assign default value if present for remaining properties not found in configuration
 			foreach (var remainingPropery in configurableProperties)
 			{
-				//todo : throw exception if no default parameter to avoid impredictable errors?
-				//>> need to differentiate default null from provided null
+				// todo : throw exception if no default parameter to avoid impredictable errors?
+				// >> need to differentiate default null from provided null
 				if (remainingPropery.Attribute.CustomParameter != null)
 				{
 					remainingPropery.Property.SetValue(configuration, remainingPropery.Attribute.CustomParameter, null);
@@ -206,7 +206,7 @@ namespace NegativeScreen
 					case '"':
 						if (insideQuotes)
 						{
-							//handle double quotes inside quotation marks
+							// handle double quotes inside quotation marks
 							if (i + 1 < cleanedContent.Length && cleanedContent[i + 1] == '"')
 							{
 								right.Append('"');
@@ -221,12 +221,12 @@ namespace NegativeScreen
 						{
 							goto default;
 						}
-						//ignore line
+						// ignore line
 						do
 						{
 							i++;
 						} while (i < cleanedContent.Length && cleanedContent[i] != '\n');
-						//include the new line
+						// include the new line
 						i--;
 						break;
 					case '=':
@@ -242,7 +242,7 @@ namespace NegativeScreen
 						if (left.Length > 0)
 						{
 							string key = left.ToString().Trim();
-							//the last declaration overwrite any existing one
+							// the last declaration overwrite any existing one
 							if (parsed.ContainsKey(key))
 							{
 								parsed[key] = right.ToString(0, indexOfLastLine).Trim();

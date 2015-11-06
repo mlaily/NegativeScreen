@@ -1,20 +1,20 @@
-﻿//Copyright 2011-2014 Melvyn Laily
-//http://arcanesanctum.net
+﻿// Copyright 2011-2014 Melvyn Laily
+// http://arcanesanctum.net
 
-//This file is part of NegativeScreen.
+// This file is part of NegativeScreen.
 
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
-//You should have received a copy of the GNU General Public License
-//along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Collections.Generic;
@@ -118,7 +118,7 @@ namespace NegativeScreen
 			InitializeContextMenu();
 
 			currentMatrix = Configuration.Current.InitialColorEffect.Matrix;
-			SynchronizeMenuItemCheckboxesWithEffect(Configuration.Current.InitialColorEffect); //requires the context menu to be initialized
+			SynchronizeMenuItemCheckboxesWithEffect(Configuration.Current.InitialColorEffect); // requires the context menu to be initialized
 
 			InitializeControlLoop();
 		}
@@ -206,7 +206,7 @@ namespace NegativeScreen
 							throw new Exception("MagUninitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 						}
 						PauseLoop();
-						//we need to reinitialize
+						// we need to reinitialize
 						break;
 					}
 				}
@@ -373,9 +373,9 @@ namespace NegativeScreen
 			ToolStripMenuItem currentItem = null;
 			foreach (ToolStripMenuItem effectItem in this.changeModeToolStripMenuItem.DropDownItems)
 			{
-				effectItem.Checked = false; //reset all the check boxes
+				effectItem.Checked = false; // reset all the check boxes
 				var castItem = (ScreenColorEffect)effectItem.Tag;
-				if (castItem.Matrix == effect.Matrix) currentItem = effectItem; //TODO: should implement equality comparison...
+				if (castItem.Matrix == effect.Matrix) currentItem = effectItem; // TODO: should implement equality comparison...
 			}
 			if (currentItem != null)
 			{

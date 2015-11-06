@@ -1,20 +1,20 @@
-﻿//Copyright 2011-2014 Melvyn Laily
-//http://arcanesanctum.net
+﻿// Copyright 2011-2014 Melvyn Laily
+// http://arcanesanctum.net
 
-//This file is part of NegativeScreen.
+// This file is part of NegativeScreen.
 
-//This program is free software: you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
 
-//You should have received a copy of the GNU General Public License
-//along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Runtime.InteropServices;
@@ -222,14 +222,14 @@ namespace NegativeScreen
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool SystemParametersInfo(int uiAction, int uiParam, ref int pvParam, int fWinIni);
 
-		//debug
+		// debug
 		private static bool SetClearType(bool enabled)
 		{
 			int enabledint = (enabled ? 1 : 0);
 
-			//Writes the new system-wide parameter setting to the user profile.
+			// Writes the new system-wide parameter setting to the user profile.
 			const int SPIF_UPDATEINIFILE = 1;
-			//Broadcasts the WM_SETTINGCHANGE message after updating the user profile.
+			// Broadcasts the WM_SETTINGCHANGE message after updating the user profile.
 			const int SPIF_SENDCHANGE = 2;
 
 			const int SPI_SETFONTSMOOTHING = 0x004B;
@@ -238,20 +238,20 @@ namespace NegativeScreen
 
 			const int FE_FONTSMOOTHINGSTANDARD = 1;
 			const int FE_FONTSMOOTHINGCLEARTYPE = 2;
-			//SystemInformation.FontSmoothingType
+			// SystemInformation.FontSmoothingType
 			int pvParam = 0;
-			//enable
+			// enable
 			bool fontSmoothing = SystemParametersInfo(SPI_SETFONTSMOOTHING, 1, ref pvParam, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
-			//type
+			// type
 			pvParam = FE_FONTSMOOTHINGSTANDARD;
 			pvParam = FE_FONTSMOOTHINGCLEARTYPE;
-			//does not work -_-
+			// does not work -_-
 			bool r = SystemParametersInfo(SPI_SETFONTSMOOTHINGTYPE, 1, ref pvParam, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
 			var x = GetExceptionForLastError();
-			//bool fontSmoothing = SystemParametersInfo(SPI_SETFONTSMOOTHING, enabledint, ref pvParam, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
-			//pvParam = enabledUint;
-			//bool clearType = SystemParametersInfo(SPI_SETCLEARTYPE, 0, ref pvParam, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
-			//return fontSmoothing && clearType;
+			// bool fontSmoothing = SystemParametersInfo(SPI_SETFONTSMOOTHING, enabledint, ref pvParam, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
+			// pvParam = enabledUint;
+			// bool clearType = SystemParametersInfo(SPI_SETCLEARTYPE, 0, ref pvParam, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
+			// return fontSmoothing && clearType;
 			return true;
 		}
 
@@ -309,7 +309,7 @@ namespace NegativeScreen
 
 		#region "Magnification.dll"
 
-		//http://msdn.microsoft.com/en-us/library/ms692402%28v=vs.85%29.aspx
+		// http://msdn.microsoft.com/en-us/library/ms692402%28v=vs.85%29.aspx
 
 		/// <summary>
 		/// Window class of the magnifier control
@@ -342,7 +342,7 @@ namespace NegativeScreen
 
 		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		//ref keyword necessary for X86, not sure why... (crash on call otherwise)
+		// ref keyword necessary for X86, not sure why... (crash on call otherwise)
 		public static extern bool MagSetColorEffect(IntPtr hwnd, ref ColorEffect pEffect);
 
 		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
@@ -353,9 +353,9 @@ namespace NegativeScreen
 
 		#region "DWM API"
 
-		//http://msdn.microsoft.com/en-us/library/aa969540%28v=vs.85%29.aspx
+		// http://msdn.microsoft.com/en-us/library/aa969540%28v=vs.85%29.aspx
 
-		///WARNING! : program must be compiled for x64 or the call will fail!
+		// WARNING! : program must be compiled for x64 or the call will fail!
 
 		[DllImport("dwmapi.dll", PreserveSig = false, SetLastError = true)]
 		public static extern int DwmSetWindowAttribute(IntPtr hwnd, DWMWINDOWATTRIBUTE attr, ref DWMWINDOWATTRIBUTE attrValue, int attrSize);
