@@ -34,9 +34,9 @@ namespace NegativeScreen
 			if (NativeMethods.IsX86InWow64Mode())
 			{
 				//see http://social.msdn.microsoft.com/Forums/en-US/windowsaccessibilityandautomation/thread/6cc761ea-8a54-4403-9cca-2fa8680f4409/
-				System.Windows.Forms.MessageBox.Show(
+				MessageBox.Show(
 @"You are trying to run this program on a 64 bits processor whereas it was compiled for a 32 bits processor.
-To avoid known bugs relative to the used APIs, please instead run the 64 bits compiled version.", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation, System.Windows.Forms.MessageBoxDefaultButton.Button1);
+To avoid known bugs relative to the used APIs, please instead run the 64 bits compiled version.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
 				return;
 			}
 
@@ -47,7 +47,7 @@ To avoid known bugs relative to the used APIs, please instead run the 64 bits co
 				System.Windows.Forms.MessageBox.Show(
 @"Sorry, this version only works on Windows 7 and above. :/
 There is a Vista version though. You can download it on
-http://x2a.yt?negativescreen", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation, System.Windows.Forms.MessageBoxDefaultButton.Button1);
+http://x2a.yt?negativescreen", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
 				return;
 			}
 
@@ -58,8 +58,8 @@ http://x2a.yt?negativescreen", "Warning", System.Windows.Forms.MessageBoxButtons
 			//check whether aero is enabled
 			if (Configuration.Current.ShowAeroWarning && !NativeMethods.DwmIsCompositionEnabled())
 			{
-				var result = System.Windows.Forms.MessageBox.Show("Windows Aero must be enabled for this program to work properly!", "Warning", System.Windows.Forms.MessageBoxButtons.OKCancel, System.Windows.Forms.MessageBoxIcon.Information, System.Windows.Forms.MessageBoxDefaultButton.Button1);
-				if (result != System.Windows.Forms.DialogResult.OK)
+				var result = MessageBox.Show("Windows Aero must be enabled for this program to work properly!", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+				if (result != DialogResult.OK)
 				{
 					return;
 				}
