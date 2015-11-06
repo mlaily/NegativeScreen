@@ -69,6 +69,10 @@ namespace NegativeScreen
 		/// </summary>
 		public const int GWL_STYLE = -16;
 
+		[return: MarshalAs(UnmanagedType.Bool)]
+		[DllImport("user32.dll", SetLastError = true)]
+		public static extern bool PostThreadMessage(uint threadId, uint msg, IntPtr wParam, IntPtr lParam);
+
 		/// <summary>
 		/// http://msdn.microsoft.com/en-us/library/ms633591%28v=vs.85%29.aspx
 		/// </summary>

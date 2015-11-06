@@ -286,7 +286,7 @@ namespace NegativeScreen
 		/// <summary>
 		/// Can be called from any thread.
 		/// </summary>
-		private void Exit()
+		public void Exit()
 		{
 			if (!mainLoopPaused)
 			{
@@ -298,9 +298,17 @@ namespace NegativeScreen
 		/// <summary>
 		/// Can be called from any thread.
 		/// </summary>
-		private void Toggle()
+		public void Toggle()
 		{
 			this.mainLoopPaused = !mainLoopPaused;
+		}
+
+		/// <summary>
+		/// Can be called from any thread.
+		/// </summary>
+		public void Enable()
+		{
+			this.mainLoopPaused = false;
 		}
 
 		private void ToggleColorEffect(bool fromNormal)

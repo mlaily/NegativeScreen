@@ -19,6 +19,7 @@
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace NegativeScreen
 {
@@ -64,9 +65,16 @@ http://x2a.yt?negativescreen", "Warning", System.Windows.Forms.MessageBoxButtons
 				}
 			}
 			//check whether the current application is already running
-			if (IsAnotherInstanceAlreadyRunning())
+			Process aleadyRunningInstance;
+			if (IsAnotherInstanceAlreadyRunning(out aleadyRunningInstance))
 			{
-				System.Windows.Forms.MessageBox.Show("The application is already running!", "Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information, System.Windows.Forms.MessageBoxDefaultButton.Button1);
+				// There is no way to know which thread is the main thread (where the message loop is)
+				// so we don't take any chance...
+				foreach (ProcessThread thread in aleadyRunningInstance.Threads)
+				{
+					// The goal is to enable the already running instance color effect:
+					NativeMethods.PostThreadMessage((uint)thread.Id, UserMessageFilter.WM_ENABLE_COLOR_EFFECT, IntPtr.Zero, IntPtr.Zero);
+				}
 				return;
 			}
 			//without this call, and with custom DPI settings,
@@ -75,6 +83,8 @@ http://x2a.yt?negativescreen", "Warning", System.Windows.Forms.MessageBoxButtons
 			NativeMethods.SetProcessDPIAware();
 
 			Application.EnableVisualStyles();
+			Application.AddMessageFilter(new UserMessageFilter());
+
 			OverlayManager.Initialize();
 
 			Application.Run();
@@ -85,7 +95,7 @@ http://x2a.yt?negativescreen", "Warning", System.Windows.Forms.MessageBoxButtons
 			MessageBox.Show(e.ExceptionObject.ToString(), "Sorry, I'm bailing out!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
-		private static bool IsAnotherInstanceAlreadyRunning()
+		private static bool IsAnotherInstanceAlreadyRunning(out Process alreadyRunningInstance)
 		{
 			Process me = Process.GetCurrentProcess();
 			Process[] processesWithSameName = Process.GetProcessesByName(me.ProcessName);
@@ -94,11 +104,32 @@ http://x2a.yt?negativescreen", "Warning", System.Windows.Forms.MessageBoxButtons
 				// same process name, was started from the same file name and location.
 				if (process.Id != me.Id && process.MainModule.FileName == me.MainModule.FileName)
 				{
+					alreadyRunningInstance = process;
 					return true;
 				}
 			}
+			alreadyRunningInstance = null;
 			return false;
 		}
+	}
 
+	/// <summary>
+	/// This class is required to intercept Windows messages sent via PostThreadMessage()
+	/// as for unknown reasons, the overridden WndProc() of a <see cref="Form"/> never receives them...
+	/// </summary>
+	public class UserMessageFilter : IMessageFilter
+	{
+		public const int WM_ENABLE_COLOR_EFFECT = (int)WindowMessage.WM_USER + 0;
+
+		public bool PreFilterMessage(ref Message m)
+		{
+			if (m.Msg == WM_ENABLE_COLOR_EFFECT)
+			{
+				// Handle a custom WM_ENABLE_COLOR_EFFECT message
+				// so that NegativeScreen can be enabled from another process/instance.
+				OverlayManager.Instance.Enable();
+			}
+			return false;
+		}
 	}
 }
