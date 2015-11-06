@@ -303,9 +303,7 @@ namespace NegativeScreen
 		/// </summary>
 		/// <returns></returns>
 		public static Exception GetExceptionForLastError()
-		{
-			return Marshal.GetExceptionForHR(HRESULT_FROM_WIN32((ulong)GetLastError()));
-		}
+			=> Marshal.GetExceptionForHR(HRESULT_FROM_WIN32((ulong)GetLastError()));
 
 		#endregion
 

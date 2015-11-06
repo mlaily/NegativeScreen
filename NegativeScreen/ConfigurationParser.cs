@@ -71,11 +71,11 @@ namespace NegativeScreen
 	[AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
 	public sealed class CorrespondToAttribute : Attribute
 	{
-		public string Key { get; private set; }
+		public string Key { get; }
 
 		public CorrespondToAttribute(string key)
 		{
-			this.Key = key.ToLowerInvariant();
+			Key = key.ToLowerInvariant();
 		}
 
 		public object CustomParameter { get; set; }

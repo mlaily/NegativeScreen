@@ -31,41 +31,41 @@ namespace NegativeScreen
 		/// <summary>
 		/// no color transformation
 		/// </summary>
-		public static float[,] Identity { get; private set; }
+		public static float[,] Identity { get; }
 		/// <summary>
 		/// simple colors transformations
 		/// </summary>
-		public static float[,] Negative { get; private set; }
-		public static float[,] GrayScale { get; private set; }
-		public static float[,] Sepia { get; private set; }
-		public static float[,] Red { get; private set; }
-		public static float[,] HueShift180 { get; private set; }
+		public static float[,] Negative { get; }
+		public static float[,] GrayScale { get; }
+		public static float[,] Sepia { get; }
+		public static float[,] Red { get; }
+		public static float[,] HueShift180 { get; }
 
-		public static float[,] NegativeGrayScale { get; private set; }
-		public static float[,] NegativeSepia { get; private set; }
-		public static float[,] NegativeRed { get; private set; }
+		public static float[,] NegativeGrayScale { get; }
+		public static float[,] NegativeSepia { get; }
+		public static float[,] NegativeRed { get; }
 
 		/// <summary>
 		/// theoretical optimal transfomation (but ugly desaturated pure colors due to "overflows"...)
 		/// Many thanks to Tom MacLeod who gave me the idea for these inversion modes
 		/// </summary>
-		public static float[,] NegativeHueShift180 { get; private set; }
+		public static float[,] NegativeHueShift180 { get; }
 		/// <summary>
 		/// high saturation, good pure colors
 		/// </summary>
-		public static float[,] NegativeHueShift180Variation1 { get; private set; }
+		public static float[,] NegativeHueShift180Variation1 { get; }
 		/// <summary>
 		/// overall desaturated, yellows and blue plain bad. actually relaxing and very usable
 		/// </summary>
-		public static float[,] NegativeHueShift180Variation2 { get; private set; }
+		public static float[,] NegativeHueShift180Variation2 { get; }
 		/// <summary>
 		/// high saturation. yellows and blues plain bad. actually quite readable
 		/// </summary>
-		public static float[,] NegativeHueShift180Variation3 { get; private set; }
+		public static float[,] NegativeHueShift180Variation3 { get; }
 		/// <summary>
 		/// //not so readable, good colors (CMY colors a bit desaturated, still more saturated than normal)
 		/// </summary>
-		public static float[,] NegativeHueShift180Variation4 { get; private set; }
+		public static float[,] NegativeHueShift180Variation4 { get; }
 
 		static BuiltinMatrices()
 		{

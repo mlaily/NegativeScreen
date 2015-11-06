@@ -259,10 +259,7 @@ Grayscale=win+alt+F11
 	class HotKeyParser : ICustomParser
 	{
 
-		public Type ReturnType
-		{
-			get { return typeof(HotKey); }
-		}
+		public Type ReturnType => typeof(HotKey);
 
 		public object Parse(string rawValue, object customParameter)
 		{
@@ -322,15 +319,10 @@ Grayscale=win+alt+F11
 	class MatrixParser : ICustomParser
 	{
 
-		public Type ReturnType
-		{
-			get { return typeof(float[,]); }
-		}
+		public Type ReturnType => typeof(float[,]);
 
 		public object Parse(string rawValue, object customParameter)
-		{
-			return StaticParseMatrix(rawValue);
-		}
+			=> StaticParseMatrix(rawValue);
 
 		public static float[,] StaticParseMatrix(string rawValue)
 		{
@@ -392,24 +384,22 @@ Grayscale=win+alt+F11
 		public HotKey(KeyModifiers modifiers, Keys key, int id = -1)
 			: this()
 		{
-			this.Modifiers = modifiers;
+			Modifiers = modifiers;
 			//65535
-			this.Key = key & Keys.KeyCode;
+			Key = key & Keys.KeyCode;
 			if (id == -1)
 			{
-				this.Id = CurrentId;
+				Id = CurrentId;
 				CurrentId++;
 			}
 			else
 			{
-				this.Id = id;
+				Id = id;
 			}
 		}
 
 		public override int GetHashCode()
-		{
-			return (int)Key | (int)Modifiers << 16 | Id << 20;
-		}
+			=> (int)Key | (int)Modifiers << 16 | Id << 20;
 
 		public override bool Equals(object obj)
 		{
@@ -428,14 +418,10 @@ Grayscale=win+alt+F11
 		}
 
 		public static bool operator ==(HotKey a, HotKey b)
-		{
-			return a.GetHashCode() == b.GetHashCode();
-		}
+			=> a.GetHashCode() == b.GetHashCode();
 
 		public static bool operator !=(HotKey a, HotKey b)
-		{
-			return a.GetHashCode() != b.GetHashCode();
-		}
+			=> a.GetHashCode() != b.GetHashCode();
 
 		public override string ToString()
 		{
@@ -463,14 +449,14 @@ Grayscale=win+alt+F11
 
 	struct ScreenColorEffect
 	{
-		public float[,] Matrix { get; private set; }
-		public string Description { get; private set; }
+		public float[,] Matrix { get; }
+		public string Description { get; }
 
 		public ScreenColorEffect(float[,] matrix, string description)
 			: this()
 		{
-			this.Matrix = matrix;
-			this.Description = description;
+			Matrix = matrix;
+			Description = description;
 		}
 
 	}
