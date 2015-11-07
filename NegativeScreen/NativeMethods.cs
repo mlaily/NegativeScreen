@@ -283,38 +283,73 @@ namespace NegativeScreen
 		/// </summary>
 		public const string WC_MAGNIFIER = "Magnifier";
 
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool MagInitialize();
 
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool MagUninitialize();
 
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool MagSetWindowSource(IntPtr hwnd, RECT rect);
 
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool MagGetWindowSource(IntPtr hwnd, ref RECT pRect);
 
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool MagSetWindowTransform(IntPtr hwnd, ref Transformation pTransform);
 
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool MagGetWindowTransform(IntPtr hwnd, ref Transformation pTransform);
 
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		// ref keyword necessary for X86, not sure why... (crash on call otherwise)
 		public static extern bool MagSetColorEffect(IntPtr hwnd, ref ColorEffect pEffect);
 
-		[DllImport("Magnification.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool MagGetColorEffect(IntPtr hwnd, ref ColorEffect pEffect);
+
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool MagGetFullscreenColorEffect(ref ColorEffect pEffect);
+
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool MagGetFullscreenTransform(ref float pMagLevel, ref int pxOffset, ref int pyOffset);
+
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool MagSetFullscreenColorEffect(ref ColorEffect pEffect);
+
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool MagSetFullscreenTransform(float magLevel, int xOffset, int yOffset);
+
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
+		public static extern int MagGetWindowFilterList(IntPtr hwnd, ref MagnifierFilterMode pdwFilterMode, int count, IntPtr pHWND);
+
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool MagSetWindowFilterList(IntPtr hwnd, MagnifierFilterMode pdwFilterMode, int count, IntPtr pHWND);
+
+		public static bool MagSetWindowFilterList(IntPtr hwnd, MagnifierFilterMode filterMode, IntPtr[] pHWND)
+		{
+			int arraySize = Marshal.SizeOf(typeof(IntPtr)) * pHWND.Length;
+			IntPtr ptrDest = Marshal.AllocHGlobal(arraySize);
+			Marshal.Copy(pHWND, 0, ptrDest, pHWND.Length);
+			return MagSetWindowFilterList(hwnd, filterMode, pHWND.Length, ptrDest);
+		}
+
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool MagShowSystemCursor(bool fShowCursor);
 
 		#endregion
 

@@ -34,6 +34,15 @@ namespace NegativeScreen
 		MS_INVERTCOLORS = 0x0004
 	}
 
+	internal enum MagnifierFilterMode : uint
+	{
+		MW_FILTERMODE_EXCLUDE = 0,
+		/// <summary>
+		/// Note: This value is not supported on Windows 7 or Windows 8.
+		/// </summary>
+		MW_FILTERMODE_INCLUDE = 1,
+	}
+
 	/// <summary>
 	/// Magnification matrix
 	/// </summary>
@@ -258,7 +267,7 @@ namespace NegativeScreen
 	/// <summary>
 	/// Specifies the style of the window being created
 	/// </summary>
-	[FlagsAttribute]
+	[Flags]
 	[Description("Specifies the style of the window being created")]
 	internal enum WindowStyles : int
 	{
@@ -403,7 +412,7 @@ namespace NegativeScreen
 		WS_CHILDWINDOW = (WindowStyles.WS_CHILD)
 	}
 
-	[FlagsAttribute]
+	[Flags]
 	internal enum SetWindowPosFlags : int
 	{
 		SWP_NOSIZE = 1,
@@ -422,7 +431,7 @@ namespace NegativeScreen
 	/// <summary>
 	/// Specifies the extended style of the window
 	/// </summary>
-	[FlagsAttribute]
+	[Flags]
 	[Description("Specifies the extended style of the window")]
 	internal enum ExtendedWindowStyles : int
 	{
@@ -565,7 +574,7 @@ namespace NegativeScreen
 	/// <summary>
 	/// Layered window flags
 	/// </summary>
-	[FlagsAttribute]
+	[Flags]
 	[Description("Layered window flags")]
 	internal enum LayeredWindowAttributeFlags : int
 	{
@@ -579,7 +588,7 @@ namespace NegativeScreen
 		LWA_ALPHA = 0x00000002
 	}
 
-	[FlagsAttribute]
+	[Flags]
 	internal enum LayeredWindowUpdateFlags : int
 	{
 		ULW_COLORKEY = 0x00000001,
