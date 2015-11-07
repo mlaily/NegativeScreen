@@ -6,6 +6,7 @@ using System.Windows.Forms;
 
 namespace NegativeScreen
 {
+	[Serializable]
 	class AlreadyRegisteredHotKeyException : Exception
 	{
 

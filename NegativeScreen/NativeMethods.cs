@@ -23,9 +23,8 @@ using System.Diagnostics;
 
 namespace NegativeScreen
 {
-
 	/// <summary>
-	/// based on http://delphi32.blogspot.com/2010/09/windows-magnification-api-net.html
+	/// Based on http://delphi32.blogspot.com/2010/09/windows-magnification-api-net.html
 	/// </summary>
 	internal static class NativeMethods
 	{
@@ -122,6 +121,7 @@ namespace NegativeScreen
 		/// <param name="bAlpha"></param>
 		/// <param name="dwFlags"></param>
 		/// <returns></returns>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Portability", "CA1901:PInvokeDeclarationsShouldBePortable", MessageId = "2")]
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool SetLayeredWindowAttributes(IntPtr hwnd, int crKey, byte bAlpha, LayeredWindowAttributeFlags dwFlags);
@@ -221,39 +221,6 @@ namespace NegativeScreen
 		[DllImport("user32.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool SystemParametersInfo(int uiAction, int uiParam, ref int pvParam, int fWinIni);
-
-		// debug
-		private static bool SetClearType(bool enabled)
-		{
-			int enabledint = (enabled ? 1 : 0);
-
-			// Writes the new system-wide parameter setting to the user profile.
-			const int SPIF_UPDATEINIFILE = 1;
-			// Broadcasts the WM_SETTINGCHANGE message after updating the user profile.
-			const int SPIF_SENDCHANGE = 2;
-
-			const int SPI_SETFONTSMOOTHING = 0x004B;
-			const int SPI_SETCLEARTYPE = 0x1049;
-			const int SPI_SETFONTSMOOTHINGTYPE = 0x200B;
-
-			const int FE_FONTSMOOTHINGSTANDARD = 1;
-			const int FE_FONTSMOOTHINGCLEARTYPE = 2;
-			// SystemInformation.FontSmoothingType
-			int pvParam = 0;
-			// enable
-			bool fontSmoothing = SystemParametersInfo(SPI_SETFONTSMOOTHING, 1, ref pvParam, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
-			// type
-			pvParam = FE_FONTSMOOTHINGSTANDARD;
-			pvParam = FE_FONTSMOOTHINGCLEARTYPE;
-			// does not work -_-
-			bool r = SystemParametersInfo(SPI_SETFONTSMOOTHINGTYPE, 1, ref pvParam, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
-			var x = GetExceptionForLastError();
-			// bool fontSmoothing = SystemParametersInfo(SPI_SETFONTSMOOTHING, enabledint, ref pvParam, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
-			// pvParam = enabledUint;
-			// bool clearType = SystemParametersInfo(SPI_SETCLEARTYPE, 0, ref pvParam, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
-			// return fontSmoothing && clearType;
-			return true;
-		}
 
 		#endregion
 
@@ -374,7 +341,5 @@ namespace NegativeScreen
 		public static extern bool DwmIsCompositionEnabled();
 
 		#endregion
-
 	}
-
 }

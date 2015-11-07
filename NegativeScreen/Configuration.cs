@@ -365,21 +365,16 @@ Grayscale=win+alt+F11
 
 		private static int CurrentId = 100;
 
-		public static readonly HotKey Empty;
+		public static readonly HotKey Empty = new HotKey()
+		{
+			Id = 0,
+			Key = Keys.None,
+			Modifiers = KeyModifiers.NONE
+		};
 
 		public KeyModifiers Modifiers { get; private set; }
 		public Keys Key { get; private set; }
 		public int Id { get; private set; }
-
-		static HotKey()
-		{
-			Empty = new HotKey()
-			{
-				Id = 0,
-				Key = Keys.None,
-				Modifiers = KeyModifiers.NONE
-			};
-		}
 
 		public HotKey(KeyModifiers modifiers, Keys key, int id = -1)
 			: this()
