@@ -296,6 +296,21 @@ namespace NegativeScreen
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool MagGetColorEffect(IntPtr hwnd, ref ColorEffect pEffect);
 
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
+		public static extern int MagGetWindowFilterList(IntPtr hwnd, ref MagnifierFilterMode pdwFilterMode, int count, IntPtr pHWND);
+
+		[DllImport("Magnification.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool MagSetWindowFilterList(IntPtr hwnd, MagnifierFilterMode pdwFilterMode, int count, IntPtr pHWND);
+
+		public static bool MagSetWindowFilterList(IntPtr hwnd, MagnifierFilterMode filterMode, IntPtr[] pHWND)
+		{
+			int arraySize = Marshal.SizeOf(typeof(IntPtr)) * pHWND.Length;
+			IntPtr ptrDest = Marshal.AllocHGlobal(arraySize);
+			Marshal.Copy(pHWND, 0, ptrDest, pHWND.Length);
+			return MagSetWindowFilterList(hwnd, filterMode, pHWND.Length, ptrDest);
+		}
+
 		#endregion
 
 		#region "DWM API"

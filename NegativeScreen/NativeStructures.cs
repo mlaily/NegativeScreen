@@ -34,6 +34,15 @@ namespace NegativeScreen
 		MS_INVERTCOLORS = 0x0004
 	}
 
+	internal enum MagnifierFilterMode : uint
+	{
+		MW_FILTERMODE_EXCLUDE = 0,
+		/// <summary>
+		/// Note: This value is not supported on Windows 7 or Windows 8.
+		/// </summary>
+		MW_FILTERMODE_INCLUDE = 1,
+	}
+
 	/// <summary>
 	/// Magnification matrix
 	/// </summary>
