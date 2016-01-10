@@ -211,7 +211,7 @@ namespace NegativeScreen
 			if (!NativeMethods.SetMagnificationDesktopColorEffect(ref colorEffect))
 			{
 				var inner = new Exception("SetMagnificationDesktopColorEffect()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-				throw new Exception("An error occured while applying a color effect. Another application using the same API might be interfering...", inner);
+				throw new CannotChangeColorEffectException("An error occured while applying a color effect. Another application using the same API might be interfering...", inner);
 			}
 		}
 
@@ -279,5 +279,18 @@ namespace NegativeScreen
 
 			return result;
 		}
+	}
+
+
+	[Serializable]
+	public class CannotChangeColorEffectException : Exception
+	{
+		public CannotChangeColorEffectException() { }
+		public CannotChangeColorEffectException(string message) : base(message) { }
+		public CannotChangeColorEffectException(string message, Exception inner) : base(message, inner) { }
+		protected CannotChangeColorEffectException(
+		  System.Runtime.Serialization.SerializationInfo info,
+		  System.Runtime.Serialization.StreamingContext context) : base(info, context)
+		{ }
 	}
 }

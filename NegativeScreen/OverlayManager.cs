@@ -193,14 +193,29 @@ namespace NegativeScreen
 				{
 					throw new Exception("MagInitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
 				}
-				ToggleColorEffect(fromNormal: true);
+				try
+				{
+					ToggleColorEffect(fromNormal: true);
+				}
+				catch (CannotChangeColorEffectException)
+				{
+					// Unable to set the color effect, most likely because the Windows Magnifier color inversion was enabled.
+					mainLoopPaused = true;
+				}
 				while (!exiting)
 				{
 					System.Threading.Thread.Sleep(Configuration.Current.MainLoopRefreshTime);
 					DoMagnifierApiInvoke();
 					if (mainLoopPaused)
 					{
-						ToggleColorEffect(fromNormal: false);
+						try
+						{
+							ToggleColorEffect(fromNormal: false);
+						}
+						catch (CannotChangeColorEffectException)
+						{
+							// Ignore the error and enter the pause loop.
+						}
 						if (!NativeMethods.MagUninitialize())
 						{
 							throw new Exception("MagUninitialize()", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
@@ -345,13 +360,22 @@ namespace NegativeScreen
 		{
 			if (!mainLoopPaused && !exiting)
 			{
-				if (Configuration.Current.SmoothTransitions)
+				try
 				{
-					BuiltinMatrices.InterpolateColorEffect(currentMatrix, matrix);
+					if (Configuration.Current.SmoothTransitions)
+					{
+						BuiltinMatrices.InterpolateColorEffect(currentMatrix, matrix);
+					}
+					else
+					{
+						BuiltinMatrices.ChangeColorEffect(matrix);
+					}
 				}
-				else
+				// Ignore ColorEffectChangeException, probably thrown because the Windows Magnifier has its color inversion enabled.
+				catch (CannotChangeColorEffectException)
 				{
-					BuiltinMatrices.ChangeColorEffect(matrix);
+					// But we don't change the current matrix.
+					return;
 				}
 			}
 			currentMatrix = matrix;
