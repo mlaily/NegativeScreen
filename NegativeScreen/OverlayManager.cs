@@ -52,14 +52,14 @@ namespace NegativeScreen
 		#region Inter-thread color effect calls
 
 		/// <summary>
-		/// allow to execute magnifer api calls on the correct thread.
+		/// allow to execute magnifer api calls on the proper thread.
 		/// </summary>
 		private ScreenColorEffect invokeColorEffect;
 		private bool shouldInvokeColorEffect;
 		private object invokeColorEffectLock = new object();
 
 		/// <summary>
-		/// Ask for a color effect change to be executed on the correct thread.
+		/// Ask for a color effect change to be executed on the proper thread.
 		/// </summary>
 		/// <param name="colorEffect"></param>
 		private void InvokeColorEffect(ScreenColorEffect colorEffect)
@@ -73,7 +73,7 @@ namespace NegativeScreen
 		}
 
 		/// <summary>
-		/// Execute the specified color effect change, on the right thread.
+		/// Execute the specified color effect change, on the proper thread.
 		/// </summary>
 		private void DoMagnifierApiInvoke()
 		{
