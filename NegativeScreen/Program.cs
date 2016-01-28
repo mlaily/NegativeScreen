@@ -87,6 +87,9 @@ http://x2a.yt?negativescreen", "Warning", MessageBoxButtons.OK, MessageBoxIcon.E
 
 			OverlayManager.Initialize();
 
+			Api api = new Api(OverlayManager.Instance);
+			Application.ApplicationExit += (s, e) => api.Exit();
+
 			Application.Run();
 		}
 

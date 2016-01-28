@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlreadyRegisteredHotKeyException.cs" />
+    <Compile Include="Api.cs" />
     <Compile Include="BuiltinMatrices.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="ConfigurationParser.cs" />

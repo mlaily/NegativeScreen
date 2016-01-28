@@ -23,6 +23,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Drawing;
 using System.Collections.Concurrent;
+using System.Linq;
 
 namespace NegativeScreen
 {
@@ -324,6 +325,32 @@ namespace NegativeScreen
 		public void Enable()
 		{
 			this.mainLoopPaused = false;
+		}
+
+		/// <summary>
+		/// Can be called from any thread.
+		/// </summary>
+		public void Disable()
+		{
+			this.mainLoopPaused = true;
+		}
+
+		/// <summary>
+		/// Can be called from any thread.
+		/// </summary>
+		/// <returns>Returns true if the effect was found and set, false otherwise.</returns>
+		public bool TrySetColorEffectByName(string colorEffectName)
+		{
+			var effect = Configuration.Current.ColorEffects.Where(x => x.Value.Description == colorEffectName);
+			if (effect.Any())
+			{
+				InvokeColorEffect(effect.First().Value);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		private void ToggleColorEffect(bool fromNormal)
