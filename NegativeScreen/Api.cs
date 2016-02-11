@@ -19,9 +19,9 @@ namespace NegativeScreen
 			_overlayManager = overlayManager;
 			_listener = new HttpListener();
 			_listener.IgnoreWriteExceptions = true;
-			_listener.Prefixes.Add("http://+:8990/");
+			_listener.Prefixes.Add(Configuration.Current.ApiListeningUri);
 			_listener.Start();
-			Thread t = new Thread(ThreadLoop) { Name = "Api Listener Thread"};
+			Thread t = new Thread(ThreadLoop) { Name = "Api Listener Thread" };
 			t.Start();
 		}
 

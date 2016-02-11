@@ -57,6 +57,14 @@ ActiveOnStartup=true
 
 ShowAeroWarning=true
 
+EnableApi=false
+# A URI prefix string is composed of a scheme (http), a host, an optional port, and an optional path. The trailing slash is mandatory.
+# To specify that the HttpListener accepts all requests sent to a port, replace the host element with the ""+"" character: ""https://+:8080"".
+# More information on listening prefixes can be found here: https://msdn.microsoft.com/en-us/library/system.net.httplistener%28v=vs.110%29.aspx
+# Please note setting a host other than localhost will require admin privileges.
+# If you do so, also remember to add an exception to your firewall.
+ApiListeningUri=http://localhost:8990/
+
 #Matrices definition
 # The left hand is used as a description, while the right hand is broken down in two parts:
 # - the hot key combination, followed by a new line, (this part is optional)
@@ -221,6 +229,12 @@ Grayscale=win+alt+F11
 
 		[MatchingKey("ShowAeroWarning", CustomParameter = true)]
 		public bool ShowAeroWarning { get; protected set; }
+
+		[MatchingKey("EnableApi", CustomParameter = false)]
+		public bool EnableApi { get; protected set; }
+
+		[MatchingKey("ApiListeningUri", CustomParameter = "http://localhost:8990/")]
+		public string ApiListeningUri { get; protected set; }
 
 		[MatchingKey("InitialColorEffect")]
 		public string InitialColorEffectName { get; protected set; }
