@@ -201,28 +201,28 @@ Grayscale=win+alt+F11
 			}
 		}
 
-		[CorrespondTo("Toggle", CustomParameter = HotKey.ToggleKeyId)]
+		[MatchingKey("Toggle", CustomParameter = HotKey.ToggleKeyId)]
 		public HotKey ToggleKey { get; protected set; }
 
-		[CorrespondTo("Exit", CustomParameter = HotKey.ExitKeyId)]
+		[MatchingKey("Exit", CustomParameter = HotKey.ExitKeyId)]
 		public HotKey ExitKey { get; protected set; }
 
-		[CorrespondTo("SmoothTransitions")]
+		[MatchingKey("SmoothTransitions")]
 		public bool SmoothTransitions { get; protected set; }
 
-		[CorrespondTo("SmoothToggles")]
+		[MatchingKey("SmoothToggles")]
 		public bool SmoothToggles { get; protected set; }
 
-		[CorrespondTo("MainLoopRefreshTime", CustomParameter = 100)]
+		[MatchingKey("MainLoopRefreshTime", CustomParameter = 100)]
 		public int MainLoopRefreshTime { get; protected set; }
 
-		[CorrespondTo("ActiveOnStartup", CustomParameter = true)]
+		[MatchingKey("ActiveOnStartup", CustomParameter = true)]
 		public bool ActiveOnStartup { get; protected set; }
 
-		[CorrespondTo("ShowAeroWarning", CustomParameter = true)]
+		[MatchingKey("ShowAeroWarning", CustomParameter = true)]
 		public bool ShowAeroWarning { get; protected set; }
 
-		[CorrespondTo("InitialColorEffect")]
+		[MatchingKey("InitialColorEffect")]
 		public string InitialColorEffectName { get; protected set; }
 
 		public ScreenColorEffect InitialColorEffect { get; protected set; }

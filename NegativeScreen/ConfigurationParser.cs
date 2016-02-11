@@ -31,7 +31,7 @@ namespace NegativeScreen
 	{
 		/// <summary>
 		/// This method is automatically called when a key from the configuration file
-		/// does not match any property marked with a CorrespondToAttribute.
+		/// does not match any property marked with a <see cref="MatchingKeyAttribute"/>.
 		/// This allows to handle dynamically declared keys in the configuration file.
 		/// </summary>
 		/// <param name="key"></param>
@@ -56,7 +56,7 @@ namespace NegativeScreen
 		/// Raw value to parse, trimmed from any whitespace.
 		/// </param>
 		/// <param name="customParameter">
-		/// A custom parameter, from the CorrespondToAttribute.
+		/// A custom parameter, from the <see cref="MatchingKeyAttribute"/>.
 		/// Its behaviour is left to the implementer's discretion.
 		/// </param>
 		/// <returns></returns>
@@ -69,11 +69,11 @@ namespace NegativeScreen
 	/// A custom parameter can be provided, which will be passed to the parser handling this property type.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]
-	public sealed class CorrespondToAttribute : Attribute
+	public sealed class MatchingKeyAttribute : Attribute
 	{
 		public string Key { get; }
 
-		public CorrespondToAttribute(string key)
+		public MatchingKeyAttribute(string key)
 		{
 			Key = key.ToLowerInvariant();
 		}
@@ -98,24 +98,24 @@ namespace NegativeScreen
 			Dictionary<string, string> rawConfiguration = ParseConfiguration(content);
 			var configurableProperties =
 				(from p in configuration.GetType().GetProperties()
-				 let attr = p.GetCustomAttributes(typeof(CorrespondToAttribute), true)
+				 let attr = p.GetCustomAttributes(typeof(MatchingKeyAttribute), true)
 				 where attr.Length == 1
-				 select new { Property = p, Attribute = attr.First() as CorrespondToAttribute })
+				 select new { Property = p, Attribute = attr.First() as MatchingKeyAttribute })
 				.ToList();
 			foreach (var item in rawConfiguration)
 			{
 				string key = item.Key.ToLowerInvariant();
-				var correspondingProps = configurableProperties.Where(x => x.Attribute.Key == key);
-				PropertyInfo correspondingProp = null;
-				CorrespondToAttribute correspondingAttribute = null;
-				if (correspondingProps.Any())
+				var matchingProps = configurableProperties.Where(x => x.Attribute.Key == key);
+				PropertyInfo matchingProp = null;
+				MatchingKeyAttribute matchingAttribute = null;
+				if (matchingProps.Any())
 				{
 					try
 					{
 						// try to find a matching property for this key
-						var single = correspondingProps.Single();
-						correspondingProp = single.Property;
-						correspondingAttribute = single.Attribute;
+						var single = matchingProps.Single();
+						matchingProp = single.Property;
+						matchingAttribute = single.Attribute;
 						configurableProperties.Remove(single);
 					}
 					catch (Exception ex)
@@ -123,49 +123,49 @@ namespace NegativeScreen
 						throw new Exception(string.Format("The key \"{0}\" was found multiple times!", key), ex);
 					}
 					// parse value
-					var appropriateParser = customParsers.FirstOrDefault(x => x.ReturnType == correspondingProp.PropertyType);
+					var appropriateParser = customParsers.FirstOrDefault(x => x.ReturnType == matchingProp.PropertyType);
 					if (appropriateParser != null)
 					{
-						object parsed = appropriateParser.Parse(item.Value, correspondingAttribute.CustomParameter);
-						correspondingProp.SetValue(configuration, parsed, null);
+						object parsed = appropriateParser.Parse(item.Value, matchingAttribute.CustomParameter);
+						matchingProp.SetValue(configuration, parsed, null);
 					}
 					// default parsers
-					else if (correspondingProp.PropertyType == typeof(string))
+					else if (matchingProp.PropertyType == typeof(string))
 					{
 						// todo: handle default values for strings
-						correspondingProp.SetValue(configuration, item.Value, null);
+						matchingProp.SetValue(configuration, item.Value, null);
 					}
-					else if (correspondingProp.PropertyType == typeof(bool))
+					else if (matchingProp.PropertyType == typeof(bool))
 					{
-						if (correspondingAttribute.CustomParameter is bool)
+						if (matchingAttribute.CustomParameter is bool)
 						{
-							correspondingProp.SetValue(configuration, ParseBool(item.Value, (bool)correspondingAttribute.CustomParameter), null);
+							matchingProp.SetValue(configuration, ParseBool(item.Value, (bool)matchingAttribute.CustomParameter), null);
 						}
 						else
 						{
-							correspondingProp.SetValue(configuration, ParseBool(item.Value), null);
+							matchingProp.SetValue(configuration, ParseBool(item.Value), null);
 						}
 					}
-					else if (correspondingProp.PropertyType == typeof(int))
+					else if (matchingProp.PropertyType == typeof(int))
 					{
-						if (correspondingAttribute.CustomParameter is int)
+						if (matchingAttribute.CustomParameter is int)
 						{
-							correspondingProp.SetValue(configuration, ParseInt(item.Value, (int)correspondingAttribute.CustomParameter), null);
+							matchingProp.SetValue(configuration, ParseInt(item.Value, (int)matchingAttribute.CustomParameter), null);
 						}
 						else
 						{
-							correspondingProp.SetValue(configuration, ParseInt(item.Value), null);
+							matchingProp.SetValue(configuration, ParseInt(item.Value), null);
 						}
 					}
 					// TODO: default parser for other simple types (int, float...)
 					else
 					{
-						throw new Exception(string.Format("Could not find a parser for type \"{0}\"!", correspondingProp.PropertyType));
+						throw new Exception(string.Format("Could not find a parser for type \"{0}\"!", matchingProp.PropertyType));
 					}
 				}
 				else
 				{
-					// no corresponding assignable property
+					// no matching assignable property
 					configuration.HandleDynamicKey(item.Key, item.Value);
 				}
 			}
