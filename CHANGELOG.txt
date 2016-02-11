@@ -1,3 +1,11 @@
+Version 2.5, 2016-02-11
+------------------------
+- [fixed] when an instance is already running, enable its color effect instead of showing an unhelpful message about it
+- [fixed] no longer crash when trying to set a color effect while the Windows Magnifier color inversion is enabled
+- [added] a basic web api is now part of NegativeScreen! See the readme for more information
+- [added] new EnableApi, defaults to false
+- [added] new ApiListeningUri, defaults to listening on port 8990, localhost only
+
 Version 2.4, 2014-11-30
 ------------------------
 - [fixed] force the working directory to be the one of the executable (so the .conf file is found when starting from the cli)

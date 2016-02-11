@@ -27,6 +27,20 @@ swapping blacks and whites while keeping colors (about) the sames.
 You can now configure the color effects manually via a configuration file.
 You can also configure the hot keys for every actions, using the same configuration file.
 
+A basic web api is part of NegativeScreen >= 2.5
+It is disabled by default. When enabled, it listens by default on port 8990, localhost only.
+See the configuration file to enable the api or change the listening uri...
+
+All commands must be sent with the POST http method.
+The following commands are implemented:
+- TOGGLE
+- ENABLE
+- DISABLE
+- SET "Color effect name" (without the quotes)
+
+Any request sent with a method other than POST will not be interpreted,
+and a response containing the application version will be sent.
+
 
 ## Requirements
 
@@ -34,7 +48,7 @@ NegativeScreen < 2.0 needs at least Windows Vista to run.
 
 Versions 2.0+ need at least Windows 7.
 
-Both run on Windows 8.
+Both run on Windows 8 or superior.
 
 Graphic acceleration (Aero) must be enabled.
 
