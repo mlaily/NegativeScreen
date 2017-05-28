@@ -65,8 +65,7 @@ http://x2a.yt?negativescreen", "Warning", MessageBoxButtons.OK, MessageBoxIcon.E
 				}
 			}
 			// check whether the current application is already running
-			Process aleadyRunningInstance;
-			if (IsAnotherInstanceAlreadyRunning(out aleadyRunningInstance))
+			if (IsAnotherInstanceAlreadyRunning(out Process aleadyRunningInstance))
 			{
 				// There is no way to know which thread is the main thread (where the message loop is)
 				// so we don't take any chance...

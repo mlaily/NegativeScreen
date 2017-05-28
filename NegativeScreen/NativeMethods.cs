@@ -240,8 +240,7 @@ namespace NegativeScreen
 
 		public static bool IsX86InWow64Mode()
 		{
-			bool retVal;
-			IsWow64Process(Process.GetCurrentProcess().Handle, out retVal);
+			IsWow64Process(Process.GetCurrentProcess().Handle, out bool retVal);
 			return retVal;
 		}
 

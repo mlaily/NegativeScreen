@@ -289,8 +289,7 @@ namespace NegativeScreen
 		private static int ParseInt(string rawValue, int? @default = null)
 		{
 			string trimmed = rawValue.Trim();
-			int value;
-			if (int.TryParse(trimmed, out value))
+			if (int.TryParse(trimmed, out int value))
 			{
 				return value;
 			}

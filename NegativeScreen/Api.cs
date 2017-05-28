@@ -35,8 +35,7 @@ namespace NegativeScreen
 		public Api(OverlayManager overlayManager)
 		{
 			_overlayManager = overlayManager;
-			_listener = new HttpListener();
-			_listener.IgnoreWriteExceptions = true;
+			_listener = new HttpListener() { IgnoreWriteExceptions = true };
 			_listener.Prefixes.Add(Configuration.Current.ApiListeningUri);
 			try
 			{
@@ -47,7 +46,7 @@ namespace NegativeScreen
 				overlayManager.ShowBalloonTip(4000, "Warning", "Unable to start the api!\n" + ex.Message, ToolTipIcon.Warning);
 				return;
 			}
-		
+
 			Thread t = new Thread(ThreadLoop) { Name = "Api Listener Thread" };
 			t.Start();
 		}

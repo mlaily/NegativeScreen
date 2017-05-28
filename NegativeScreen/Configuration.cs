@@ -389,8 +389,7 @@ Grayscale=win+alt+F11
 						if (!Enum.TryParse(item, true, out key))
 						{
 							// try to parse numeric value
-							int numericValue;
-							if (int.TryParse(item, out numericValue))
+							if (int.TryParse(item, out int numericValue))
 							{
 								if (Enum.IsDefined(typeof(Keys), numericValue))
 								{
@@ -433,11 +432,10 @@ Grayscale=win+alt+F11
 				}
 				for (int y = 0; y < matrix.GetLength(1); y++)
 				{
-					float value;
 					if (!float.TryParse(columnSplit[y],
 						System.Globalization.NumberStyles.Float,
 						System.Globalization.NumberFormatInfo.InvariantInfo,
-						out value))
+						out float value))
 					{
 						throw new Exception(string.Format("Unable to parse \"{0}\" to a float.", columnSplit[y]));
 					}

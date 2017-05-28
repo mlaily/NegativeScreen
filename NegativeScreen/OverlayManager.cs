@@ -154,8 +154,7 @@ namespace NegativeScreen
 
 		private bool TryRegisterHotKeyAppendError(HotKey hotkey, StringBuilder appendErrorTo)
 		{
-			AlreadyRegisteredHotKeyException ex;
-			if (!TryRegisterHotKey(hotkey, out ex))
+			if (!TryRegisterHotKey(hotkey, out AlreadyRegisteredHotKeyException ex))
 			{
 				appendErrorTo.AppendFormat(" - \"{0}\" : {1}", ex.HotKey, (ex.InnerException == null ? "" : ex.InnerException.Message));
 				return false;
@@ -167,9 +166,11 @@ namespace NegativeScreen
 		{
 			foreach (var item in Configuration.Current.ColorEffects)
 			{
-				var menuItem = new ToolStripMenuItem(item.Value.Description);
-				menuItem.Tag = item.Value;
-				menuItem.ShortcutKeyDisplayString = item.Key.ToString();
+				var menuItem = new ToolStripMenuItem(item.Value.Description)
+				{
+					Tag = item.Value,
+					ShortcutKeyDisplayString = item.Key.ToString()
+				};
 				menuItem.Click += (s, e) =>
 				{
 					var effect = (ScreenColorEffect)((ToolStripMenuItem)s).Tag;
