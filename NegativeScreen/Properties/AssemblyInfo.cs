@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ArcaneSanctum.Net")]
 [assembly: AssemblyProduct("NegativeScreen")]
-[assembly: AssemblyCopyright("Copyright © Melvyn Laily 2011-2016")]
+[assembly: AssemblyCopyright("Copyright © Melvyn Laïly 2011-2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

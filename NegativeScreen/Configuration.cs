@@ -1,4 +1,4 @@
-﻿// Copyright 2011-2016 Melvyn Laily
+﻿// Copyright 2011-2017 Melvyn Laïly
 // http://arcanesanctum.net
 
 // This file is part of NegativeScreen.
