@@ -32,6 +32,7 @@ namespace NegativeScreen
 	/// </summary>
 	partial class OverlayManager : Form
 	{
+		private AboutBox aboutForm = new AboutBox();
 
 		/// <summary>
 		/// control whether the main loop is paused or not.
@@ -111,6 +112,8 @@ namespace NegativeScreen
 		private OverlayManager()
 		{
 			InitializeComponent();
+			this.Icon = Properties.Resources.Icon;
+			trayIcon.Icon = Properties.Resources.Icon;
 
 			TryRegisterHotKeys();
 
@@ -475,5 +478,12 @@ namespace NegativeScreen
 
 		#endregion
 
+		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (!aboutForm.Visible)
+			{
+				aboutForm.ShowDialog();
+			}
+		}
 	}
 }

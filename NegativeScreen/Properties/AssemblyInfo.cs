@@ -6,7 +6,15 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("NegativeScreen")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription(
+@"The original purpose of NegativeScreen was to simply invert your screen's colors.
+This can be useful, for example when using a computer in a dark room and the screen is dazzling you.
+
+The name stuck, but you can now use NegativeScreen to apply any color effect that can be modeled as a color transformation matrix.
+
+Home page and documentation: http://arcanesanctum.net/negativescreen
+Source code (GPL): https://github.com/mlaily/NegativeScreen/
+")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ArcaneSanctum.Net")]
 [assembly: AssemblyProduct("NegativeScreen")]
