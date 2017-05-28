@@ -112,7 +112,7 @@ namespace NegativeScreen
 		{
 			InitializeComponent();
 
-			TryRegisterHotKeys(this.trayIcon);
+			TryRegisterHotKeys();
 
 			toggleInversionToolStripMenuItem.ShortcutKeyDisplayString = Configuration.Current.ToggleKey.ToString();
 			exitToolStripMenuItem.ShortcutKeyDisplayString = Configuration.Current.ExitKey.ToString();
@@ -124,7 +124,12 @@ namespace NegativeScreen
 			InitializeControlLoop();
 		}
 
-		private void TryRegisterHotKeys(NotifyIcon trayIcon)
+		public void ShowBalloonTip(int timeout, string title, string message, ToolTipIcon icon)
+		{
+			trayIcon.ShowBalloonTip(timeout, title, message, icon);
+		}
+
+		private void TryRegisterHotKeys()
 		{
 
 			StringBuilder sb = new StringBuilder("Unable to register one or more hot keys:\n");
@@ -140,7 +145,7 @@ namespace NegativeScreen
 			}
 			if (!success)
 			{
-				trayIcon.ShowBalloonTip(4000, "Warning", sb.ToString(), ToolTipIcon.Warning);
+				ShowBalloonTip(4000, "Warning", sb.ToString(), ToolTipIcon.Warning);
 			}
 		}
 

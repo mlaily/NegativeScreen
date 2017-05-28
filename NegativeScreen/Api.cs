@@ -38,7 +38,16 @@ namespace NegativeScreen
 			_listener = new HttpListener();
 			_listener.IgnoreWriteExceptions = true;
 			_listener.Prefixes.Add(Configuration.Current.ApiListeningUri);
-			_listener.Start();
+			try
+			{
+				_listener.Start();
+			}
+			catch (HttpListenerException ex)
+			{
+				overlayManager.ShowBalloonTip(4000, "Warning", "Unable to start the api!\n" + ex.Message, ToolTipIcon.Warning);
+				return;
+			}
+		
 			Thread t = new Thread(ThreadLoop) { Name = "Api Listener Thread" };
 			t.Start();
 		}
