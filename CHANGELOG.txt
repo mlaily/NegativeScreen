@@ -1,10 +1,15 @@
-Version 2.5, 2016-02-11
+Version 2.5, 2017-05-28
 ------------------------
 - [fixed] when an instance is already running, enable its color effect instead of showing an unhelpful message about it
 - [fixed] no longer crash when trying to set a color effect while the Windows Magnifier color inversion is enabled
 - [added] a basic web api is now part of NegativeScreen! See the readme for more information
-- [added] new EnableApi, defaults to false
-- [added] new ApiListeningUri, defaults to listening on port 8990, localhost only
+- [added] new EnableApi configuration option, defaults to false
+- [added] new ApiListeningUri configuration option, defaults to listening on port 8990, localhost only
+- [added] new About window, available from the systray menu
+- [added] add a retro-compatible user-specific fallback location for the configuration file:
+		- if the file "%AppData%/NegativeScreen/negativescreen.conf" exists, it will be used in priority.
+		- if the "negativescreen.conf" file beside the executable cannot be modified,
+			trying to edit the current configuration will result in a configuration in AppData being created.
 
 Version 2.4, 2014-11-30
 ------------------------
@@ -24,7 +29,7 @@ Version 2.2, 2013-02-17
 Version 2.1, 2012-12-22
 ------------------------
 - [fixed] crash on Windows 8 due to inter-threads calls
-	(this was not a problem on Windows 7)
+		(this was not a problem on Windows 7)
 - [added] new MainLoopRefreshTime configuration option
 
 Version 2.0, 2012-12-14

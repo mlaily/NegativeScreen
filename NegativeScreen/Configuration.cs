@@ -21,14 +21,21 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
 using System.Linq;
+using System.IO;
+using System.Diagnostics;
+using System.Security.Permissions;
 
 namespace NegativeScreen
 {
 	class Configuration : IConfigurable
 	{
-		#region Default configuration
+		public string WorkingDirectoryConfigurationFileName { get; } =
+			Path.Combine(Environment.CurrentDirectory, "negativescreen.conf");
+		public string AppDataConfigurationFileName { get; } =
+			Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "NegativeScreen/negativescreen.conf");
+		public ConfigurationLocation Source { get; private set; }
 
-		public const string DefaultConfigurationFileName = "negativescreen.conf";
+		#region Default configuration
 		public const string DefaultConfiguration =
 @"# comments: if the character '#' is found, the rest of the line is ignored.
 # quotes: allow to place a '#' inside a value. they do not appear in the final result.
@@ -183,15 +190,8 @@ Grayscale=win+alt+F11
 		{
 			ColorEffects = new List<KeyValuePair<HotKey, ScreenColorEffect>>();
 
-			string configFileContent;
-			try
-			{
-				configFileContent = System.IO.File.ReadAllText(DefaultConfigurationFileName);
-			}
-			catch (Exception)
-			{
-				configFileContent = DefaultConfiguration;
-			}
+			string configFileContent = ReadCurrentConfiguration();
+
 			Parser.AssignConfiguration(configFileContent, this, new HotKeyParser(), new MatrixParser());
 			if (!string.IsNullOrWhiteSpace(InitialColorEffectName))
 			{
@@ -205,7 +205,83 @@ Grayscale=win+alt+F11
 					// probably not ideal
 					this.InitialColorEffect = new ScreenColorEffect(BuiltinMatrices.Negative, "Negative");
 				}
+			}
+		}
 
+		private string ReadCurrentConfiguration()
+		{
+			try
+			{
+				// First try to read the AppData conf
+				Source = ConfigurationLocation.AppData;
+				return File.ReadAllText(AppDataConfigurationFileName);
+			}
+			catch (Exception)
+			{
+				try
+				{
+					// If we can't access it, try the one in the working directory
+					Source = ConfigurationLocation.WorkingDirectory;
+					return File.ReadAllText(WorkingDirectoryConfigurationFileName);
+				}
+				catch (Exception)
+				{
+					// If all else fails, read the default embedded one
+					Source = ConfigurationLocation.Embedded;
+					return DefaultConfiguration;
+				}
+			}
+		}
+
+		private void EnsureAppDataConfigurationFileExists()
+		{
+			Directory.CreateDirectory(Path.GetDirectoryName(AppDataConfigurationFileName));
+			if (!File.Exists(AppDataConfigurationFileName))
+			{
+				File.WriteAllText(AppDataConfigurationFileName, DefaultConfiguration);
+			}
+		}
+
+		public static void UserEditCurrentConfiguration()
+		{
+			void EditPath(string path)
+			{
+				Process.Start("notepad", path);
+			}
+
+			switch (Current.Source)
+			{
+				case ConfigurationLocation.AppData:
+					// If the source is AppData, use it:
+					EditPath(Current.AppDataConfigurationFileName);
+					break;
+				case ConfigurationLocation.WorkingDirectory:
+				case ConfigurationLocation.Embedded:
+				default:
+					// If the source is the working directory, or no config file exists yet, try there first:
+					// (File.GetAccessControl() looks very scary and error prone, so we just try to open the file...)
+					try
+					{
+						if (!File.Exists(Current.WorkingDirectoryConfigurationFileName))
+						{
+							// create it with the default configuration template
+							File.WriteAllText(Current.WorkingDirectoryConfigurationFileName, DefaultConfiguration);
+						}
+						else
+						{
+							// just check we can access it
+							using (new FileStream(Current.WorkingDirectoryConfigurationFileName, FileMode.Open, FileAccess.ReadWrite)) { }
+						}
+						// Edit the working directory conf if we can
+						EditPath(Current.WorkingDirectoryConfigurationFileName);
+					}
+					catch (Exception)
+					{
+						// If we can't access the working directory conf, use the AppData one instead
+						Current.EnsureAppDataConfigurationFileExists();
+						EditPath(Current.AppDataConfigurationFileName);
+					}
+					break;
 			}
 		}
 
@@ -468,5 +544,12 @@ Grayscale=win+alt+F11
 			Description = description;
 		}
 
+	}
+
+	enum ConfigurationLocation
+	{
+		Embedded,
+		AppData,
+		WorkingDirectory,
 	}
 }
