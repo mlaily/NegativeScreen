@@ -74,9 +74,22 @@ Graphic acceleration (Aero) must be enabled.
 
 ## Configuration file
 
-A default configuration file comes with the binary release.
+A customizable configuration file is created the first time you use "Edit Configuration" from the context menu.
 
-Should something go wrong (bad hot key...), you can simply delete the configuration file,
+The default location for this file is next to NegativeScreen.exe, and is called "negativescreen.conf"
+
+If the default location is inaccessible,
+NegativeScreen will try to create the configuration file in %AppData%/NegativeScreen/negativescreen.conf
+
+This feature allows to deploy NegativeScreen.exe in a read-only location for unprivileged users.
+Each user can then have its own configuration file.
+
+The order of priority for trying to read a configuration file when starting NegativeScreen is as follows:
+- %AppData%/NegativeScreen/negativescreen.conf
+- negativescreen.conf in the directory where NegativeScreen.exe is located
+- If the above fails, the embedded default configuration is used
+
+Should something go wrong (syntax error, bad hot key...), you can simply delete the configuration file,
 the internal default configuration will be used.
 
 If the configuration file is missing, you can use the "Edit Configuration" menu to regenerate the default one.
