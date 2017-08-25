@@ -1,4 +1,4 @@
-﻿// Copyright 2011-2017 Melvyn Laïly
+// Copyright 2011-2017 Melvyn Laïly
 // http://arcanesanctum.net
 
 // This file is part of NegativeScreen.
@@ -72,7 +72,7 @@ EnableApi=false
 # If you do so, also remember to add an exception to your firewall.
 ApiListeningUri=http://localhost:8990/
 
-#Matrices definition
+# Matrices definitions
 # The left hand is used as a description, while the right hand is broken down in two parts:
 # - the hot key combination, followed by a new line, (this part is optional)
 # - the matrix definition, with or without new lines between rows.
@@ -80,6 +80,16 @@ ApiListeningUri=http://localhost:8990/
 # each line between curved brackets,
 # the elements separated by commas.
 # The decimal separator is a dot.
+
+# I'm not too keen on the maths, so maybe I'm missing some things,
+# but here is my basic understanding of what does what in a color matrix, when applied to a color vector:
+# r*=x    g+=x*r  b+=x*r  a+=x*r  0
+# r+=x*g  g*=x    b+=x*g  a+=x*g  0
+# r+=x*b  g+=x*b  b*=x    a+=x*b  0
+# r+=x*a  g+=x*a  b+=x*a  a*=x    0
+# r+=x    g+=x    b+=x    a+=x    1
+
+# where x is the value in the matrix.
 
 Simple Inversion=win+alt+F1
 { -1,  0,  0,  0,  0 }
@@ -165,6 +175,98 @@ Grayscale=win+alt+F11
 { 0.1,  0.1,  0.1,  0.0,  0.0 }
 { 0.0,  0.0,  0.0,  1.0,  0.0 }
 { 0.0,  0.0,  0.0,  0.0,  1.0 }
+
+# Color blindness simulation matrices
+# Source: http://web.archive.org/web/20081014161121/http://www.colorjack.com/labs/colormatrix/
+
+# http://www.color-blindness.com/protanopia-red-green-color-blindness/
+# Red-Green Color Blindness   - Male Population: 1.01%, Female 0.02
+Color blindness simulation: Protanopia (Red-Green Color Blindness)=
+{ 0.567, 0.558, 0, 0, 0 }
+{ 0.433, 0.442, 0.242, 0, 0 }
+{ 0, 0, 0.758, 0, 0 }
+{ 0, 0, 0, 1, 0 }
+{ 0, 0, 0, 0, 1 }
+
+
+# http://www.color-blindness.com/protanopia-red-green-color-blindness/
+# Protanomaly (red-weak)  - Male Population: 1.08%, 0.03%
+Color blindness simulation: Protanomaly (red-weak)=
+{ 0.817, 0.333, 0, 0, 0 }
+{ 0.183, 0.667, 0.125, 0, 0 }
+{ 0, 0, 0.875, 0, 0 }
+{ 0, 0, 0, 1, 0 }
+{ 0, 0, 0, 0, 1 }
+
+
+# http://www.color-blindness.com/deuteranopia-red-green-color-blindness/
+# http://www.colour-blindness.com/general/prevalence/
+# Deuteranopia (also called green-blind) - Male Population: 1%, Female Population: 0.1%
+Color blindness simulation: Deuteranopia (green-blind)=
+{ 0.625, 0.7, 0, 0, 0 }
+{ 0.375, 0.3, 0.3, 0, 0 }
+{ 0, 0, 0.7, 0, 0 }
+{ 0, 0, 0, 1, 0 }
+{ 0, 0, 0, 0, 1 }
+
+
+# http://www.colour-blindness.com/general/prevalence/
+# Deuteranomaly (green-weak) - Male Population: 5%, Female Population: 0.35%
+Color blindness simulation: Deuteranomaly (green-weak)=
+{ 0.8, 0.258, 0, 0, 0 }
+{ 0.2, 0.742, 0.142, 0, 0 }
+{ 0, 0, 0.858, 0, 0 }
+{ 0, 0, 0, 1, 0 }
+{ 0, 0, 0, 0, 1 }
+
+
+# http://www.color-blindness.com/tritanopia-blue-yellow-color-blindness/
+# http://www.colour-blindness.com/general/prevalence/
+# Tritanopia – Blue-Yellow Color Blindness - rare. Some sources estimate 0.008% 
+Color blindness simulation: Tritanopia (Blue-Yellow Color Blindness - rare)=
+{ 0.95, 0, 0, 0, 0 }
+{ 0.05, 0.433, 0.475, 0, 0 }
+{ 0, 0.567, 0.525, 0, 0 }
+{ 0, 0, 0, 1, 0 }
+{ 0, 0, 0, 0, 1 }
+
+
+# http://www.color-blindness.com/tritanopia-blue-yellow-color-blindness/
+# http://www.colour-blindness.com/general/prevalence/
+# Tritanomaly (blue-yellow weak) - Male 0.01%, Female 0.01%
+Color blindness simulation: Tritanomaly (blue-yellow weak)=
+{ 0.967, 0, 0, 0, 0 }
+{ 0.033, 0.733, 0.183, 0, 0 }
+{ 0, 0.267, 0.817, 0, 0 }
+{ 0, 0, 0, 1, 0 }
+{ 0, 0, 0, 0, 1 }
+
+
+# http://www.color-blindness.com/2007/07/20/monochromacy-complete-color-blindness/
+# Total color blindness - Occurrences are estimated to be between 1 : 30’000 and 1 : 50’000.
+Color blindness simulation: Achromatopsia (Total color blindness)=
+{ 0.299, 0.299, 0.299, 0, 0 }
+{ 0.587, 0.587, 0.587, 0, 0 }
+{ 0.114, 0.114, 0.114, 0, 0 }
+{ 0, 0, 0, 1, 0 }
+{ 0, 0, 0, 0, 1 }
+
+
+# http://www.color-blindness.com/2007/07/20/monochromacy-complete-color-blindness/
+# All color-weak - Different sources vary between 1 in 33’000 to 100’000 (0.001%).
+Color blindness simulation: Achromatomaly (Total color weakness)=
+{ 0.618, 0.163, 0.163, 0, 0 }
+{ 0.32, 0.775, 0.32, 0, 0 }
+{ 0.062, 0.062, 0.516, 0, 0 }
+{ 0, 0, 0, 1, 0 }
+{ 0, 0, 0, 0, 1 }
+
+Binary (Black and white)=
+{  127,  127,  127,  0,  0 }
+{  127,  127,  127,  0,  0 }
+{  127,  127,  127,  0,  0 }
+{  0,  0,  0,  1,  0 }
+{ -180, -180, -180,  0,  1 }
 ";
 		#endregion
 
