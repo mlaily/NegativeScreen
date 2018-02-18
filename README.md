@@ -1,6 +1,6 @@
 # NegativeScreen #
 
-http://arcanesanctum.net/negativescreen
+https://zerowidthjoiner.net/negativescreen/
 
 ***
 
