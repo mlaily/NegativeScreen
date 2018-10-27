@@ -1,4 +1,4 @@
-﻿// Copyright 2011-2017 Melvyn Laïly
+// Copyright 2011-2017 Melvyn Laïly
 // http://arcanesanctum.net
 
 // This file is part of NegativeScreen.
@@ -103,6 +103,8 @@ http://x2a.yt?negativescreen", "Warning", MessageBoxButtons.OK, MessageBoxIcon.E
 		private static bool IsAnotherInstanceAlreadyRunning(out Process alreadyRunningInstance)
 		{
 			Process me = Process.GetCurrentProcess();
+			// Warning: the following call may return false positives
+			// when a debugger is attached and IntelliTrace is enabled.
 			Process[] processesWithSameName = Process.GetProcessesByName(me.ProcessName);
 			foreach (Process process in processesWithSameName)
 			{
