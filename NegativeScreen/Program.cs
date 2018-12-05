@@ -18,15 +18,16 @@
 
 using System;
 using System.Diagnostics;
-using System.Windows.Forms;
+using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace NegativeScreen
 {
-	class Program
+	internal class Program
 	{
 		[STAThread]
-		static void Main(string[] args)
+		private static void Main(string[] args)
 		{
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
@@ -72,7 +73,7 @@ http://x2a.yt?negativescreen", "Warning", MessageBoxButtons.OK, MessageBoxIcon.E
 				foreach (ProcessThread thread in aleadyRunningInstance.Threads)
 				{
 					// The goal is to enable the already running instance color effect:
-					NativeMethods.PostThreadMessage((uint)thread.Id, UserMessageFilter.WM_ENABLE_COLOR_EFFECT, IntPtr.Zero, IntPtr.Zero);
+					NativeMethods.PostThreadMessage((uint)thread.Id, UserMessageFilter.WM_ENABLE_COLOR_EFFECT, UserMessageFilter.ExpectedParams, UserMessageFilter.ExpectedParams);
 				}
 				return;
 			}
@@ -126,11 +127,12 @@ http://x2a.yt?negativescreen", "Warning", MessageBoxButtons.OK, MessageBoxIcon.E
 	/// </summary>
 	public class UserMessageFilter : IMessageFilter
 	{
-		public const int WM_ENABLE_COLOR_EFFECT = (int)WindowMessage.WM_USER + 0;
+		public const int WM_ENABLE_COLOR_EFFECT = (int)WindowMessage.WM_APP + 42;
+		public static readonly IntPtr ExpectedParams = new IntPtr(1337);
 
 		public bool PreFilterMessage(ref Message m)
 		{
-			if (m.Msg == WM_ENABLE_COLOR_EFFECT)
+			if (m.Msg == WM_ENABLE_COLOR_EFFECT && m.LParam == ExpectedParams && m.WParam == ExpectedParams && Configuration.Current.ActiveOnStartup)
 			{
 				// Handle a custom WM_ENABLE_COLOR_EFFECT message
 				// so that NegativeScreen can be enabled from another process/instance.
