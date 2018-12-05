@@ -26,7 +26,7 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <!-- version should MATCH as closely as possible with the underlying software -->
     <!-- Is the version a prerelease of a version? https://docs.nuget.org/create/versioning#creating-prerelease-packages -->
     <!-- Note that unstable versions like 0.0.1 can be considered a released version, but it's possible that one can release a 0.0.1-beta before you release a 0.0.1 version. If the version number is final, that is considered a released version and not a prerelease. -->
-    <version>2.5</version>
+    <version>2.6</version>
     <packageSourceUrl>https://github.com/mlaily/NegativeScreen/blob/master/Chocolatey/negativescreen.nuspec</packageSourceUrl>
     <!-- owners is a poor name for maintainers of the package. It sticks around by this name for compatibility reasons. It basically means you. -->
     <owners>Melvyn Laïly</owners>
@@ -37,9 +37,9 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <title>NegativeScreen</title>
     <authors>Melvyn Laïly</authors>
     <!-- projectUrl is required for the community feed -->
-    <projectUrl>http://arcanesanctum.net/negativescreen</projectUrl>
-    <iconUrl>http://arcanesanctum.net/wp-content/uploads/negativescreen/Icon256.png</iconUrl>
-    <copyright>2011-2017 Melvyn Laïly</copyright>
+    <projectUrl>https://zerowidthjoiner.net/negativescreen</projectUrl>
+    <iconUrl>https://zerowidthjoiner.net/Uploads/negativescreen/Icon256.png</iconUrl>
+    <copyright>2011-2018 Melvyn Laïly</copyright>
     <!-- If there is a license Url available, it is is required for the community feed -->
     <licenseUrl>https://www.gnu.org/copyleft/gpl.html</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
@@ -54,7 +54,7 @@ Appart from accessibility matters, this software is especially useful when you a
 
 The name "NegativeScreen" stuck, but you can now use it to apply any color effect that can be modeled as a color transformation matrix.
 </description>
-    <releaseNotes>http://arcanesanctum.net/wp-content/uploads/negativescreen/CHANGELOG.txt</releaseNotes>
+    <releaseNotes>https://zerowidthjoiner.net/Uploads/negativescreen/CHANGELOG.txt</releaseNotes>
     <!-- =============================== -->      
 
     <!-- Specifying dependencies and version ranges? https://docs.nuget.org/create/versioning#specifying-version-ranges-in-.nuspec-files -->
@@ -78,7 +78,7 @@ The name "NegativeScreen" stuck, but you can now use it to apply any color effec
   </metadata>
   <files>
     <!-- this section controls what actually gets packaged into the Chocolatey package -->
-    <!--<file src="tools\**" target="tools" />-->
+    <file src="tools\**" target="tools" />
 	<file src="..\NegativeScreen\bin\x64\Release\NegativeScreen.exe" target="NegativeScreen.exe" />
 	<file src="NegativeScreen.exe.gui" target="NegativeScreen.exe.gui" />
 	<file src="..\NegativeScreen\bin\Release\NegativeScreen.exe" target="NegativeScreenX86.exe" />

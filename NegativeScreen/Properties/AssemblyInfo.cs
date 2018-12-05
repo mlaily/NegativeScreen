@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -12,13 +12,12 @@ This can be useful, for example when using a computer in a dark room and the scr
 
 The name stuck, but you can now use NegativeScreen to apply any color effect that can be modeled as a color transformation matrix.
 
-Home page and documentation: http://arcanesanctum.net/negativescreen
+Home page and documentation: https://zerowidthjoiner.net/negativescreen
 Source code (GPL): https://github.com/mlaily/NegativeScreen/
 ")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("ArcaneSanctum.Net")]
 [assembly: AssemblyProduct("NegativeScreen")]
-[assembly: AssemblyCopyright("Copyright © Melvyn Laïly 2011-2017")]
+[assembly: AssemblyCopyright("Copyright © Melvyn Laïly 2011-2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -40,4 +39,4 @@ Source code (GPL): https://github.com/mlaily/NegativeScreen/
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.5.*")]
+[assembly: AssemblyVersion("2.6.*")]

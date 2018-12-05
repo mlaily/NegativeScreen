@@ -1,0 +1,9 @@
+﻿VERIFICATION
+Verification is intended to assist the Chocolatey moderators and community
+in verifying that this package's contents are trustworthy.
+
+I (the creator of this package) am the author of the packaged software.
+
+If you want to verify the content of this package, you can compare it to the
+content of the https://zerowidthjoiner.net/Uploads/negativescreen/Binary.zip files
+published on my website. They are supposed to stay in sync.

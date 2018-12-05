@@ -1,5 +1,5 @@
 // Copyright 2011-2017 Melvyn Laïly
-// http://arcanesanctum.net
+// https://zerowidthjoiner.net
 
 // This file is part of NegativeScreen.
 

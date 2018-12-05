@@ -1,3 +1,8 @@
+Version 2.6, 2018-12-05
+------------------------
+- [added] new matrices (color blindness simulation, and binary) added to the default configuration file
+- [fixed] color effect sometimes randomly activated by other running programs on the system
+
 Version 2.5, 2017-05-28
 ------------------------
 - [fixed] when an instance is already running, enable its color effect instead of showing an unhelpful message about it

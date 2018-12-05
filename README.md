@@ -1,6 +1,6 @@
 # NegativeScreen #
 
-https://zerowidthjoiner.net/negativescreen/
+https://zerowidthjoiner.net/negativescreen
 
 ***
 
