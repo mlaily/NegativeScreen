@@ -1,3 +1,7 @@
+Version 2.6.1, 2021-04-10
+------------------------
+- [changed] target .NET 4.5 (see https://zerowidthjoiner.net/negativescreen#comment-534224)
+
 Version 2.6, 2018-12-05
 ------------------------
 - [added] new matrices (color blindness simulation, and binary) added to the default configuration file
@@ -73,7 +77,7 @@ Version 1.10, 2012-05-15
 Version 1.9, 2012-04-16
 ------------------------
 - [fixed] stupid bug if the Windows taskbar is vertical
-		
+
 Version 1.8, 2012-03-22
 ------------------------
 - [fixed] execution is no longer prevented if aero is disabled (previous bug corrected)
@@ -82,7 +86,7 @@ Version 1.8, 2012-03-22
 Version 1.7, 2012-03-21
 ------------------------
 - [fixed] works as expected when using custom DPI settings
-		
+
 Version 1.6, 2012-02-27
 ------------------------
 - [fixed] crash on X86 on launch
