@@ -27,7 +27,7 @@ swapping blacks and whites while keeping colors (about) the sames.
 You can now configure the color effects manually via a configuration file.
 You can also configure the hot keys for every actions, using the same configuration file.
 
-A basic web api is part of NegativeScreen >= 2.5
+A basic web api is part of NegativeScreen >= 2.5.
 It is disabled by default. When enabled, it listens by default on port 8990, localhost only.
 See the configuration file to enable the api or change the listening uri...
 
