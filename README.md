@@ -57,10 +57,9 @@ Graphic acceleration (Aero) must be enabled.
 
 ## Default controls
 
--Press Win+Alt+H to Halt the program immediately
--Press Win+Alt+N to toggle color inversion (mnemonic: Night vision :))
-
--Press Win+Alt+F1-to-F10 to switch between inversion modes:
+- Press Win+Alt+H to Halt the program immediately
+- Press Win+Alt+N to toggle color inversion (mnemonic: Night vision :))
+- Press Win+Alt+F1-to-F10 to switch between inversion modes:
 	* F1: standard inversion
 	* F2: smart inversion1 - theoretical optimal transformation (but ugly desaturated pure colors)
 	* F3: smart inversion2 - high saturation, good pure colors
